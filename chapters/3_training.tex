@@ -760,6 +760,8 @@ GPU Memory & 3\,GB \\
 \end{tabular}
 \end{table}
 
+\subsubsection{Analysis of Parameter Dependencies}
+
 \ref{fig:imagesize} shows a comparison of the running times for calculating
 convolutions using our frequency domain implementation and cuDNN for varying
 image sizes. The FFT implementation that we used internally, cuFFT, is optimized
@@ -875,6 +877,8 @@ CNN layer.]{Comparison of running times of key operations for training a single
 CNN layer for varying number of channels and filter sizes.}
 \label{fig:filtersize}
 \end{figure}
+
+\subsubsection{Running Time Comparison for Used Models}
 
 % Comparison of used architectures
 \begin{itemize}
