@@ -1,0 +1,342 @@
+\chapter{Introduction}
+
+% What is MS
+
+\section{Motivation}
+
+Multiple sclerosis (MS) is a chronic and degenerative disease of the central
+nervous system (CNS) characterized by the formation of inflammatory
+and demyelinating lesions. Presumably due to the breakdown of the
+blood-brain-barrier, the body's own immune system attacks the myelin sheaths
+that act as insulating covers of the axons of neurons. This disrupts the ability
+of parts of the nervous system to communicate, and can lead to the manifestation
+of a large range of different signs and symptoms. The brain is a very plastic
+organ and is often able to compensate for the damage by forming new neural
+pathways. In the later stages of the diseases however, the amount of tissue
+damage is often to high to be compensated in addition to signs of axonal loss
+and neurodegeneration, which leads to the progressive accumulation of disease.
+
+\begin{figure}
+\missingfigure{Neuron with damage or maybe even half a brain with lesions shown}
+\caption{Need a caption.}
+\end{figure}
+ 
+The clinical presentation of MS is very heterogeneous due to the wide range of
+areas of the brain and spinal chord that can be affected. Characteristic but not
+specific physical signs and symptoms include the loss of sensitivity or changes
+in sensation such as tingling or numbness, which typically starts in the fingers
+and toes, as well as muscle weakness, difficulty in moving, difficulties with
+coordination and balance, problems with speech or swallowing, visual problems,
+feeling tired, acute or chronic pain, and bladder and bowel difficulties. MS can
+also lead to cognitive problems such as having difficulties thinking, or
+psychiatric and emotional problems such as depression or frequent mood swings.
+
+The course of the disease is unpredictable. However, most patients (around
+\SI{80}{\percent}) are initially diagnosed as having relapsing remitting MS
+(RRMS), which is characterized by alternating periods of worsening due to
+inflammatory attacks and the formation of new lesions, and periods of remission
+and recovery. The majority (around \SI{65}{\percent}) of RRMS patients
+transition to secondary progressive MS (SPMS). In this stage, the body is no
+longer able to compensate for the tissue damage, which leads to the unremitting
+and progressive accumulation of disability. Other types of MS include the
+primary progressive form (PPMS), characterized by the progression of disability
+from onset with no remissions after the initial symptoms, and progressive
+relapsing MS, which shows progressive accumulation of disability in addition to
+clear superimposed relapses.
+
+There is currently no cure for MS. Existing therapies that focus on symptomatic
+management and prevention of further damage have variable degrees of
+effectiveness, although several recent breakthroughs are promising. To monitor
+and further our understanding of the disease, many biomarkers have been
+developed that allow for the objective measurement of normal and pathogenic
+processes, as well as of the pharmacological response to a therapeutical
+intervention \cite{katsavos2013}. In this thesis, we will focus on the accurate
+measurement of existing imaging biomarkers and development of new biomarkers
+that capture changes in brain morphology and white matter lesions---two
+hallmarks of MS pathology. Axonal loss and neurodegeneration can lead to severe
+global and regional atrophy. Accurate segmentation of the brain and spinal chord
+into its basic tissue types---CSF, white matter, and gray matter---is a crucial
+pre-processing step for deriving imaging biomarkers like brain volume fraction,
+cortical thickness, and spinal chord atrophy. In addition, accurate delineation
+of lesions is important for measuring lesion count and lesion volume, two
+biomarkers that have established their importance for measuring disease
+progression and treatment effect.
+
+Many algorithms have been proposed for the accurate and robust segmentation of
+the entire brain (BET, ROBEX and the likes) that perform well enough to be used
+in routine clinical practice. In contrast, accurate segmentation of lesions has
+shown to be a very challenging due to the large variability in lesion
+size, shape, intensity, and locations, as well as the large variability in
+imaging contrasts produced by scanners used at different clinical sites. Despite
+a growing interest in developing fully automatic lesion segmentation methods,
+semi-automatic methods are still the standard in routine clinical practice,
+which is a time-consuming, laborious and potentially biasing. It is therefore
+highly desirable to develop a fully-automatic lesion segmentation method that is
+robust to large variability, while still being able to segment lesions with
+high accuracy and sensitivity, especially to small lesions.
+
+%
+% - biomarkers based on the accurate delineation of lesions such as lesion count
+%   and lesion volume
+% - To measure those changes accurately, accurate segmentations of different
+%   tissue types and lesions are required.
+% - A lot of progress has been made to accurately separate the brain from
+%   non-brain tissues (brain extraction) and segmenting the brain into its three
+%   main tissue types, CSF, WM, GM.
+% - Segmenting lesions very challenging due to the large variability in lesion
+%   size, shape, contrast, and location as well the the large variability in
+%   normal tissue contrasts produced by different scanners at different clinical
+%   cites.
+% - There is still no fully automatic and robust method for the segmentation of
+%   lesions that is robust and accurate enough to be used in routine clinical
+%   practice.
+
+Imaging biomarkers used in clinical trials mostly focus on volumetric measures
+of global and local changes, which are important and relatively easy to compute,
+but only correlate modestly with clinical scores. One reason for the modest
+correlation is that they do not reflect potentially important structural
+variations, such as shape changes in the brain and spatial dispersion of the
+lesions. Therefore, it would be highly desirable to develop biomarkers that
+capture potentially important patterns of variability in brain morphology and
+lesion distribution, which would advance our understanding of the complex
+pathology of MS.
+
+% TODO: Most of these points should go into the discussion section of why the
+% correlations are still not as high as we would wish for.
+%
+% they only correlate modestly with clinical
+% disability scores, which limits their utility for the purpose of personalized
+% medicine. There are a number of key reasons why the current imaging biomarkers
+% do not have stronger quantitative relationships with clinical scores:
+% \begin{itemize}
+% 
+% \item Due to the wide range of symptoms, MS disability is difficult to score
+% comprehensively in routine clinical practice. For example, the Kurtzke expanded
+% disability status scale (EDSS)~\citep{Kurtzke:1983} is the most commonly used
+% clinical score, but does not account for cognitive impairment, which is a
+% significant contributor to disability in the majority of MS
+% patients~\citep{Chiaravalloti:2008}.
+% 
+% \item Through neuroplasticity, the brain and spinal cord can adapt to damage in
+% order to maintain functionality~\citep{Tomassini:2012}. As a result, clinically
+% silent or subtle pathology is often present.
+% 
+% \item Conventional MRI does not capture all aspects of MS pathology. For
+% example, white matter that appears normal on conventional MRI may actually have
+% reduced myelin~\citep{Laule:2004}, a nerve insulator that is critical for proper
+% signal conduction. Demyelination is a key pathological feature of MS.
+% 
+% \item The current established imaging biomarkers largely capture volumetric
+% changes, which are important and relatively easy to compute, but do not reflect
+% potentially important structural variations, such as shape changes in the brain
+% and spatial dispersion of the lesions.
+% 
+% \end{itemize}
+% It would be highly desirable to develop biomarkers that capture potentially
+% important patterns of variability in brain morphology and lesion distribution,
+% which would advance our understanding of the complex pathology of MS.
+
+% An alternative to using biomarkers for monitoring MS is the use of clinical
+% scores. In contrast to biomarkers, clinical scores measure the impact of the
+% disease on the patient's life directly through clinical tests. The two most
+% widely used scores of measuring disability in MS are the expanded disability
+% status scale (EDSS) and the multiple sclerosis function composite. The EDSS
+% provides a discrete scale of impairment to ambulation and ranges from 0 (normal
+% neurological exam) to 10 (death due to MS). Despite its wide use in clinical
+% trials, EDSS have been criticized for putting too much emphasise on the motor
+% function of the patient, while ignoring other areas of the patient's life such
+% as cognitive functions and upper body movement. The MSFC is a composite score
+% composed of the following three subscores: 1) The timed 25 feet walk (T25W)
+% measures impairment of the lower limbs, 2) the 9-hole peg test (9-HPT) measures
+% impairment of the upper limbs, and 3) the paced auditory serial addition test
+% (PASAT) measures impairment of the cognitive function of a patient.
+% 
+% - Scores don't correlate well with biomarkers
+% - Why is this so?
+% - Need better biomarkers
+% - Maybe introduce clinical scores first then say biomarkers can be used as well
+% - Difficulties measuring them
+% - Difficulties with correlation to clinical scores
+
+\section{Objectives}
+
+The objectives of the thesis are two-fold:
+\begin{itemize}
+\item To develop a fully automatic lesion segmentation method that is able
+to segment lesions accurately under a large range of lesion sizes and in the
+presence of varying imaging contrasts and imaging artifacts produced by
+different scanners at a large number of different clinical scanning sites.
+
+\item To develop a method that automatically discovers potentially important
+patterns of variability in brain morphology and lesion distribution, with the
+goal to derive new imaging biomarkers that correlate stronger with the
+clinical presentation of the disease than traditionally used volumetric
+measures.
+\end{itemize}
+
+\section{Overview and Contributions}
+
+The two methods developed for segmenting lesions and recognizing patterns of
+variability are both based on algorithms and models that belong to the class of
+deep learning approaches. Deep learning is a field within machine learning that
+is inspired by the learning capabilities of the brain. Research on the visual
+cortex of cats suggests that the receptive fields of neurons are learned from a
+continuous stream of images early in the development of the visual system
+\citep{wiesel1963}, and fine-tuned later \citep{karni1991}. This allows the
+neurons of the visual cortex to adapt to the objects we are working with every
+day. While it is difficult, for example, for an average person to recognize the
+differences between cows, the feature detecting neurons of the visual system of
+cattle farmers are highly tuned to their appearance, allowing them to recognize
+individual cows easily. This suggests that a learning based model for
+classification should not only learn to perform the requested task based on a
+set of pre-defined features, but also learn the features that are most
+suitable to perform the task. This kind of end-to-end learning is possible
+through the use of deep learning methods, which use multiple layers of nonlinear
+processing units to learn a feature hierarchy directly from the input data
+without a dedicated feature extraction step.
+
+Deep learning has been successfully used in many research areas such as image
+recognition \citep{krizhevsky2012}, speech recognition \citep{hinton2012deep},
+natural language understanding \citep{collobert2011natural}, and language
+translation \citep{sutskever2014sequence}. Deep learning methods are
+particularly successful due to their ability to recognize complex and highly
+nonlinear patterns in large amounts of training data, which facilitates the
+learning of models that are robust to large variability. This motivates the use
+of deep learning methods for segmenting MS lesions, because the large
+variability in lesion shape, size, contrast, and location as well as the changes
+in imaging contrasts produced by different MRI scanners make lesion segmentation
+a very challenging problem. Furthermore, deep learning cannot only be used
+to learn models that are robust to a large range of nonlinear changes, it can
+also be used to discover patterns of variability in order to model complex,
+recurring and nonlinear changes. This allows deep learning models such as deep
+belief networks to be used for manifold learning, e.g., of hand written digits
+\citep{hinton2006b} or, as we will show in Chapter~??, medical images
+\citep{brosch2013}. However, deep learning methods and frameworks
+were originally developed for small 2D images and do not scale well to large 3D
+images in terms of training time and memory requirements, which prevents the use
+of out-of-the-box implementations of deep learning methods for 3D image
+analysis.
+
+The main contributions of the thesis are as follows:
+\begin{itemize}
+\item We have developed a novel training algorithm that performs training in the
+frequency domain, which greatly speeds up the training and thereby facilitates
+the application to volumetric medical images.
+  
+\item Based on our deep learning framework, we have developed a lesion
+segmentation method that is robust to a large range of lesion sizes and contrasts produced by
+different MRI scanners used at different scanning sites. Our method performs on
+par with state-of-the-art methods on two small publicly available MS lesion
+segmentation challenge datasets, and consistently outperforms several publicly
+available segmentation methods on a very challenging dataset from a large MS
+clinical trial.
+
+\item Also based on our deep learning framework, we have developed a method that
+captures changes in brain morphology and lesion distribution with only a few
+parameters, which also show improved correlation with clinical scores compared
+to established volumetric imaging biomarkers.
+
+\end{itemize}
+
+\section{Outline}
+
+This thesis is structured as follows:
+\begin{itemize}
+\item Chapter 2 gives short introduction to the field of deep learning and two
+deep learning models used in this thesis, namely DBNs and neural networks
+\item Chapter 3 gives full details of training in the spatial domain as well as
+our novel training algorithm in the frequency domain. Motivate it!
+\item The two main applications, i.e., lesion segmentation and manifold learning
+for biomarker discovery are described in chapter 4 and 5.
+\item Thesis concludes with a discussion of deep learning vs. traditional
+approaches and future challenges.
+\end{itemize}
+
+%   - Use more data, handle variability better, age of large data is perfect for deep learning
+%   - No assumptions other than test data should be similarly distributed than training data -> robust and fast
+%   - What can we learn from it? Need visualization of what the network is thinking. Probably relearn what the NN is doing similar to how 
+%     brain research works: learn from good and bad cases or from deactivating certain parts of the network to infer what it does.
+%   - Theory of learning combining neuroscience and computer science
+
+\begin{comment}
+
+Multiple sclerosis (MS) is a chronic, degenerative disease of the brain and
+spinal cord. The clinical presentation of MS is very heterogeneous, and the
+range and severity of symptoms can vary greatly between patients. The clinical
+course of MS is highly unpredictable, but most patients are initially diagnosed
+as having relapsing remitting MS (RRMS), which is characterized by inflammatory
+attacks separated by variable periods of remission and recovery. The majority of
+RRMS patients will eventually transition into the secondary progressive MS
+(SPMS) phase, in which there is an unremitting and progressive accumulation of
+disability. There is currently no cure for MS. Existing therapies that focus on
+symptomatic management and prevention of further damage have variable degrees of
+effectiveness, although several recent breakthroughs are promising. MS pathology
+originates at the cellular level and many aspects are not well understood, but
+there are characteristic (but not specific) signs of tissue damage, the most
+recognizable of which are white matter lesions (WMLs) and brain atrophy, or
+shrinkage due to degeneration. These signs can be observed on MRI, which has
+become a vital tool for non-invasively monitoring MS patients in the clinic and
+for advancing the understanding of MS pathology. WML counts and volume and brain
+volume have become established imaging biomarkers for MS clinical trials, and
+there is promise for their use in routine clinical practice, but they generally
+only correlate modestly with clinical disability scores. The weak link between
+the image-based measures of MS pathology and disability scores is known as the
+``clinico-radiological paradox'' of MS, and results in the low utility of
+current imaging biomarkers for the purposes of personalized medicine. There are
+a number of key reasons why the current imaging biomarkers do not have stronger
+quantitative relationships with clinical scores:
+
+\begin{itemize}
+
+\item Due to the wide range of symptoms, MS disability is difficult to score
+comprehensively in routine clinical practice. For example, the Kurtzke expanded
+disability status scale (EDSS)~\citep{Kurtzke:1983} is the most commonly used
+clinical score, but does not account for cognitive impairment, which is a
+significant contributor to disability in the majority of MS
+patients~\citep{Chiaravalloti:2008}.
+
+\item Through neuroplasticity, the brain and spinal cord can adapt to damage in
+order to maintain functionality~\citep{Tomassini:2012}. As a result, clinically
+silent or subtle pathology is often present.
+
+\item Conventional MRI does not capture all aspects of MS pathology. For
+example, white matter that appears normal on conventional MRI may actually have
+reduced myelin~\citep{Laule:2004}, a nerve insulator that is critical for proper
+signal conduction. Demyelination is a key pathological feature of MS.
+
+\item The current established imaging biomarkers largely capture volumetric
+changes, which are important and relatively easy to compute, but do not reflect
+potentially important structural variations, such as shape changes in the brain
+and spatial dispersion of the lesions.
+
+\item Traditional statistical approaches place a strong emphasis on
+interpretability, often at the sacrifice of accuracy, and simple prediction
+models such as logistic regression are common. The general assumption is that
+the data is generated by a known stochastic data model, with the goodness-of-fit
+evaluated by residual analysis, but this works well only with a very low number
+of variables~\citep{Breiman:2001}.
+
+\end{itemize}
+
+% Add to manifold introduction
+Changes in brain morphology and white matter lesions are two hallmarks of MS
+pathology, but their variability beyond volumetrics is poorly characterized. To
+further the understanding of complex MS pathology,
+
+% Add to segmentation introduction
+Focal lesions in the brain and spinal cord are one of the hallmarks of MS
+pathology, and are primarily visible in the white matter on structural MRIs.
+These lesions are observable as hyperintensities on T2w, proton density-weighted
+(PDw), or fluid-attenuated inversion recovery (FLAIR) scans, and as
+hypointensities, or ``black holes'' on T1w scans. Imaging biomarkers based on
+the identification of lesions, such as lesion count and lesion volume, have
+established their importance for assessing disease progression and treatment
+effect. However, lesions vary greatly in size, shape, intensity and location,
+which makes their automatic and accurate segmentation challenging.
+
+% See literature review as a tool, not as a goal. Try to structure the thesis
+% without it and put it where it belongs. Maybe restructure later. I needed a part
+% of it already for the motivation. I will put a lot in it when I describe the
+% methods. An I will put something in there, when I describe the applications.
+
+\end{comment}

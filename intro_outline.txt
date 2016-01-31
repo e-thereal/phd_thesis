@@ -1,0 +1,145 @@
+Multiple sclerosis
+
+What is it?
+
++ chronic, degenerative disease, demyelinating, inflammatory
++ Central nervous system (brain + spinal chord)
++ damage of mylin sheaths that act as insulating covers of nerve cells of the CNS
++ disrupts the ability of parts of the nervous system to communicate
++ Cause of the disease not completely understood
++ Characterized by the formation of inflamatory and demyelinating lesions
++ Presumably caused by attacks on the myelin sheaths by the body's own immune system
+- Pathology originates at the cellular level
+- many aspects not well understood
++ Characteristic but not specific signs of tissue damage
+- most recognizable of which are white matter lesions (WMLs), global and regional brain atrophy or shrinkage due to degeneration
+
+How does it present itself?
+
+- Very heterogeneous
+- lesions can form in all parts of the CNS, resulting in a wide range of signs and symptoms
+- Physical, mental, and sometimes psychiatric problems
+- Large range of severity of symptoms
+- Physical signs and symptoms
+  - loss of sensitivity or changes in sensation (e.g., tingling, pins and needles or numbess)
+  - muscle weakness
+  - difficulty in moving
+  - difficulties with coordinatin and balance
+  - problems with speech or swallowing
+  - visual problems (optic neuritis)
+  - feeling tired
+  - accute or chronic pain
+  - bladder and bowel difficulties
+- mental problems
+  - Difficulties thinking
+- psychiatric problems
+  - Emotional problems such as depression or unstable mood
+
+Typical course
+
+- Unpredictable
+- Most patients (80%) are initially diagnosed as having relapsing remitting MS (RRMS)
+  - Inflammatory attacks formation of new lesions, worsening of symptoms
+  - Periods of remission and recovery
+- Majority (65%) transition to secondary progressive MS (SPMS)
+  - unremitting and progressive accumulation of disability
+  - Too much damage to compensate
+  
+Treatment
+
+- No cure
+- Symptomatic management
+- Prevention of further damage
+- But variable degrees of effectiveness.
+
+Biomarkers [Biomarkers in Multiple Sclerosis: An Up-to-Date Overview]
+
+- characteristic that is objectivly measured and evaluated as an indicator of normal biological processes,
+  pathogenic process or pharmacological response to a therapeutical intervention.
+- Classified by where it comes from: CSF, blood, urine, tears, saliva, imaging methods
+- Classified what is measured: generic-immunogenetic, laboratorial, imaging biomarkers
+- Classified by the purpose:
+  - diagnostic (risk of MS, differentiate between other neurodegenerative diseases, early diagnosis)
+  - phenotypical expression (aggressive, benign, malignant MS)
+  - demyelination-neuroinflammation-replase
+  - axonal loss-neurodegeneration
+  - Prognostic biomarkers--biomarker of disability progression
+  - Biomarkers of therapeutical response
+
+Monitoring the disease
+
+- Using MRI
+- non-invasive monitoring in the clinic and to further our understanding of the disease
+- Development of biomarkers important for tracking disease progression and treatment effect
+- What are biomarkers? Go into more detail here from the review
+- Focus on imaging biomarkers
+- Some of them are based on global atrophy
+- Some of them are based on delination of lesions -> lesion count, lesion load
+- How to derive biomarkers reliably -> robust and accurate segmentation of tissues and lesions
+  - Segmentation of brain performed reliably (list some tools that do it well and how well they do it)
+  - Segmentation of lesions an open research problem, because they are much more challenging to segment
+    due to the large variabiliy in contrast, shape, size, and location
+  
+- Using disability tests, describe some of them
+  - EDSS standardized scale of disability ranging from 0 (no disability) to 10 (death by MS), captures mostly physical disability
+  - MSFC composite score of lower limb timed (25 feet walk), upper limb (9-hole peg test), congnitive function (PASAT)
+- Advantage, direct impact on patient's life
+- However, don't correlate well with volumetric measures for several reasons
+- Simple biomarkers correlate only modestly with clinical disability scores
+  - Difficult to score
+    - Subject to bias, smart people perform generally better independent of the disease state
+    - Experience of the cognitive tests affects the outcome
+  - Neuroplasticity
+    - Brain can compensate for damage especially in the RRMS phase
+    - Increased progress of the disease not reflected by perceived disability
+  - Conventional MRI does not capture all aspects of MS
+  - Volumetric measures do not account for potentially important structural changes or spatial dispersion of lesions
+  - Traditionally strong emphasis on interpretability
+    - Simple regression models
+-> How to capture variability that goes beyond simple volumetric measures?
+
+Objectives
+
+- Development of a robust and accurate segmentation method
+- Development of a method that can capture changes in brain morphological and lesion distribution
+
+Overview and contribution
+
+Both developed methods are based on methods known as deep learning, a field within machine learning that is inspired by the feature learning capabilities
+of the brain. The vision is that solving a problem can be learned directly from the training data without a feature extraction step. Useful features are
+automatically learned embedded in a feature hierarchy. Motivated by the learning capabilities of cats visual cortex. Learn features that are tuned for the
+input domain and task.
+
+Deep learning has been successfully used in many areas such as speech recognition, natural language processing, object recognization, object
+detection and semantic segmentation. Success due to the ability to model variability in the data in form of a feature hierarchy. Robustness to large variability
+learned from large training sets motivates us to use deep learning for lesion segmentation, which is challenging especially due to the large variability in
+lesion size, shape, contrast and location, as well is the large variability of imaging contrast and imaging artifacts produced by different MRI scanners.
+But deep learning not only good for building feature hierarchies that are robust to large variability. You can also use them to model variability directly from
+training images, without making assumptions on the underlying data (such as local linearity of the ambient space) and without the need of a similarity measure.
+Free of those assumptions allows it to learn an unbiased model of variability without imposing any expection on the learned manifold. Furthermore, highly nonlinear.
+Can capture nonlinear variability. Motivates the use for manifold learning to model the variability in brain morphology and lesion distribution. However, deep
+learing methods developed for small 2D images. Training on large 3D volumes too slow to be feasible and requires a lot of GPU memory when out-of-the-box solutions
+are used.
+
+- To train deep learning models on medical images, we have developed a novel training method that performs training in the frequency domain and is much faster
+  than training in the spatial domain.
+- Based on our deep learning frame, we have developed a lesion segmentation method that is robust to a large range of lesion sizes and contrast produced by
+  different scanners used at different scanning sites. Compares favourably on two small publicly available datasets. However, true benefit is leveraging large
+  datasets.  In a direct comparison on a large dataset from a multicenter MS clinical trial, outperforms EMS, Lesion-TOADS, LGA, LPA, SLS, and RNMSM.
+- Also based on our deep learning frame, developed a method that captures changes in brain morphology and lesion distribution with a few parameters. Those
+  parameters show improved correlation with clinical scores compared to estabilished imaging biomarkers.
+
+Outline
+
+This thesis is structured as follows:
+
+- Chapter 2 gives short introduction to the field of deep learning and two deep learning models used in this thesis, namely DBNs and neural networks
+- Chapter 3 gives full details of training in the spatial domain as well as our novel training algorithm in the frequency domain. Motivate it!
+- The two main applications, i.e., lesion segmentation and manifold learning for biomarker discovery are described in chapter 4 and 5.
+- Thesis closes with a discussion of deep learning vs. traditional approaches and future challenges
+  - Use more data, handle variability better, age of large data is perfect for deep learning
+  - No assumptions other than test data should be similarily distributed than training data -> robust and fast
+  - What can we learn from it? Need visualization of what the network is thinking. Probably relearn what the NN is doing similar to how 
+    brain research works: learn from good and bad cases or from deactivating certain parts of the network to infer what it does.
+  - Theory of learning combining neuroscience and computer science
+

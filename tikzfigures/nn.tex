@@ -1,0 +1,80 @@
+\begin{tikzpicture}
+\tikzstyle{aenode}=[circle,draw,minimum width=0.5cm]
+\tikzstyle{gnode}=[circle,draw,minimum width=0.5cm,dotted]
+
+\foreach \y in {1,...,4} {
+  \node[aenode] (inode\y) at (0, \y) {};
+}
+
+\begin{scope}[yshift=0.5cm]
+\foreach \y in {1,...,3} {
+  \node[aenode] (h1node\y) at (1.25, \y) {};
+}
+\end{scope}
+
+\foreach \y in {1,...,4} {
+  \node[gnode] (h2node\y) at (2.5, \y) {};
+}
+
+\begin{scope}[yshift=0.5cm]
+\foreach \y in {1,...,3} {
+  \node[aenode] (h3node\y) at (3.75, \y) {};
+}
+\end{scope}
+
+\foreach \y in {1,...,4} {
+  \node[aenode] (onode\y) at (5, \y) {};
+}
+
+\foreach \x in {1,...,4} {
+  \foreach \y in {1,...,3} {
+    \draw[-latex] (inode\x)--(h1node\y);
+    \draw[-latex,dotted] (h1node\y)--(h2node\x);
+    \draw[-latex,dotted] (h2node\x)--(h3node\y);
+    \draw[-latex] (h3node\y)--(onode\x);
+  }
+}
+
+\node[above=3pt of inode4] {$\vect{x}_0$};
+\node[above=3pt of h1node3] {$\vect{x}_1$};
+\node[above=3pt of h2node4] (xl) {$\vect{x}_l$};
+\node[above=3pt of h3node3] {$\vect{x}_{L-1}$};
+\node[above=3pt of onode4] {$\vect{x}_L$};
+
+% \node at (xl-|inode1) {$\vect{x}_0$};
+% \node at (xl-|h1node1) {$\vect{x}_1$};
+% \node at (xl-|h3node1) {$\vect{x}_{L-1}$};
+% \node at (xl-|onode1) {$\vect{x}_L$};
+
+\path (h1node3)--node[above=2pt] {$\vect{W}_l$} (h2node4);
+
+\node[below=5pt of h2node1] (hiddens) {Hidden units};
+\node at (hiddens-|inode1) {Input units};
+\node at (hiddens-|onode1) {Output units};
+
+% \begin{scope}[decoration={brace,pre=moveto,pre length=1pt,post=moveto,post
+% length=1pt}]
+% 
+% % Units
+% \draw[decorate] ([xshift=0.5cm]inode4.east|-inode4.north)--
+% node[right=4pt]{Input units $\vect{x}_0$}
+% ([xshift=0.5cm]inode4.east|-inode4.south);
+% 
+% \draw[decorate] ([xshift=0.5cm]inode4.east|-hnode3.north)--
+% node[right=4pt]{Hidden units $\vect{x}_1$}
+% ([xshift=0.5cm]inode4.east|-hnode3.south);
+% 
+% \draw[decorate] ([xshift=0.5cm]onode4.east|-onode4.north)--
+% node[right=4pt]{Reconstructions $\vect{x}_2$}
+% ([xshift=0.5cm]onode4.east|-onode4.south);
+% 
+% \draw[decorate] ([xshift=0.5cm]onode4.east|-hnode3.south)--
+% node[right=4pt]{Encoding weights $\vect{W}_1$}
+% ([xshift=0.5cm]onode4.east|-inode4.north);
+% 
+% \draw[decorate] ([xshift=0.5cm]onode4.east|-onode4.south)--
+% node[right=4pt]{Decoding weights $\vect{W}_2$}
+% ([xshift=0.5cm]onode4.east|-hnode3.north);
+% 
+% \end{scope}
+\end{tikzpicture}

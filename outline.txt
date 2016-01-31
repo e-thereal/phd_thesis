@@ -1,0 +1,71 @@
+Introduction:
+
+- Start with a general introduction to MS
+- MRI has revolutionized how we see diseases.
+- Can make changes visible that we couldn't see otherwise.
+- Important to quantify changes observed in MRI. (problem statement)
+- Objectives: - quantify overall brain changes -> manifold learning
+              - segmentation of MS lesions
+- Developed methods based on deep belief networks and artificial neural networks to solve both problems.
+- Outline of the thesis:
+  - Methods described in the thesis are based on deep belief networks and convolutional neural networks. The necessary background to follow the thesis is layed out in the chapter 2 with a brief introduction to DBNs and CNNs.
+  - DBNs and CNNs were originally developed with small 2D images in mind. Chapter 3 explains modifications to the training algorithm and model to facilitate the training on entire 3D volumes.
+  - Potential applications: Manifold learning, modelling variability of morphology and lesion distribution, lesion segmentation
+  - Thesis closes with a discussion of deep learning vs. traditional approaches and future challenges
+    - Use more data, handle variability better, age of large data is perfect for deep learning
+    - No assumptions other than test data should be similarily distributed than training data -> robust and fast
+    - What can we learn from it? Need visualization of what the network is thinking. Probably relearn what the NN is doing similar to how brain research works: learn from good and bad cases or from deactivating certain parts of the network to infer what it does.
+    - Theory of learning combining neuroscience and computer science
+
+Background (what is deep learning)
+
+- General introduction
+- DBNs + general training procedure
+- NNs + general training procedure
+- Discussion
+  - DBNs and NNs are different models, but also share a lot of similarities
+  - Inference of hidden units same as inference in NN
+  - Parameters are compatible meaning a DBN and NN with the same parameters would produce the same output
+  - Inference of visible units similar to backpropagation except for the bias terms and the nonlinearity
+  - However, different interpretation of the mathematical models leads to different objective functions
+  - NN needs output for training. Output only known at the last layer.
+
+Training in the frequency domain
+
+- General introduction
+- Motivation why special treatment
+- Method
+- Evaluation
+
+Manifold Learning
+
+- General introduction
+- Related work and challenges (AD and MS)
+- Why is deep learning promissing
+  - No similarity measure required
+  - Used on different types of images (intensities, deformation fields, lesion masks)
+- Manifold of MRIs of AD patients
+  - Describe the model, what goes in, what comes out, why are we doing this
+  - Adjust for medical images, mask background
+  - Evaluation
+- Variability of morphology and lesion distribution in MS
+  - Describe the model and the rational behind it
+  - Evaluation
+- Discussion
+
+Lesion Segmentation
+
+- General introduction
+- Related work and challenges
+- Basically the paper
+- Discussion
+
+Conclusions and future work
+
+- Conclusions regarding the goals or hypotheses presented in the introduction
+- reflective analysis of the research and its conclusions in light of current knowledge in the field
+- Comments on the significance and contribution of the research reported
+- Comments on strengths and limitations of the research
+- Discussion of any potential applications of the research findings
+- A description of possible future research directions, drawing on work reported
+
