@@ -292,7 +292,10 @@ size to zero, and then transforming the filter kernels back to the frequency
 domain. This procedure needs to be performed only once per mini-batch. Since the
 number of mini-batches is relatively small compared to the number of training
 images, trimming of the filter kernels also does not add significantly to the
-total running time of the training algorithm.
+total running time of the training algorithm. Although we have presented the
+algorithm in the context of training convRBMs, the same mapping of operations
+can be used to speed up the training of other convolutional models, such as
+convolutional neural networks.
 
 \subsection{Mapping Strided Convolutions to Stride-1 Convolutions}
 \label{sec:training:strided}
@@ -687,19 +690,21 @@ our proposed implementation in the frequency domain (freq).}
 \label{fig:run_oasis}
 \end{figure}
 
-\subsection{Comparison of Running Times of Selected Operations with cuDNN}
+\subsection{Comparison of Running Times for Calculating Convolutions with cuDNN}
 
-The NVIDIA CUDA Deep Neural Network library (cuDNN) \cite{chetlur2014} is a
+% TODO: Add used by Torch, Caffe, TensorFlow
+
+The NVIDIA CUDA Deep Neural Network library (cuDNN) \citep{chetlur2014} is a
 GPU-accelerated library of primitives that are frequently used to implement deep
 learning methods such as CNNs and convDBNs. The library provides highly
 optimized implementations for calculating, e.g., batched 2D and 3D convolutions,
 pooling operations, and different transfer functions. In this set of
-experiments, we directly compared the time required to calculate convolutions in
-equations (??), (??), and (??) using our frequency domain implementation with
-cuDNN. We only consider convolutions because they are the most time-consuming
-operations and because all other operations are calculating in the same way. For
-the frequency domain implementation, all measurements include the time required
-to calculate FFTs for calculating gradients and for transforming the accumulated
+experiments, we directly compared the time required to calculate convolutions
+when training a CNN using our frequency domain implementation with cuDNN. We
+only consider convolutions because they are the most time-consuming operations
+and because all other operations are calculating in the same way. For the
+frequency domain implementation, all measurements include the time required to
+calculate FFTs for calculating gradients and for transforming the accumulated
 gradient to spatial domain in order to calculate the parameters updates. The
 parameters that we used for evaluating the speed of different convolution
 implementations are summarized in \ref{tab:cudnn_parameters}. The parameters
@@ -760,24 +765,22 @@ GPU Memory & 3\,GB \\
 \end{tabular}
 \end{table}
 
-\subsubsection{Analysis of Parameter Dependencies}
-
 \ref{fig:imagesize} shows a comparison of the running times for calculating
 convolutions using our frequency domain implementation and cuDNN for varying
 image sizes. The FFT implementation that we used internally, cuFFT, is optimized
 for image sizes that can be factorized as $2^a\times3^b\times5^c$. Therefore, we
 also evaluated the time required to calculate convolutions when the input images
 are automatically padded to a size for which cuFFT has been optimized. For image
-sizes larger than $110^3$, cuFFT requires significantly more temporary memory
-for calculating FFTs of unoptimized image sizes. For that reason, only the
-running times of the padded frequency domain implementation and cuDNN are shown
-for image sizes larger than $110^3$. Calculating convolutions in the frequency
-domain scale better with increasing image size than cuDNN. While
-cuDNN is faster for very small image sizes, the padded frequency domain
-implementation is more than 20 times faster for images with a size of $128^3$
-voxels and 2 input channels, and more than 18 times faster for images with a
-size of $64^3$ voxels and 32 channels. Calculating the FFT and therefore the
-running time of the frequency domain implementation varies significantly
+sizes larger than $110^3$ voxels, cuFFT requires significantly more temporary
+memory for calculating FFTs of unoptimized image sizes. Consequently, only the
+running times of the padded frequency domain implementation and cuDNN were
+measured for image sizes larger than $110^3$ voxels. Calculating convolutions in
+the frequency domain scale better with increasing image size than cuDNN. While
+cuDNN is the fastest method for very small image sizes, the padded frequency
+domain implementation is more than 20 times faster for images with a size of
+$128^3$ voxels and 2 input channels, and more than 18 times faster for images
+with a size of $64^3$ voxels and 32 channels. Calculating the FFT and therefore
+the running time of the frequency domain implementation varies significantly
 depending on the input image size, and careful padding of the input images is
 required to achieve consistently high performance.
 
@@ -807,12 +810,12 @@ slightly better to larger images.}
 batch sizes and for varying number of channels. Increasing the batch size has
 only a minor effect on the running time of cuDNN, while significantly increasing
 the required amount of GPU memory. In contrast, the implementation in the
-frequency domain does not require more memory, because each image is processed
-individually. Increasing the batch size reduces the average running time per
-image of our frequency domain implementation, because the FFTs required to
-calculate the parameter updates need to be calculated only once per mini-batch,
-and have therefore a smaller impact on the overall running time, when the number
-of images per mini-batch is larger.
+frequency domain does not require more memory, because each image of a
+mini-batch is processed sequentially. Increasing the batch size reduces the
+average running time per image of our frequency domain implementation, because
+the FFTs required to calculate the parameter updates need to be calculated only
+once per mini-batch, and have therefore a smaller impact on the overall running
+time when the number of images per mini-batch is larger.
 
 \begin{table}[tb]
 \centering
@@ -858,16 +861,13 @@ channels}
 \end{tabular}
 \end{table}
 
-\begin{itemize}
-\item Impact of filter size on running time is shown in \ref{fig:filtersize}.
-\item Surprisingly, training in the frequency domain is faster for all filter
-sizes, where the speed-ups are larger for larger filters.
-\item At a filter size of $9$, the speed-up is 20 times.
-\item For $32$ channels, cuDNN is faster for very small filter sizes and
-training in the frequency domain breaks even at a filter size of $3$. For filter sizes
-larger than $3$, training in the frequency domain is substantially faster with a
-speed-up of up to $18$ times for a filter size of $9$.
-\end{itemize}
+The impact of the filter size on running time is shown in \ref{fig:filtersize}.
+Training in the frequency domain is faster for all filter sizes, where the
+speed-ups are larger for larger filters. At a filter size of $9$, the speed-up
+is 20 times. For $32$ channels, cuDNN is faster for very small filter sizes and
+training in the frequency domain breaks even at a filter size of $3$.
+For filter sizes larger than $3$, training in the frequency domain is
+substantially faster with a speed-up of up to $18$ times a filter size of $9$.
 
 \begin{figure}
 \centering
@@ -878,32 +878,27 @@ CNN layer for varying number of channels and filter sizes.}
 \label{fig:filtersize}
 \end{figure}
 
-\subsubsection{Running Time Comparison for Used Models}
-
-% Comparison of used architectures
-\begin{itemize}
-\item Comparison of running time of critical operations for training the
-$7$-layer CNN used for MS lesion segmentation
-\item Hidden layers benefit the most (10 times speed-up) from training in the
-frequency domain due to the large number of channels.
-\item Due to the small number of input and output channels, the input and output
-layer benefit the least from training in the frequency domain
-\item Total speed-up compared to cuDNN is 6.3
-\end{itemize}
-
-\begin{itemize}
-\item Comparison of running times of time critical operations for training the
-sconvRBM of the first layer of the lesion DBN
-\item Compared a direct calculation of strided convolution to remapping of
-strided convolutions to stride-1 convolutions.
-\item Strided convolutions using the reorganization trick is 4 times faster when
-calculated in the frequency domain.
-\item cuDNN does not benefit from reorganizing voxels
-\item Overall, training an sconvRBM in the frequency domain is 3.7 faster than
-using a direct implementation of strided convolutions from cuDNN.
-\item The architectures were not optimized for speed. Careful pre-padding of the
-images can be used to further reduce training times.
-\end{itemize}
+\ref{tab:usedmodels} shows a comparison of running times for calculating
+convolutions of our frequency domain implementation with cuDNN for the 7-layer
+convolutional encoder network (CEN) that is used in \ref{sec:segmentation} to
+segment MS lesions, and the first sconvRBM of the DBN model described in
+\ref{sec:manifold} to model the variability in lesion distribution and brain
+morphology. For the 7-layer CEN, the second convolutional and the first
+deconvolutional layer benefits the most from training in the frequency domain
+due to the relatively large number of channels in these layers. Overall, the
+convolutions required to train the 7-layer CEN can be calculated 6.3 times
+faster in the frequency domain compared to cuDNN. In a second experiment, we
+compared the time required to directly calculate strided convolutions with
+mapping strided convolutions to stride-1 convolutions by reorganizing the
+visible units of an sconvRBM. For the frequency domain implementation, the
+direct method calculates stride-1 convolutions instead of strided
+convolutions and discards the unnecessary hidden units afterwards, because
+strided convolutions cannot directly be calculated in the frequency domain.
+Mapping strided convolutions to stride-1 convolutions speeds up the training in
+the frequency domain by a factor of four compared to calculating stride-1
+convolutions in the frequency domain. Overall, calculating the convolutions for
+training the first sconvRBM is 3.7 times faster using our frequency domain
+implementation than the direct implementation of strided convolutions of cuDNN.
 
 \begin{table}
 \caption[Comparison of running times of time critical operations of two example
@@ -911,6 +906,7 @@ deep learning models.]{Comparison of running times of time critical operations
 of the 7-layer CEN-s used for segmentating lesions, and the first sconvRBM of
 the lesion DBN using to model lesion distribution. The running times of pooling
 layers we excluded.}
+\label{tab:usedmodels}
 \centering
 \sisetup{
   round-mode = places,
@@ -922,22 +918,43 @@ layers we excluded.}
   table-align-text-post = false
 }%
 
-\begin{tabular}{llS[table-format=1.3]S[table-format=1.3]@{}S[table-format=2.3]}
+\begin{tabular}{l>{\raggedright}p{5cm}S[table-format=1.3]S[table-format=1.3]@{}S[table-format=2.3]}
 \toprule
-\multicolumn{2}{c}{Model} & \multicolumn{2}{c}{Running time [s]\phantom{he}}
-& {Speed-up}
+\multicolumn{2}{c}{Experiment} & \multicolumn{2}{c}{Running time
+[s]\phantom{he}} & {Speed-up}
 \\
 & & {Freq} & {cuDNN} &  \\
 \midrule
-\multirow{5}*{\minitab[l]{$7$-layer CNN\\ used for lesion\\ segmentation}}
-& 1st layer & 0.076582 & 0.498335 & 6.5072 \\
-& 3rd layer & 0.0519153 & 0.523849 & 10.0904 \\
-& 4th layer & 0.0519153 & 0.523849 & 10.0904 \\
-& 6th layer & 0.1477196 & 0.51716 & 3.500957 \\
-& Total & 0.3281322 & 2.063193 & 6.28768831587 \\[0.5em]
-\multirow{2}*{\minitab[l]{First sconvRBM of \\ the lesion DBN}}
-& direct & 0.0755562 & 0.0683263 & 0.90431096323 \\
-& rearranged & 0.0186432 & 0.0705788 & 3.78576639204 \\
+\multirow{5}*{\minitab[l]{$7$-layer CEN\\ used for lesion\\ segmentation}}
+& first convolutional layer & 0.076582 & 0.498335 & 6.5072 \\
+& second convolutional layer & 0.0519153 & 0.523849 & 10.0904 \\
+& first deconvolutional layer & 0.0519153 & 0.523849 & 10.0904 \\
+& second deconvolutional layer & 0.1477196 & 0.51716 & 3.500957 \\
+& total & 0.3281322 & 2.063193 & 6.28768831587 \\[0.5em]
+\multirow{4}*{\minitab[l]{First sconvRBM of \\ the lesion DBN}}
+& direct calculation of strided convolutions & 0.0755562 & 0.0683263 &
+0.90431096323 \\
+& mapped strided convolutions to stride-1 convolutions & 0.0186432 & 0.0705788 &
+3.78576639204 \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\section{Conclusions}
+
+We have presented a fast training method for convolutional models, which
+performs training in the frequency domain in order to replace the time-consuming
+computation of convolutions with simple element-wise multiplications. We have
+shown that it is also essential to map the other operations to frequency space
+wherever possible to minimize the number of Fourier transforms, and that this
+greatly decreases training times over performing only the convolutions in the
+frequency domain. In addition, our method can be efficiently implemented on the
+GPU and is faster than a highly optimized GPU implementation of batched
+convolutions in the spatial domain. We have evaluated the running time
+improvements using two standard benchmark datasets, showing a speed-up of up to
+8 times on 2D images from the ImageNet dataset and up to 200 times on 3D volumes
+from the OASIS dataset. In addition, we have directly compared to the time
+required to calculate convolutions using our method with cuDNN, the current
+state-of-the-art library for calculating 2D and 3D convolutions, with the
+results showing that our method can calculate convolutions up to 20 times faster
+than cuDNN.
