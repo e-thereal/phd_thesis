@@ -608,14 +608,16 @@ transforms.
 \subfloat[Running times of training a first layer sconvRBM
 with stride sizes of 1, 2, and 4.] {
 \label{fig:run_imgnet_l1}
-\includegraphics{figures/NECO-03-14-2099-Figure-2}
+\includegraphics{figures/runtime_imgnet_c3}
+%\includegraphics{figures/NECO-03-14-2099-Figure-2}
 %\input{r_figures/runtime_imgnet_c3_bw}
 }
 
 \subfloat[Running times of training a second layer sconvRBM with
 16, 32, and 64 channels (stride size 1).] {
 \label{fig:run_imgnet_l2}
-\includegraphics{figures/NECO-03-14-2099-Figure-3}
+\includegraphics{figures/runtime_imgnet_c16-64}
+%\includegraphics{figures/NECO-03-14-2099-Figure-3}
 %\input{r_figures/runtime_imgnet_c16-64_bw}
 }
 
@@ -672,14 +674,16 @@ high-resolution 3D volumes.
 \begin{figure}[t!]
 \subfloat[Running times of training a first layer sconvRBM with stride sizes of 1, 2, and 4.] {
 \label{fig:run_oasis_l1}
-\includegraphics{figures/NECO-03-14-2099-Figure-4}
+\includegraphics{figures/runtime_oasis_c1}
+%\includegraphics{figures/NECO-03-14-2099-Figure-4}
 %\input{r_figures/runtime_oasis_c1_bw}
 }
 
 \subfloat[Running times of training a second layer sconvRBM with 8, 16, and 32
 channels (stride size 1).] {
 \label{fig:run_oasis_l2}
-\includegraphics{figures/NECO-03-14-2099-Figure-5}
+\includegraphics{figures/runtime_oasis_c8-32}
+%\includegraphics{figures/NECO-03-14-2099-Figure-5}
 %\input{r_figures/runtime_oasis_c8-32_bw}
 }
 \caption[Comparison of running times for training a sconvRBMs on 3D
@@ -735,15 +739,15 @@ Experiment & \#Channels & Image size & Filter size & Filter count & Batch size
 \midrule
 %\multirow{2}*{\minitab[c]{Varying\\ image size}} 
 Varying & $2$  & $16^3, 17^3, \dotsc, 128^3$ & $9^3$ & $32$ & $8$ \\
-image size & $32$ & $10^3, 11^3, \dotsc, 64^3$  & $9^3$ & $32$ & $8$ \\
+image sizes & $32$ & $10^3, 11^3, \dotsc, 64^3$  & $9^3$ & $32$ & $8$ \\
 \addlinespace
 %\multirow{2}*{\minitab[c]{Varying\\ batch size}}
 Varying & $2$  & $128^3$ & $9^3$ & $32$ & $1, 2, 4, 8$ \\
-batch size & $32$ & $64^3$  & $9^3$ & $32$ & $1, 2, 4, 8$ \\
+batch sizes & $32$ & $64^3$  & $9^3$ & $32$ & $1, 2, 4, 8$ \\
 \addlinespace
 %\multirow{2}*{\minitab[c]{Varying\\ filter size}}
 Varying & $2$  & $128^3$ & $1^3, 2^3, \dotsc, 9^3$ & $32$ & $8$ \\
-filter size & $32$ & $64^3$  & $1^3, 2^3, \dotsc, 9^3$ & $32$ & $8$ \\
+filter sizes & $32$ & $64^3$  & $1^3, 2^3, \dotsc, 9^3$ & $32$ & $8$ \\
 \bottomrule
 \end{tabular}
 \end{table} 
@@ -796,7 +800,7 @@ required to achieve consistently high performance.
 
 \begin{figure}
 \centering
-\includegraphics[width=0.95\textwidth]{figures/imagesize2}
+\includegraphics[width=0.95\textwidth]{figures/imagesize}
 \caption[Comparison of running times of key operations for training a single
 CNN layer.]{Comparison of running times of key operations for training a single
 CNN layer for varying number of channels and input sizes. Frequency domain
@@ -926,15 +930,16 @@ layers we excluded.}
 & & {Freq} & {cuDNN} &  \\
 \midrule
 \multirow{5}*{\minitab[l]{$7$-layer CEN\\ used for lesion\\ segmentation}}
-& first convolutional layer & 0.076582 & 0.498335 & 6.5072 \\
-& second convolutional layer & 0.0519153 & 0.523849 & 10.0904 \\
-& first deconvolutional layer & 0.0519153 & 0.523849 & 10.0904 \\
-& second deconvolutional layer & 0.1477196 & 0.51716 & 3.500957 \\
-& total & 0.3281322 & 2.063193 & 6.28768831587 \\[0.5em]
+& 1st convolutional layer & 0.076582 & 0.498335 & 6.5072 \\
+& 2nd convolutional layer & 0.0519153 & 0.523849 & 10.0904 \\
+& 1st deconvolutional layer & 0.0519153 & 0.523849 & 10.0904 \\
+& 2nd deconvolutional layer & 0.1477196 & 0.51716 & 3.500957 \\[0.5em]
+& total & 0.3281322 & 2.063193 & 6.28768831587 \\
+\midrule
 \multirow{4}*{\minitab[l]{First sconvRBM of \\ the lesion DBN}}
 & direct calculation of strided convolutions & 0.0755562 & 0.0683263 &
 0.90431096323 \\
-& mapped strided convolutions to stride-1 convolutions & 0.0186432 & 0.0705788 &
+& strided convolutions mapped to stride-1 convolutions & 0.0186432 & 0.0705788 &
 3.78576639204 \\
 \bottomrule
 \end{tabular}
@@ -958,3 +963,9 @@ required to calculate convolutions using our method with cuDNN, the current
 state-of-the-art library for calculating 2D and 3D convolutions, with the
 results showing that our method can calculate convolutions up to 20 times faster
 than cuDNN.
+
+% TODO: emphasize the key features compared to other FD implementations
+% Only efficient when flipping can be expressed in the frequency domain
+% otherwise either store flipped and non-flipped versions, which increases
+% the amount of required memory, or requires flipped in spatial domain, which
+% adds FFT calculations, or do it in batch-mode, which also increases memory

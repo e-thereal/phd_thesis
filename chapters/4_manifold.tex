@@ -1,4 +1,4 @@
-\chapter{Manifold Learning for Biomarker Discovery using Deep Learning}
+\chapter{Manifold Learning by Deep Learning}
 \label{sec:manifold}
 
 \section{Introduction}
@@ -8,59 +8,278 @@
 % review of what has been done. This includes manifold learning, population
 % studies, disease classification and the likes without deep learning.
 
-The need for manifold learning often arises when very high-dimensional data
-needs to be analyzed but the intrinsic dimensionality of the data is much lower.
-This situations occurs, for example, when trying to visualize variability and
-common patterns in a given group of magnetic resonance images (MRIs) of the
-brain. Each image can be regarded as a point in a high-dimensional image space
-(called the ambient space), with $n_x \times n_y \times n_z$ coordinates, where
-$n_x, n_y, n_z$ are the dimensions of each image. On the other hand, each image
-could also be identified by a smaller set of parameters that describe shape
-variations and patterns that are common for a particular group of images. These
-parameters span a new space called the manifold space. The task of manifold
-learning is to discover the low-dimensional space and its parameters which can
-then be used to model the anatomical variability within a population.
+\begin{comment}
 
-In this chapter, we will use manifold learning to detect patterns of variability
-in groups of images. Variability is captured in terms of the coordinates in
-manifold space, which can be used as imaging biomarkers for assessing the
-disease state or for classification into different subtypes. In this chapter, we
-propose using a deep learning model called a deep belief network for learning
-the manifold of medical images. The potential of deep learning for manifold
-learning was evaluated on images of AD patients and MS patients.
+What is manifold learning?
 
-\section{Related Work}
+Why are we doing it?
+
+
+\end{comment}
+
+% In this chapter, we will use manifold learning to detect patterns of variability
+% in groups of images. Variability is captured in terms of the coordinates in
+% manifold space, which can be used as imaging biomarkers for assessing the
+% disease state or for classification into different subtypes. In this chapter, we
+% propose using a deep learning model called a deep belief network for learning
+% the manifold of medical images. The potential of deep learning for manifold
+% learning was evaluated on images of AD patients and MS patients.
+
+Changes in brain morphology such as global and regional atrophy and the
+formation of white matter lesions are two hallmarks of MS pathology. In order to
+quantify the pathological manifestation of MS, a number of imaging biomarkers,
+such as lesion volume and whole brain volume, have been proposed, which have
+established their importance for the study of MS. However, MS is a complex
+disease whose pathological variability extends well beyond what can be captured
+by global and local volumetric measures. It would be highly desirable to have a
+method that can automatically discover potentially important patterns of
+variability in brain morphology and lesion distribution, which would advance our
+understanding of the complex pathology of MS. In addition, the joint modeling of
+brain morphology and lesion distribution would further our knowledge of how
+these two key pathological features interact. However, this type of modeling is
+very challenging due to the high dimensionality of the data.
+
+In recent years, there has been an increased interest in biomarker discovery
+using manifold learning to form high-level, low-dimensional representations of
+medical images \citep{wolz2010b,aljabar2011,wolz2012}. In order to discover
+common patterns of variability in a group of images, each image of the data set
+is regarded as a point in a high-dimensional image space (called the ambient
+space), with $n_x \times n_y \times n_z$ coordinates, where $n_x, n_y, n_z$ are
+the dimensions of each image. On the other hand, each image could also be
+identified by a smaller set of parameters that describe shape variations and
+patterns that are common for a particular group of images. These parameters span
+a new space called the manifold space. The task of manifold learning is to
+discover the low-dimensional space and its parameters, which can then be used to
+model the anatomical variability within a population, or serve as biomarkers to
+track disease state and progression.
+
+In the remainder of this section, we will briefly revise common manifold
+learning techniques and applications for medical image analysis. A main part of
+the chapter will be an explanation of the deep learning manifold learning
+framework using a deep belief network. We have evaluated the proposed manifold
+learning method on two tasks: a) to learn the variability of MR images of the
+brain of AD patients, and b) to discover patterns of morphological variability
+and lesion distribution in MS.
+
+\section{Manifold Learning of Medical Image Analysis}
 
 % TODO: Extend review
+% REWORD: The objective of local methods is to find an embedding that preserves
+% ...
 
-Various methods for manifold learning have been proposed (e.g., locally linear
-embedding (LLE) \citep{saul2003}, Laplacian eigenmaps (LEM) \citep{belkin2002},
-Isomaps \citep{tenenbaum2000}), with Isomaps and LEM being the most popular for
-medical image analysis. Both methods require a prebuild proximity graph. In
-order to build the proximity graph, it is assumed that the manifold space is
-locally linear, which means that distances between neighboring points in
-manifold space can be approximated by their distances in ambient space. Gerber
-et. al. have shown that the choice of a suitable distance measure is crucial for
-manifold learning using Isomaps and that the warping distance between brain
-images improves the learning performance over previously used Euclidean
-distances in the image space \citep{gerber2010}.
+Most popular manifold learning methods for medical image analysis can be roughly
+divided into local and global methods \citep{cayton2005}. Local algorithms such
+as locally linear embedding (LLE) \citep{saul2003} and Laplacian eigenmaps (LEM)
+\citep{belkin2002} try to find a low dimensional representation of the data such
+that local distances between points in ambient space are best preserved when
+mapped to manifold space. In contrast, global methods such as Isomaps
+\citep{tenenbaum2000} try to find an embedding of the manifold space that best
+preserves geodesic distances of points that lie far apart in ambient space. Both
+types of methods require building a proximity graph that is used to capture
+neighborhood information (local methods) or to estimate geodesic distances by
+calculating the shortest path distances between all points on the affinity graph
+(global methods). Both types of methods assume that the manifold is locally
+linear, which means that distances between neighboring points in manifold space
+can be approximated by their distances in ambient space. Once the proximity
+graph has been created, a unique solution to the inherent optimization problem
+of each algorithm can be found analytically by solving an eigenvalue problem.
 
-Manifolds have been used to regularize the segmentation of brain
+
+
+\begin{comment}
+
+Applications:
+- regularize segmentation of the heart ventricles
+- regularize segmentation of the brain ventricles
+- constrain registration
+- clinical predictions
+- biomarker discovery
+- atlas propagation for the segmentation of the hippocampus
+- discriminate between normal and abnormal motion patterns of the heart
+- feature extraction
+- similarity measure for images -> prediction of AD
+- classification of Alzheimer's disease
+- extract features representing inter-subject variability
+
+\end{comment}
+
+Manifold learning methods have been successfully applied to various image
+analysis problems such as the segmentation of the hippocampus \citep{wolz2010},
+to regularize the segmentation of heart \citep{zhang2006} and brain
 ventricles~\citep{etyngier2007}, and to constrain the deformable registration of
-brain images to have biologically plausible parameters \citep{hamm2010}. Gerber
-et al. used Isomaps to predict clinical parameters of Alzheimers's (AD) patients
-\citep{gerber2010}, and Wolz et al. used Laplacian eigenmaps to perform
-biomarker discovery \citep{wolz2011}, also of AD patients, and atlas propagation
-for the segmentation of the hippocampus \citep{wolz2010}.
+brain images to have biologically plausible parameters \citep{hamm2010}, while
+most methods focus on clinical prediction
+\citep{gerber2010,wolz2012,duchateau2012,aljabar2011,wachinger2015,bhatia2012,
+guerrero2014}. Gerber et al. used Isomaps to predict clinical parameters of
+Alzheimers's (AD) patients \citep{gerber2009,gerber2010}, and Wolz et al. used
+LEM to perform biomarker discovery \citep{wolz2011,wolz2012}, also of AD
+patients. \citet{duchateau2011,duchateau2012} discriminate between normal and
+abnormal motion patterns of the heart based on the definition of pathology as a
+deviation from normality. As the first step, a manifold representing normal
+motion patterns was learned. Abnormal motion patterns can then be detected based
+on the distance of a new data sample from the manifold surface.
+% \citet{aljabar2010,aljabar2011} proposed a method for the joint modeling of
+% multiple image features of neonatal brains. First, separate manifolds based on
+% features from geometric surface models, non-rigid deformations, and image
+% intensities are learned, then a second dimensionality reduction step is used
+% to combine the individual manifold parameters.
+\citet{wachinger2015} proposed a new shape descriptor of the brain called
+BrainPrint which is build by solving the eigenvalue problem of the 2D and 3D
+Laplace-Beltrami operator on meshes of segmented cortical and subcortical
+structures. The descriptor defines a similarity measure on brain images, which
+can be used to perform subject identification \citep{wachinger2014a}, and to
+predict Alzheimer's disease \citep{wachinger2014b}.
+\citet{bhatia2012} model regional variations of the brain by building a manifold
+on hierarchical image patches and applied it to finding discriminative regions
+of 3D brain MRIs for classifying Alzheimer's disease.
+\citet{guerrero2014} have used manifold learning on regions of interest to
+extract features that represent inter-subject variability of AD patients.
+In a first step, sparse regression is used to automatically detect the ROI using
+mini-mental state examination (MMSE) scores as the independent variable. Then,
+LEM with cross-correlation as the distance measure is used to learn the manifold
+of the ROIs, from which the features are extracted.
 
-\section{Manifold of AD Patients}
+A main challenge of most manifold learning methods (e.g., Isomaps, LEM, LLE) is
+the construction of the proximity graph. Building the proximity graph requires
+choosing an appropriate neighborhood criterion, which can be challenging due to
+the sensitivity to noise of commonly used criteria (e.g., $k$-nearest neighbors,
+$\epsilon$-ball), and, consequently, may result in an unstable topology of the
+learned manifold \citep{balasubramanian2002}. Other challenges include avoiding
+erroneously disconnected regions and short cuts, finding a trade-off between
+sampling density and curvature of local patches of the manifold, and finding a
+suitable distance metric. A number of solutions have been proposed, but there is
+no general solution. To increase the robustness to noise and varying parameter
+settings, \citet{carreira2005} proposed building the graph from a graph ensemble
+that combines multiple spanning trees, each fit to a perturbed version of the
+data set. A trade-off between sampling density and curvature of local patches of
+the manifold can be found automatically by adapting the selection of the
+neighborhood sizes through neighborhood contraction and expansion
+\citep{zhang2012}. \citet{gerber2010} have shown that the choice of a suitable
+distance measure is crucial for manifold learning using Isomaps and that the
+warping distance between brain images improves the learning performance over
+previously used Euclidean distances in the image space.
+
+\section{Manifold Learning using Deep Belief Networks}
+
+Deep generative models such as deep belief networks are a promising alternative
+to previously used brain manifold learning methods due to their ability to
+discover patterns of similarity in groups of images. In contrast to most
+commonly used manifold learning algorithms (e.g., LLE, LEM, Isomaps), DBNs do
+not assume the manifold space to be locally linear and do not require a
+previously defined similarity measure or the construction of a proximity graph,
+which makes them more generally applicable to a wide range of manifold learning
+tasks. This is particularly important for the application to brain manifold
+learning, because the high-dimensionality of brain MRIs make defining a
+neighborhood criterion challenging due to the curse of dimensionality. DBNs have
+been used for many different tasks where the choice of an appropriate
+architecture is crucial for the success. In this section, we will explain the
+choices we made in designing the overall manifold learning framework. Particular
+parameter choices are explained along with two applications.
+
+\subsection{General Architecture}
+
+The general architecture of the DBN used for manifold learning of brain MRIs is
+illustrated in \ref{fig:manidbn}. The first RBM receives the intensity values of
+a group of images in ambient space as input and reduces the dimensionality of
+each image by discovering patterns of similarity that are common within groups
+of images. Subsequent RBMs receive the hidden unit activations of the previous
+RBM as input, thus learning successively more complex and abstract patterns from
+a training set, where the hidden units of the last layer represent the
+coordinates of an image an manifold space. The number of trainable weights
+increases significantly with the resolution of the training images. In order to
+scale the model to high-resolution images, the first several layers of our DBN
+are sconvRBMs, a type of RBM that uses weight sharing and local connectivity
+between units of adjacent layers to reduce the number of trainable weights. Due
+to the much smaller number of trainable parameters compared to dense RBMs,
+sconvRBMs are best suited for learning low- to mid-level features from very
+high-dimensional data such as brain MRIs. Compared to other more commonly used
+convolution-based RBMs \cite{lee2009}, an advantage of sconvRBMs is that
+inference is invertible, which allows the reconstruction of the visible units
+from the hidden unit activations. In our application, this allows for the
+mapping of parameters from the manifold space back to the ambient space.
+SconvRBMs learn local patterns in the data. In order to learn pattern that
+describe images as a whole, sconvRBM layers are followed by dense RBMs, which
+take all hidden units of the previous layer as input.
+
+\begin{figure}
+\centering
+\input{tikzfigures/manifold_dbn}
+
+\caption{General architecture of the DBN used to learn the manifold of brain
+MRIs. The visible units of the DBN represent the intensity values of images in
+ambient space. The hidden units of the last layer represent the image
+coordinates in manifold space ($M_1, M_2$). The first several layers of the DBN
+are sconvRBMs followed by one or more dense RBM layers.}
+
+\label{fig:manidbn}
+\end{figure}
+
+\subsection{Unit Types}
+
+To apply the model to real-valued data like the intensities of some medical
+images, the visible units are modeled as Gaussian units. As suggested in the RBM
+training guide, we did not learn the variance of the Gaussian units and
+standardized the inputs to having zero mean and unit variance instead. There are
+two typical choices for the hidden units of an RBM, binary hidden units and
+noise rectified hidden units. A binary hidden unit can only encode two states.
+In order to learn a range of patterns, we use noisy rectified linear units as
+the hidden units, which has shown to improve the learning
+performance~\cite{nair2010} of RBMs.
+
+\subsection{Incorporating a Region of Interest}
+
+Large black regions without local structure can lead to random activations of
+the hidden units and consequently the learning of random filters. To overcome
+this problem, we propose to incorporate a region of interest (ROI) term into the
+energy equation of the convRBM, which allows constraining the filter learning
+process to a given ROI. This can be achieved by the element-wise multiplication
+of the visible and hidden units with a binary mask, which sets the visible and
+hidden units outside of the ROI to zero, thereby removing their contribution to
+the energy of the model. The modified energy of the model is given by
+\begin{align} 
+\nonumber
+E(\vect{v},\vect{h}, \vect{r}_\text{v}, \vect{r}_\text{h}) =
+&-\sum_{i=1}^{N_\text{c}} \sum_{j=1}^{N_\text{k}}
+(\vect{r}_\text{h} \cdot \vect{h}^{(j)}) \bullet
+(\tilde{\vect{w}}^{(ij)} * (\vect{r}_\text{v} \cdot \vect{v}^{(i)}))\\
+&- \sum_{i=1}^{N_\text{c}}b_i\sum_{x,y = 1}^{N_\text{v}}%
+\!\vect{r}_{\text{v},xy}v_{xy}^{(i)}
+- \sum_{j=1}^{N_\text{k}}c_j\sum_{x,y = 1}^{N_\text{h}}%
+\!\vect{r}_{\text{h},xy}h_{xy}^{(j)},
+\end{align}
+where $\vect{r}_\text{v}$ and $\vect{r}_\text{h}$ are binary masks defining the
+ROI with respect to the visible and hidden units, and $\cdot$ denotes
+element-wise multiplication. Because sconvRBMs can be mapped to equivalent
+convRBMs, we can use the same modification to restrict the learning of filters
+of sconvRBMs.
+
+% TODO: (Optional) add modified equations for inference
+
+% TODO: first row of joint DBN
+
+% A major constraint for designing a DBN for manifold learning is the amount of
+% memory required for storing the hidden units. Although the application of
+% strided convolutions as part of the sconvRBM decreases the size of a single
+% channel, filtering in the first sconvRBM increases the number of channels due to
+% the application of multiple filters. Choosing a stride size of 4 reduces the
+% amount of memory required for storing one channel by 32, which allows the use of
+% 32 filters without requiring more memory to store the hidden units. For
+% subsequent layers, we chose a stride size of 2, which roughly halves the size of
+% each dimension of a channel. We choose a smaller stride size in the
+% $z$-dimension to roughly compensate of the anisotropic voxel size of the images
+% used in our experiments.
+
+% TODO: shorten it a bit and give more intuition behind it, why do we model it
+% like this?
+
+\section{Manifold of MRIs of Alzheimer's Disease Patients}
 
 % Motivation and short overview of the method and why use this one and not
 % alternatives. What data was used? Applied to RAW MRI images without much
 % preprocessing.
 
 In this paper, we propose a novel approach for learning the manifold of brain
-images that uses a deep belief network (DBN) \cite{Hinton2006b} to discover
+images that uses a deep belief network (DBN) \citep{hinton2006b} to discover
 patterns of similarity in groups of images. In contrast to previous
 brain manifold learning algorithms, DBNs do not assume the manifold
 space to be locally linear and do not require a previously defined similarity
@@ -75,7 +294,26 @@ Contribution is the demonstration that DBNs can learn a low-dimensional manifold
 of brain volumes that detects modes of variation that correlate to demographic
 and disease parameters.
 
+\subsection{Data sets and Pre-processing}
+
+We have evaluated the proposed method on a subset of the ADNI dataset
+\cite{petersen2010}, containing 300 T1-weighted MRIs of Alzheimer's disease (AD)
+and normal subjects. The images were provided skull-stripped and bias field
+corrected. We resampled all images to a resolution of \num{128x128x128} voxels
+and a voxel size of \SI{2.0x2.0x2.0}{\milli\meter}. We then normalized their
+intensities to a common range, and rigidly registered them to a group-wise mean
+image prior to training and testing. We did not perform non-rigid registration
+for spatial normalization in order to evaluate the capabilities of the method
+without the added confound of complex registration parameters. The dataset was
+divided into a training set and a test set such that each set contains 75 AD and
+75 normal subjects.
+
 \subsection{Method}
+
+To learn the manifold of brain MRIs, we used a DBN with
+three convRBM layers and two RBM layers. After three convRBMs, the dimension of
+each image is reduced to \num{8x8x8} and small enough for RBMs. The training of
+the DBN took approximately 43 hours on two GeForce GTX 560 Ti graphics cards.
 
 % Explain the method in more detail. Also what tools where used for the
 % experiments and stuff. How was the DBN designed and why.
@@ -85,92 +323,9 @@ and disease parameters.
 % convolutional RBM for dimensionality reduction
 
 % TODO: Fuse this with the rest of the text. Look at MICCAI 2014 to know how.
+% TODO: explain parameter choices
 
-We have evaluated the proposed method on a subset of the ADNI dataset
-\cite{Petersen2010}, containing 300 T1-weighted MRIs of Alzheimer's disease (AD)
-and normal subjects. The images were provided skull-stripped and bias field
-corrected. We resampled all images to a resolution of \num{128x128x128} voxels
-and a voxel size of \SI{2.0x2.0x2.0}{\milli\meter}. We then normalized their
-intensities to a common range, and rigidly registered them to a group-wise mean
-image prior to training and testing. We did not perform non-rigid registration
-for spatial normalization in order to evaluate the capabilities of the method
-without the added confound of complex registration parameters. The dataset was
-divided into a training set and a test set such that each set contains 75 AD and
-75 normal subjects. To learn the manifold of brain MRIs, we used a DBN with
-three convRBM layers and two RBM layers. After three convRBMs, the dimension of
-each image is reduced to \num{8x8x8} and small enough for RBMs. The training of
-the DBN took approximately 43 hours on two GeForce GTX 560 Ti graphics cards.
-
-Our proposed method performs manifold learning by reducing the dimensionality of
-the input images using a DBN, a deep generative model that is composed of
-multiple restricted Boltzmann machines (RBMs)~\cite{Hinton2006b} as illustrated
-by the simplified example in Fig.~\ref{fig:rbmscheme}.
-% TODO: No simplified model. The real model is needed.
-An RBM is a Markov random
-field with trainable weights whose nodes are divided into a visible layer
-$\vect{v}$ representing the inputs of the model and a hidden layer $\vect{h}$
-representing extracted features from the inputs. The first RBM receives the
-intensity values of a group of images as input and reduces the dimensionality of
-each image by discovering patterns of similarity that are common within groups
-of images. Subsequent RBMs receive the hidden unit activations of the previous
-RBM as input, thus learning successively more complex and abstract patterns from
-a training set. The number of trainable weights increases significantly with the
-resolution of the training images. In order to scale the model to
-high-resolution images, the first several layers of our DBN are convolutional
-RBMs (convRBMs), a type of RBM that uses weight sharing to reduce the number of
-trainable weights, albeit at the cost of using the much more computationally
-expensive convolutions instead of multiplications. In the remainder of this
-section, we will briefly review the training of convRBMs, followed by a
-description of our novel training algorithm that performs parameter learning in
-frequency domain. For comprehensive introductions to RBMs and convRBMs, the
-reader is referred to \cite{Hinton2006b} and \cite{Lee2011}, respectively.
-
-Our algorithm for the dimensionality reduction of an input image using a
-convRBM is illustrated in Fig.~\ref{fig:convrbm}. In contrast to previous work
-that uses max pooling to reduce the dimensionality \cite{Lee2011}, all steps
-involved in our method are invertible, which allows the reconstruction of
-images from their manifold coordinates. In the first step, the pixels of an
-input image are reorganized into multiple images of lower resolution in order to
-reduce the dimensionality of a single image. The number of images in the image
-vector is then reduced with the following steps.
-To apply the model to real-valued data like the intensities of some medical
-images, the visible units are modeled as Gaussian units. When the visible units have
-been mean centered and standardized to unit variance, the expectation of the
-visible units is given by
-\begin{equation} 
-\E[v_i \given \vect{h}] = \textstyle\sum_j w_{ij}*h_j + b_i
-\label{eq:convvis}
-\end{equation}
-where $v_i, h_j, b_i \in \R^{N \times N \times N}$, $b_i$ are bias terms, $N$ is
-the image size, $w_{ij} \in \R^{N_w \times N_w \times N_w}$ are the weights,
-$N_w$ is the size of a weight kernel, and $*$ denotes circular convolution.
-A binary hidden unit can only encode two states. In order to increase the
-expressive power of the hidden units, we use noisy rectified
-linear units as the hidden units,
-which has shown to improve the learning performance~\cite{Nair2010} of RBMs.
-The
-hidden units can be sampled with
-\begin{equation} 
-h_j \sim \max(0, \mu_j + \Norm(0, \sigm(\mu_j)))
-\label{eq:convhid}
-\end{equation} 
-where $\mu_j = \textstyle\sum_i\tilde{w}_{ij}*v_i +c_j$, $c_j \in \R^{N \times
-N \times N}$, $\tilde{w}$ denotes a flipped version of $w$ in all three
-dimensions, $\Norm(0, \sigma^2)$ denotes Gaussian noise, and $\sigm(x)$ is the
-sigmoid function defined as $\sigm(x) = (1+ \exp(-x))^{-1}, x \in \R$. The
-weights and bias terms of a convRBM can be learned using contrastive
-divergence (CD) \cite{Hinton2006b}. During each iteration of the algorithm, the
-gradient of the parameters is estimated and a gradient step with a fixed
-learning rate is performed. The gradient of the weights can be approximated by:
-\begin{equation}
-\Delta w_{ij} = v_i*\tilde{h}_j - v_i'*\tilde{h}_j'
-\label{eq:convgra}
-\end{equation}
-where $h_j$ and $h_j'$ are samples drawn from $p(h_j \given \vect{v})$ and
-$p(h_j \given \vect{v}')$ using \eqref{eq:convhid} and $v_i' = \E[v_i \given
-\vect{h}]$.
-
-\subsection{Evaluation}
+\subsection{Results}
 
 The geometric fit of the learned manifold model was evaluated in terms of the
 generalizability to new images and the specificity to images from the training
@@ -206,9 +361,9 @@ both generalizable and specific.}
 \label{fig:genspe}
 \end{figure}
 
-\begin{figure}[tb]
+\begin{figure}[tb!]
 \centering
-\includegraphics[width=0.3\textwidth, trim=0 -4em 0 0]
+\includegraphics[width=0.5\textwidth, trim=0 0em 0 0]
   {figures/MICCAI2013_sampled2d}
 
 \caption[Axial slices from generated volumes from the manifold]{Axial slices
@@ -217,7 +372,7 @@ brain and ventricle size, respectively.}
 \label{fig:generated}
 \end{figure}
 
-Figure~\ref{fig:generated} shows axial slices of 16 volumes sampled at the
+\ref{fig:generated} shows axial slices of 16 volumes sampled at the
 grid points of a 2D regular grid in manifold space. Volumes sampled along the
 first manifold dimension (from left to right) appear to increase in brain size,
 and the images sampled along the second manifold dimension (from bottom to top)
@@ -230,8 +385,8 @@ The AD/normal status is indicated by the frame color of each image. The vertical
 separation between AD and normals suggests that the second manifold coordinate is
 potentially of practical use in differentiating between AD and normal.
 
-\begin{figure}[tb] \centering
-\includegraphics[width=0.75\textwidth]{figures/MICCAI2013_scatter3}
+\begin{figure}[tb!] \centering
+\includegraphics[width=0.95\textwidth]{figures/MICCAI2013_scatter3}
 \caption[Axial slices of volumes from the training set plotted against their
 manifold coordinates]{Axial slices of volumes from the training set plotted
 against their manifold coordinates. The brains with larger ventricles, indicative of atrophy,
@@ -295,42 +450,9 @@ $x_2$ &
 
 \section{Variability of Morphology and Lesion Distribution}
 
-Multiple sclerosis (MS) is an inflammatory and degenerative disease of the
-central nervous system with pathology that can be observed in vivo by magnetic
-resonance imaging (MRI). MS is characterized by the formation of lesions,
-primarily visible in white matter on conventional MRI, and the death of nervous
-tissue leading to global and regional atrophy. A number of imaging biomarkers,
-such as lesion volume and whole brain volume, have established their importance
-for the study of MS. However, MS is a complex disease whose pathological
-variability extends well beyond what can be captured by global and local
-volumetric measures. Methods based on statistics of diffeomorphisms have been
-used to discover patterns of regional atrophy \cite{Ceccarelli2012}, but they
-are not designed to directly model morphological variability. It would be highly
-desirable to have a method that can automatically discover potentially important
-patterns of variability in brain morphology and lesion distribution, which would
-advance our understanding of the complex pathology of MS. In addition, the joint
-modeling of brain morphology and lesion distribution would further our knowledge
-of how these two key pathological features interact. However, this type of
-modeling is very challenging due to the high dimensionality of the data. In
-recent years, there has been an increased interest in biomarker discovery using
-manifold learning to form high-level representations of medical images
-\cite{Wolz2010b,AljabarRueckert2011,Wolz2012}. Manifold learning is motivated by
-the assumption that the space of brain images can be modeled to some
-approximation by a low-dimensional manifold. Various methods for manifold
-learning have been proposed (e.g., locally linear embedding (LLE), Laplacian
-eigenmaps (LEM), Isomaps) \cite{Cayton2005}, with Isomaps and LEM being the most
-popular for medical image analysis. Most such methods require a prebuilt
-proximity graph based on a selected distance measure, the choice of which can be
-crucial for manifold learning \cite{Gerber2010}. Aljabar et al. proposed a
-method \cite{AljabarRueckert2011} for the joint modeling of multiple image
-features of neonatal brains. First, separate manifolds based on features from
-geometric surface models, non-rigid deformations, and image intensities are
-learned, then a second dimensionality reduction step is used to combine the
-individual manifold parameters.
-
 We present a new method for modeling the variability in the morphology and
 lesion distribution of a large set of MRIs of MS patients. Our method is built
-using a deep belief network (DBN) \cite{Hinton2006b}, a layered network whose
+using a deep belief network (DBN) \cite{hinton2006b}, a layered network whose
 parameters can be learned from training images. An advantage of DBNs over other
 manifold learning methods is that it does not require a prebuilt proximity
 graph, which is particularly beneficial for modeling lesions, because the
@@ -342,7 +464,7 @@ lesion distribution parameters. We model morphological and lesion variability
 with two individual DBNs, then form a joint model by replacing the individual
 top network layers with a new layer that joins both DBNs, similarly to the work
 on the joint modeling of auditory and visual signals for speech recognition
-\cite{Ngiam2011}. Our results show that this model can automatically discover
+\cite{ngiam2011}. Our results show that this model can automatically discover
 the classic patterns of MS pathology, as well as more subtle ones, and that the
 distribution parameters computed are found to have strong relationships to MS
 clinical scores.
@@ -361,26 +483,26 @@ distribution patterns. The morphology model is learned from a set of
 displacement fields that are calculated via non-rigid registration from a set of
 T1-weighted (T1w) brain MRIs $D \subset I$, $I = \{I_n \mid I_n\colon\Omega
 \mapsto \R$\}, $\Omega \subset \R^3$ and the ICBM 152 nonlinear atlas template
-image \cite{Fonov2011}. First, all images of the training set are aligned to MNI
-space by a 9 degree-of-freedom registration using FLIRT \cite{Jenkinson2002}.
-Then for each image $I_n \in D$, the displacement field $u_n$, $u\colon \Omega
-\mapsto \R^3$, that describes the non-rigid transformation from template
-coordinates to image coordinates is calculated using FNIRT \cite{Andersson2007},
-where the displacement field $u_n$ is represented by a \num{40x48x22} grid of 3D
-displacement vectors. We assume that the displacement fields $u_n$ are samples
-from an unknown distribution $p(u \mid D_1, \dotsc)$ that can be parameterized
-by far fewer parameters than the dimensionality of the fields themselves. In
-practice, the user typically selects the number of parameters to represent the
-data being explored. The task of finding patterns is to discover the underlying
-probability density function $p(u \mid D_1, \dotsc)$, where the parameters
-$(D_1,\dotsc)^T$ represent the patterns of variability of the displacement field
-distribution. This allows us to compare the morphology of two brains at a very
-high level in terms of the distribution parameters of their displacement fields
-$u_1$ and $u_2$ given by $\E[D_1,\dotsc \mid u_1]$ and $\E[D_1,\dotsc \mid
-u_2]$. Furthermore, we can visualize the modes of morphological variability of
-MS brain images, by sampling the space of displacement fields spanned by $(D_1,
-\dotsc)^T$ by calculating the expectation $\E[u \mid D_1, \dotsc]$ for a range
-of values for $(D_1, \dotsc)^T$.
+image \citep{fonov2011}. First, all images of the training set are aligned to
+MNI space by a 9 degree-of-freedom registration using FLIRT
+\citep{jenkinson2002}. Then for each image $I_n \in D$, the displacement field
+$u_n$, $u\colon \Omega \mapsto \R^3$, that describes the non-rigid
+transformation from template coordinates to image coordinates is calculated
+using FNIRT \citep{andersson2007}, where the displacement field $u_n$ is
+represented by a \num{40x48x22} grid of 3D displacement vectors. We assume that
+the displacement fields $u_n$ are samples from an unknown distribution $p(u \mid
+D_1, \dotsc)$ that can be parameterized by far fewer parameters than the
+dimensionality of the fields themselves. In practice, the user typically selects
+the number of parameters to represent the data being explored. The task of
+finding patterns is to discover the underlying probability density function $p(u
+\mid D_1, \dotsc)$, where the parameters $(D_1,\dotsc)^T$ represent the patterns
+of variability of the displacement field distribution. This allows us to compare
+the morphology of two brains at a very high level in terms of the distribution
+parameters of their displacement fields $u_1$ and $u_2$ given by $\E[D_1,\dotsc
+\mid u_1]$ and $\E[D_1,\dotsc \mid u_2]$. Furthermore, we can visualize the
+modes of morphological variability of MS brain images, by sampling the space of
+displacement fields spanned by $(D_1, \dotsc)^T$ by calculating the expectation
+$\E[u \mid D_1, \dotsc]$ for a range of values for $(D_1, \dotsc)^T$.
 
 \begin{figure}[tb]
 \centering
@@ -389,7 +511,7 @@ of values for $(D_1, \dotsc)^T$.
 \end{figure}
 
 The probability density function $p(u)$ is modeled by a deep belief network
-(DBN) \cite{Hinton2006b}, a generative probabilistic graphical model consisting
+(DBN) \citep{hinton2006b}, a generative probabilistic graphical model consisting
 of one layer of observed random variables (visible units) and multiple layers of
 latent random variables (hidden units). In a DBN, each pair of adjacent layers
 of random variables form a restricted Boltzmann machine (RBM). The first RBM
@@ -446,19 +568,20 @@ by
 \end{align}
 where $i \in [1,4]$ and $\vect{h}_{\text{d},5} = (D_1,\dotsc)^T$.
 
-The input into our lesion model is a set of 3D binary lesion masks $l_n
-\in I$, which have been created from T2-weighted (T2w) and PD-weighted (PDw) MRIs by experts using a semi-automatic method. All lesion masks are spatially aligned to MNI space using
-the transformations as calculated for the corresponding T1w images. Analogous to
-the morphology model, we assume that lesion masks $l_n$ are samples from
-an unknown distribution $l_n \sim p(l \mid L_1, \dotsc)$ that can be
-parameterized by only relatively few parameters $(L_1, \dotsc)^T$. The task of finding lesion
-patterns is to discover the underlying probability density function $p(l \mid
-L_1, \dotsc)$, where the parameters $(L_1, \dotsc)^T$ represent patterns of
-variability of MS lesions. Similar to the morphology DBN, the lesion DBN
-consists of three sconvRBMs\footnote{The three sconvRBMs have stride sizes of
-\num{4x4x2}, \num{2x2x2}, \num{2x2x2}, filter sizes of \num{20x20x10},
-\num{14x14x10}, \num{10x14x6}, and 32, 64, 64 filters, respectively.} and two
-dense RBMs with 16 and 2 hidden units, respectively.
+The input into our lesion model is a set of 3D binary lesion masks $l_n \in I$,
+which have been created from T2-weighted (T2w) and PD-weighted (PDw) MRIs by
+experts using a semi-automatic method. All lesion masks are spatially aligned to
+MNI space using the transformations as calculated for the corresponding T1w
+images. Analogous to the morphology model, we assume that lesion masks $l_n$ are
+samples from an unknown distribution $l_n \sim p(l \mid L_1, \dotsc)$ that can
+be parameterized by only relatively few parameters $(L_1, \dotsc)^T$. The task
+of finding lesion patterns is to discover the underlying probability density
+function $p(l \mid L_1, \dotsc)$, where the parameters $(L_1, \dotsc)^T$
+represent patterns of variability of MS lesions. Similar to the morphology DBN,
+the lesion DBN consists of three sconvRBMs\footnote{The three sconvRBMs have
+stride sizes of \num{4x4x2}, \num{2x2x2}, \num{2x2x2}, filter sizes of
+\num{20x20x10}, \num{14x14x10}, \num{10x14x6}, and 32, 64, 64 filters,
+respectively.} and two dense RBMs with 16 and 2 hidden units, respectively.
 However, we modified the energy function of the sconvRBMs to account for the
 sparse activation of MS lesion masks. Large black regions without local
 structure can lead to random activations of the hidden units and consequently
@@ -471,10 +594,10 @@ ROI to zero, thereby removing their contribution to the energy of the model.
 The ROI was chosen to include all white matter lesions from the training set.
 Similarly to the morphology model, for a trained lesion DBN and a given lesion
 mask $l_n$, we can calculate the parameters $(L_1,\dotsc)^T$ of $l_n \sim
-p(l\mid L_1,\dotsc)$ in the same manner as in \eqref{eq:inferd} and
-\eqref{eq:inferv}. Likewise, the mean lesion configuration $\bar{l}$ given the
+p(l\mid L_1,\dotsc)$ in the same manner as in \ref{eq:inferd} and
+\ref{eq:inferv}. Likewise, the mean lesion configuration $\bar{l}$ given the
 distribution parameters $(L_1,\dotsc)^T$ can be calculated in the same manner as
-in \eqref{eq:inferu} and \eqref{eq:inferh}.
+in \ref{eq:inferu} and \ref{eq:inferh}.
 
 To discover concurring patterns of morphology and lesion distribution, we
 combine the morphology DBN and the lesion DBN to form the joint DBN, which
@@ -516,18 +639,18 @@ lesions in the entire white matter.
 
 \begin{figure}[tb]
 \newlength{\subfigwidth}
-\setlength{\subfigwidth}{0.232\textwidth}
+\setlength{\subfigwidth}{0.27\textwidth}
 \centering
 \subfloat[Morphology manifold] {
 \label{fig:deformations}
 \begin{tikzpicture}
-\tikzstyle{every node}+=[font=\scriptsize]
+\tikzstyle{every node}+=[font=\small]
 \node
 (manifold){\includegraphics[width=\subfigwidth]{figures/MICCAI2014_warps_t1_dark}};
 
-\draw[->] (manifold.south west)--node[below=4pt,inner sep=0] {$D_1$}
+\draw[->] (manifold.south west)--node[below=5pt,inner sep=0] {$D_1$}
 (manifold.south east);
-\draw[->] (manifold.south west)--node[above=4pt,sloped,inner sep=0] {$D_2$}
+\draw[->] (manifold.south west)--node[above=5pt,sloped,inner sep=0] {$D_2$}
 (manifold.north west);
 
 \end{tikzpicture}
@@ -535,12 +658,13 @@ lesions in the entire white matter.
 \subfloat[Lesion manifold] {
 \label{fig:lesions}
 \begin{tikzpicture}
-\tikzstyle{every node}+=[font=\scriptsize]
+\tikzstyle{every node}+=[font=\small]
 \node
 (manifold){\includegraphics[width=\subfigwidth]{figures/MICCAI2014_p442_d0_full_h16-2}};
 
-\draw[->] (manifold.south west)--node[below=4pt,inner sep=0] {$L_1$} (manifold.south east);
-\draw[->] (manifold.south west)--node[above=4pt,sloped,inner sep=0] {$L_2$}
+\draw[->] (manifold.south west)--node[below=5pt,inner sep=0] {$L_1$}
+(manifold.south east);
+\draw[->] (manifold.south west)--node[above=5pt,sloped,inner sep=0] {$L_2$}
 (manifold.north west);
 
 \end{tikzpicture}
@@ -548,7 +672,7 @@ lesions in the entire white matter.
 \subfloat[Joint manifold] {
 \label{fig:joint}
 \begin{tikzpicture}
-\tikzstyle{every node}+=[font=\scriptsize]
+\tikzstyle{every node}+=[font=\small]
 
 \node[align=left,fill=black,inner sep = 0pt] (manifold1) {
   \mbox{}\\[2pt]
@@ -560,10 +684,11 @@ lesions in the entire white matter.
 \node[fit=(manifold1)] (manifold) { };
 
 \foreach \x/\y in {0.125/1, 0.375/2, 0.625/3, 0.875/4} {
-  \node[left,inner sep=0pt] at ($(manifold.north west)!\x!(manifold.south
+  \node[left=1pt,inner sep=0pt] at ($(manifold.north west)!\x!(manifold.south
   west)$) {$J_\y$}; }
 
-\draw[->] (manifold.south west)--node[below=4pt,inner sep=0] {$J_x$} (manifold.south east);
+\draw[->] (manifold.south west)--node[below=5pt,inner sep=0] {$J_x$}
+(manifold.south east);
 
 \end{tikzpicture}
 } \caption[Slices from generated volumes from the morphology, lesion,
@@ -591,7 +716,7 @@ viewed sagittally, which reveals changes in lesion load in the pons.
 
 \begin{table}[tb]
 \centering 
-\small
+%\small
 
 \caption[Pearson correlations of clinical scores with distribution parameters
 and imaging biomarkers]{Pearson correlations $r$ of clinical scores with
@@ -688,7 +813,7 @@ better than the established imaging biomarkers.
 \includegraphics[width=0.47\textwidth]{figures/MICCAI2014_full_rl1_h4_MSFC_sag_nolesion}
 };
 \foreach \x/\y in {0.1/1.5, 0.3/0, 0.5/-1.5, 0.7/-3, 0.9/-4.5} {
-  \node[above=2pt] at ($(images.north west)!\x!(images.north east)$) {\y}; }
+  \node[above=2pt] at ($(images.north west)!\x!(images.north east)$) {$\y$}; }
 \end{tikzpicture}
 }
 \subfloat[Lesion changes] {
@@ -699,7 +824,7 @@ better than the established imaging biomarkers.
 \includegraphics[width=0.47\textwidth]{figures/MICCAI2014_full_rl1_h4_MSFC_sag}
 };
 \foreach \x/\y in {0.1/1.5, 0.3/0, 0.5/-1.5, 0.7/-3, 0.9/-4.5} {
-  \node[above=2pt] at ($(images.north west)!\x!(images.north east)$) {\y};
+  \node[above=2pt] at ($(images.north west)!\x!(images.north east)$) {$\y$};
 }
 \end{tikzpicture}
 }
