@@ -139,7 +139,9 @@ distance=8]125:Input image}] (field) at (2,2)
 
 \draw[shorten >=10pt,shorten <=10pt,dashed] (A240)--(v0.south west);
 \draw[shorten >=10pt,shorten <=10pt,dashed] (A240|-C240)--
-node[label=120:Vectorize\\ hidden units] {} (v8.north west);
+node[label=120:Vectorize] {} (v8.north west);
+
+\node[fit=(v0), pin={[pin distance=10pt]240:Vectorized\\hidden units}] {};
 
 \draw[decorate,decoration={brace,raise=4pt,mirror}]
 (A80) --node[below=8pt,fill=white] {%

@@ -1,9 +1,27 @@
 \usepackage{ifthen}
 
-% Charater sets, fonts and basics
 \usepackage{fixltx2e}
+% Charater sets, fonts and basics
+
+\usepackage{ifxetex}
+
+\ifxetex
+
+\usepackage{fontspec}
+\setsansfont[Scale=1,Mapping=tex-text,BoldFont={Optima-Bold},ItalicFont={Optima-Italic}]{Optima}
+
+\else
+
 \usepackage[latin1]{inputenc}
 \usepackage[T1]{fontenc}
+%\renewcommand*\sfdefault{uop}
+
+\fi
+
+%\usepackage[sc, osf]{mathpazo}
+\usepackage[sc]{mathpazo}
+\usepackage[scaled=.9]{luximono}
+\linespread{1.10}
 
 \usepackage[english]{babel}
 \usepackage[english=british]{csquotes}
@@ -12,12 +30,6 @@
     {Table of Contents}%
 }
 
-%\usepackage{lmodern}
-%\usepackage[sc, osf]{mathpazo}
-\usepackage[sc]{mathpazo}
-\renewcommand*\sfdefault{uop}
-\usepackage[scaled=.9]{luximono}
-\linespread{1.10}
 \usepackage{microtype}
 \makeatletter
 \def\MT@register@subst@font{\MT@exp@one@n\MT@in@clist\font@name\MT@font@list
@@ -97,7 +109,6 @@
 
 \usepackage{varioref}
 \usepackage[
-    pdftex,
 	pdfpagemode=UseOutlines,
 	pdfdisplaydoctitle=true,
 	pdflang=en,
@@ -224,7 +235,9 @@
 \automark{chapter}
 
 %\addtokomafont{section}{
-%{\tikzset{external/export=false}\tikz \fill[left color=primary-4,right color=white] (0,0) rectangle (\textwidth,1pt);}\\*}
+%{\tikzset{external/export=false}\tikz \fill[left color=blue!50,right
+%color=white] (0,0) rectangle (\textwidth,1pt);}\\*%
+%}
 \addtokomafont{dictumtext}{\normalfont\itshape}
 \addtokomafont{dictumauthor}{\normalfont}
 
@@ -243,7 +256,7 @@ colorinlistoftodos, shadow]{todonotes}
 \newcommand{\Z}{\ensuremath{\mathds{Z}}}
 \newcommand{\D}{\ensuremath{\mathds{D}}}
 \newcommand{\W}{\ensuremath{\mathds{W}}}
-\newcommand{\B}{\ensuremath{\mathds{B}}}
+%\newcommand{\B}{\ensuremath{\mathds{B}}}
 \newcommand{\Sn}{\ensuremath{\mathds{S}}}
 
 \newcommand{\thetas}{\boldsymbol{\theta}}

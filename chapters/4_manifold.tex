@@ -185,7 +185,7 @@ each image by discovering patterns of similarity that are common within groups
 of images. Subsequent RBMs receive the hidden unit activations of the previous
 RBM as input, thus learning successively more complex and abstract patterns from
 a training set, where the hidden units of the last layer represent the
-coordinates of an image an manifold space. The number of trainable weights
+coordinates of an image in manifold space. The number of trainable weights
 increases significantly with the resolution of the training images. In order to
 scale the model to high-resolution images, the first several layers of our DBN
 are sconvRBMs, a type of RBM that uses weight sharing and local connectivity
@@ -217,14 +217,14 @@ are sconvRBMs followed by one or more dense RBM layers.}
 \subsection{Unit Types}
 
 To apply the model to real-valued data like the intensities of some medical
-images, the visible units are modeled as Gaussian units. As suggested in the RBM
-training guide, we did not learn the variance of the Gaussian units and
-standardized the inputs to having zero mean and unit variance instead. There are
-two typical choices for the hidden units of an RBM, binary hidden units and
-noise rectified hidden units. A binary hidden unit can only encode two states.
-In order to learn a range of patterns, we use noisy rectified linear units as
-the hidden units, which has shown to improve the learning
-performance~\cite{nair2010} of RBMs.
+images, the visible units are modeled as Gaussian units. As suggested in Hinton
+et al.'s RBM training guide \citep{hinton2010a}, we did not learn the variance
+of the Gaussian units and standardized the inputs to having zero mean and unit
+variance instead. There are two typical choices for the hidden units of an RBM,
+binary hidden units and noise rectified hidden units. A binary hidden unit can
+only encode two states. In order to learn a range of patterns, we use noisy
+rectified linear units as the hidden units, which has shown to improve the
+learning performance~\cite{nair2010} of RBMs.
 
 \subsection{Incorporating a Region of Interest}
 
@@ -278,21 +278,20 @@ of sconvRBMs.
 % alternatives. What data was used? Applied to RAW MRI images without much
 % preprocessing.
 
-In this paper, we propose a novel approach for learning the manifold of brain
-images that uses a deep belief network (DBN) \citep{hinton2006b} to discover
-patterns of similarity in groups of images. In contrast to previous
-brain manifold learning algorithms, DBNs do not assume the manifold
-space to be locally linear and do not require a previously defined similarity
-measure or the construction of a proximity graph.
-\begin{itemize}
-\item DBNs mostly limited to 2D images, still the case?
-\item Our fast training method allows DBNs to be used for manifold learning of
-3D medical images
-\end{itemize}
-
-Contribution is the demonstration that DBNs can learn a low-dimensional manifold
-of brain volumes that detects modes of variation that correlate to demographic
-and disease parameters.
+In a first experiment, we applied our manifold learning framework using DBNs to
+the task of learning the manifold of brain MRIs of AD and healthy subjects. DBNs
+have shown to be able to learn the manifold of handwritten digits or small
+images (cite those paper, I'm looking at CIFR). However, those data sets contain
+large numbers of small images, where the number of images exceeds the number of
+pixels per image. For this experiment, we were interested if DBNs are able to
+learn the manifold of images without overfitting, when the number of voxels well
+exceeds the number of training case, as is commonly the case for medical
+applications. A second question was if DBNs can learn meaningful patterns
+despite the limited amount of training data. This paper is the first to show how
+training can be accelerated in order to train DBNs on full-resolution 3D medical
+images and that DBNs are able to learn a low-dimensional manifold of brain
+volumes that detects modes of variation that correlate to demographic and
+disease parameters.
 
 \subsection{Data sets and Pre-processing}
 
@@ -318,7 +317,7 @@ the DBN took approximately 43 hours on two GeForce GTX 560 Ti graphics cards.
 % Explain the method in more detail. Also what tools where used for the
 % experiments and stuff. How was the DBN designed and why.
 
-% TODO: Less math an more model. Maybe draw the entire model in a figure or at
+% TODO: Less math and more model. Maybe draw the entire model in a figure or at
 % least have a table with the parameters. Emphasise use of a strided
 % convolutional RBM for dimensionality reduction
 
@@ -376,7 +375,7 @@ brain and ventricle size, respectively.}
 grid points of a 2D regular grid in manifold space. Volumes sampled along the
 first manifold dimension (from left to right) appear to increase in brain size,
 and the images sampled along the second manifold dimension (from bottom to top)
-appear to increase in ventricle size. Figure~\ref{fig:scatter} shows an axial slice of
+appear to increase in ventricle size. \ref{fig:scatter} shows an axial slice of
 each image of the training set plotted against its manifold coordinates.
 Consistent with images sampled from the manifold, an increase in ventricle size,
 which is indicative of brain atrophy (a hallmark of AD), visually correlates
@@ -447,11 +446,10 @@ $x_2$ &
 \label{tab:corr}
 \end{table}
 
-
 \section{Variability of Morphology and Lesion Distribution}
 
-We present a new method for modeling the variability in the morphology and
-lesion distribution of a large set of MRIs of MS patients. Our method is built
+We present a new method for modeling the variability in brain morphology and
+lesion distribution in a large set of MRIs of MS patients. Our method is built
 using a deep belief network (DBN) \cite{hinton2006b}, a layered network whose
 parameters can be learned from training images. An advantage of DBNs over other
 manifold learning methods is that it does not require a prebuilt proximity
@@ -472,6 +470,15 @@ clinical scores.
 % Short overview. New data. Deformation fields directly and lesion masks for MS.
 % Motivation for that: correspondence but without eliminating variability in
 % morphology. Why use deep learning and not another method for that?
+
+\subsection{Data Sets and Pre-processing}
+
+The proposed method was evaluated on a dataset from an MS clinical trial of 474
+secondary progressive MS patients. For each subject, the dataset contains one
+T1w, T2w, and PDw MRI with a resolution of \num{256x256x50} voxels and a voxel
+size of \SI{0.937x0.937x3.000}{\milli\meter}. The main preprocessing steps
+included rigid registration, brain extraction, intensity normalization, and
+background cropping.
 
 \subsection{Method}
 
@@ -611,27 +618,18 @@ joint probability $p(\vect{v}_\text{j}, \vect{h}_\text{j} \mid
 \vect{h}_{\text{l},4}^T)^T$ and $\vect{h}_\text{j} = (J_1, \dotsc)^T$ are the
 modes of variability of morphological and lesion distribution changes.
 
-
-\subsection{Evaluation}
-
-The proposed method was evaluated on a dataset from an MS clinical trial of 474
-secondary progressive MS patients. For each subject, the dataset contains one
-T1w, T2w, and PDw MRI with a resolution of \num{256x256x50} voxels and a voxel
-size of \SI{0.937x0.937x3.000}{\milli\meter}. The main preprocessing steps
-included rigid registration, brain extraction, intensity normalization, and
-background cropping. We then trained the 3 DBN models as described in
-Sect.~\ref{sec:method}.
+\subsection{Results}
 
 The invertibility of our model allows the reconstruction of images from the
 distribution parameters to visualize the discovered patterns of variability.
-Figure~\ref{fig:deformations} shows axial slices from volumes generated from the
+\ref{fig:deformations} shows axial slices from volumes generated from the
 2-parameter morphology model $p(u \mid D_1, D_2)$. To generate these images, we
 calculated the mean displacement fields for varying values of $D_1$ and $D_2$
 to span the range of variability represented by the
 training set and applied the inverse deformations to the ICBM 152 template
 image. The most apparent morphological variability captured by the morphology
 model is ventricular enlargement for $D_1$ and overall brain size for $D_2$.
-Figure~\ref{fig:lesions} shows axial slices from the mean lesion configurations
+\ref{fig:lesions} shows axial slices from the mean lesion configurations
 $\E[l \mid L_1, L_2]$ for varying lesion distribution parameters. An increase of
 $L_2$ visually correlates with an increase of lesions specifically around the
 ventricles, whereas an increase of $L_1$ visually correlates with an increase of
@@ -704,7 +702,7 @@ of the variability found in the individual models.}
 
 To visualize concurring patterns of morphology and lesion distribution, we
 sampled images from the joint model $p(u, l \mid J_1, \dotsc, J_4)$ as shown in
-Fig.~\ref{fig:joint}. The images are deformed template images with superimposed
+\ref{fig:joint}. The images are deformed template images with superimposed
 lesion masks. For each row, we varied only one distribution parameter and set
 the remaining parameters to their mean values. Of the 4 parameters, $J_3$
 visually corresponds most closely to the ``classic'' progression of MS
