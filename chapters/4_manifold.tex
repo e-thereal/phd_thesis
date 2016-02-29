@@ -177,6 +177,7 @@ choices we made in designing the overall manifold learning framework. Particular
 parameter choices are explained along with two applications.
 
 \subsection{General Architecture}
+\label{sec:general_arch}
 
 The general architecture of the DBN used for manifold learning of brain MRIs is
 illustrated in \ref{fig:manidbn}. The first RBM receives the intensity values of
@@ -205,7 +206,8 @@ take all hidden units of the previous layer as input.
 \centering
 \input{tikzfigures/manifold_dbn}
 
-\caption{General architecture of the DBN used to learn the manifold of brain
+\caption[General architecture of the DBN used to learn the manifold of brain
+MRIs]{General architecture of the DBN used to learn the manifold of brain
 MRIs. The visible units of the DBN represent the intensity values of images in
 ambient space. The hidden units of the last layer represent the image
 coordinates in manifold space ($M_1, M_2$). The first several layers of the DBN
@@ -285,8 +287,8 @@ images (cite those paper, I'm looking at CIFR). However, those data sets contain
 large numbers of small images, where the number of images exceeds the number of
 pixels per image. For this experiment, we were interested if DBNs are able to
 learn the manifold of images without overfitting, when the number of voxels well
-exceeds the number of training case, as is commonly the case for medical
-applications. A second question was if DBNs can learn meaningful patterns
+exceeds the number of training samples, as is commonly the case for biomedical
+data sets. A second question was if DBNs can learn meaningful patterns
 despite the limited amount of training data. This paper is the first to show how
 training can be accelerated in order to train DBNs on full-resolution 3D medical
 images and that DBNs are able to learn a low-dimensional manifold of brain
@@ -296,8 +298,8 @@ disease parameters.
 \subsection{Data sets and Pre-processing}
 
 We have evaluated the proposed method on a subset of the ADNI dataset
-\cite{petersen2010}, containing 300 T1-weighted MRIs of Alzheimer's disease (AD)
-and normal subjects. The images were provided skull-stripped and bias field
+\citep{petersen2010}, containing 300 T1-weighted MRIs of Alzheimer's disease
+(AD) and normal subjects. The images were provided skull-stripped and bias field
 corrected. We resampled all images to a resolution of \num{128x128x128} voxels
 and a voxel size of \SI{2.0x2.0x2.0}{\milli\meter}. We then normalized their
 intensities to a common range, and rigidly registered them to a group-wise mean
@@ -309,22 +311,81 @@ divided into a training set and a test set such that each set contains 75 AD and
 
 \subsection{Method}
 
-To learn the manifold of brain MRIs, we used a DBN with
-three convRBM layers and two RBM layers. After three convRBMs, the dimension of
-each image is reduced to \num{8x8x8} and small enough for RBMs. The training of
-the DBN took approximately 43 hours on two GeForce GTX 560 Ti graphics cards.
+To learn the manifold of brain MRIs, we used a DBN with three convRBM layers and
+two RBM layers as described in \ref{sec:general_arch}. The parameters of the DBN
+were chosen to yield a continuous reduction of the dimensionality of the input
+images and are summarized in \ref{tab:adni_param}. For this experiment, we used
+circular convolutions instead of valid convolutions for the training of the
+sconvRBMs, which is a type of convolution that does not reduce the output size
+by the filter size. This simplifies the choice of parameters of the DBN, because
+the sizes of the hidden layers are independent of the filter sizes. For the
+first layer, we chose a stride size of \num{4x4x4} which results in a fast
+reduction of the dimensionality in order to reduce the amount of memory required
+to train the second layer. Increasing the stride size decreases the overlap
+filter kernels. To compensate, we also chose a larger filter size for the first
+layer than for all subsequent layers. After the application of three convRBMs,
+the dimension of each image is reduced to \num{8x8x8} and small enough for RBMs.
+The training of the DBN took approximately 43 hours on two GeForce GTX 560 Ti
+graphics cards.
 
 % Explain the method in more detail. Also what tools where used for the
 % experiments and stuff. How was the DBN designed and why.
 
-% TODO: Less math and more model. Maybe draw the entire model in a figure or at
-% least have a table with the parameters. Emphasise use of a strided
-% convolutional RBM for dimensionality reduction
-
 % TODO: Fuse this with the rest of the text. Look at MICCAI 2014 to know how.
-% TODO: explain parameter choices
+
+\begin{table}
+\centering
+\caption{Parameters of the DBN used to learn the manifold of brain MRIs of AD
+and healthy subjects.}
+\label{tab:adni_param}
+\small
+% \begin{tabular}{lccccc}
+% \toprule
+% Layer type & Kernel size & Stride size & \#Filters & Image size & \#Hidden
+% units \\
+% \midrule
+% Input      & --- & --- & --- & \num{128x128x128x1} & --- \\
+% sconvRBM1  & \num{20x20x20} & \num{4x4x4} & 32 & \num{32x32x32x32} & --- \\
+% sconvRBM1  & \num{14x14x14} & \num{2x2x2} & 32 & \num{16x16x16x32} & --- \\
+% sconvRBM1  & \num{10x10x10} & \num{2x2x2} & 64 & \num{8x8x8x64} & --- \\
+% \addlinespace
+% RBM1       & --- & --- & --- & --- & 32 \\
+% RBM2       & --- & --- & --- & --- & 2  \\
+% \bottomrule
+% \end{tabular}
+
+\begin{tabular}{lcccc}
+\toprule
+Layer type & Kernel size & Stride size & \#Filters/ & Output size \\
+           &             &             & \#Hidden units \\
+\midrule
+Input      & --- & --- & --- & \num{128x128x128x1} \\
+\addlinespace
+sconvRBM1  & \num{20x20x20x1}\phantom{0} & \num{4x4x4} & 32 & \num{32x32x32x32}
+\\
+sconvRBM1  & \num{14x14x14x32} & \num{2x2x2} & 32 & \num{16x16x16x32} \\
+sconvRBM1  & \num{10x10x10x32} & \num{2x2x2} & 64 & \num{8x8x8x64} \\
+%\addlinespace
+%Vectorize  & --- & --- & --- & \num{32768} \\
+\addlinespace
+RBM1       & --- & --- & 32 & \num{32} \\
+RBM2       & --- & --- & 2  & \num{2} \\
+\bottomrule
+\end{tabular}
+
+% \begin{tabular}{lcc}
+% \toprule
+% Layer type & \#Visible units & \#Hidden units \\
+% \midrule
+% RBM1       & 32768 & 32 \\
+% RBM2       & 32    & 2  \\
+% \bottomrule
+% \end{tabular}
+\end{table}
 
 \subsection{Results}
+
+\subsubsection{Geometric Fit of the Manifold}
 
 The geometric fit of the learned manifold model was evaluated in terms of the
 generalizability to new images and the specificity to images from the training
@@ -343,27 +404,40 @@ demonstrates the ability of the learned manifold to capture most of the visual
 information with only two manifold parameters. The opposite slopes of the
 reconstruction errors and error of generated images indicates a trade-off
 between generalizability and specificity in the earlier phases of training. The
-low errors at the end of training (Layer 5) indicates that the method is able to
+low errors at the end of training (layer 5) indicates that the method is able to
 be both specific and generalizable.
 
 \begin{figure}[tb]
 \centering
-  \input{figures/MICCAI2013_genspe}
+%\input{figures/MICCAI2013_genspe}
+\includegraphics[width=0.8\textwidth]{figures/genspe}
 
 \caption[Generalizability vs. specificity of a DBN for different numbers of
 layers]{Generalizability vs. specificity of a DBN for different numbers of
 layers. The similarity of the reconstruction errors between the training and
 test images indicates that no overfitting occurs. The opposite slopes of the reconstruction errors and error of generated images (specificity error)
 indicates a trade-off between generalizability vs. specificity in the earlier
-phases of training, but the low errors at Layer 5 indicate that the method is
+phases of training, but the low errors at layer 5 indicate that the method is
 both generalizable and specific.}
 \label{fig:genspe}
 \end{figure}
 
 \begin{figure}[tb!]
 \centering
-\includegraphics[width=0.5\textwidth, trim=0 0em 0 0]
-  {figures/MICCAI2013_sampled2d}
+% \includegraphics[width=0.5\textwidth, trim=0 0em 0 0]
+%   {figures/MICCAI2013_sampled2d}
+  
+\begin{tikzpicture}
+\tikzstyle{every node}+=[font=\small]
+\node[inner sep=6pt] (manifold)
+{\includegraphics[width=0.5\textwidth]{figures/MICCAI2013_sampled2d}};
+
+\draw[->] (manifold.south west)--node[below=5pt,inner sep=0] {$M_1$}
+(manifold.south east);
+\draw[->] (manifold.south west)--node[above=5pt,sloped,inner sep=0] {$M_2$}
+(manifold.north west);
+
+\end{tikzpicture}
 
 \caption[Axial slices from generated volumes from the manifold]{Axial slices
 from generated volumes from the manifold. An increase of the first and second manifold dimension visually correlates with an increase in
@@ -371,21 +445,23 @@ brain and ventricle size, respectively.}
 \label{fig:generated}
 \end{figure}
 
-\ref{fig:generated} shows axial slices of 16 volumes sampled at the
-grid points of a 2D regular grid in manifold space. Volumes sampled along the
-first manifold dimension (from left to right) appear to increase in brain size,
-and the images sampled along the second manifold dimension (from bottom to top)
-appear to increase in ventricle size. \ref{fig:scatter} shows an axial slice of
-each image of the training set plotted against its manifold coordinates.
+\subsubsection{Visualization of the Learned Manifold}
+
+\ref{fig:generated} shows axial slices of 16 volumes sampled at the grid points
+of a 2D regular grid in manifold space. Volumes sampled along the first manifold
+dimension (from left to right) appear to increase in brain size, and the images
+sampled along the second manifold dimension (from bottom to top) appear to
+increase in ventricle size. \ref{fig:scatter} shows an axial slice of each image
+of the training set plotted against its manifold coordinates.
 Consistent with images sampled from the manifold, an increase in ventricle size,
 which is indicative of brain atrophy (a hallmark of AD), visually correlates
-with an increase of the second manifold coordinate.
-The AD/normal status is indicated by the frame color of each image. The vertical
-separation between AD and normals suggests that the second manifold coordinate is
-potentially of practical use in differentiating between AD and normal.
+with an increase of the second manifold coordinate. The AD/normal status is
+indicated by the frame color of each image. The vertical separation between AD
+and normals suggests that the second manifold coordinate is potentially of
+practical use in differentiating between AD and normal.
 
 \begin{figure}[tb!] \centering
-\includegraphics[width=0.95\textwidth]{figures/MICCAI2013_scatter3}
+\includegraphics[width=\textwidth]{figures/scatterimage}
 \caption[Axial slices of volumes from the training set plotted against their
 manifold coordinates]{Axial slices of volumes from the training set plotted
 against their manifold coordinates. The brains with larger ventricles, indicative of atrophy,
@@ -393,14 +469,16 @@ are mostly at the top, which is also where most of the AD patients are.}
 \label{fig:scatter}
 \end{figure}
 
+\subsubsection{Correlations with Clinical Parameters}
+
 To evaluate the potential of the manifold coordinates to reveal or predict
 clinically relevant information, we have calculated the Pearson correlation $r$
 of demographic parameters (age, gender) and disease parameters (mini-mental
 state examination (MMSE) score, AD/normal status) with the manifold coordinates
-($x_1$ and $x_2$). The results of the correlation tests are summarized in
-Table~\ref{tab:corr}. Age, MMSE and AD/normal status show highly significant
-correlations with $x_2$ ($p$-values between \num{9.85e-9} and \num{3.53e-7}),
-which makes intuitive sense because $x_2$ visually correlates with ventricle
+($M_1$ and $M_2$). The results of the correlation tests are summarized in
+\ref{tab:corr}. Age, MMSE and AD/normal status show highly significant
+correlations with $M_2$ ($p$-values between \num{9.85e-9} and \num{3.53e-7}),
+which makes intuitive sense because $M_2$ visually correlates with ventricle
 size. The first manifold coordinate correlates strongest with gender
 ($p\text{-value} = \num{8.24e-9}$), which also makes sense in terms of the
 general difference in size between male and female. The strength and
@@ -412,8 +490,8 @@ brain images for classification and prediction of disease status.
 \centering
 \caption[Pearson correlation of demographic and clinical parameters with
 manifold coordinates]{Pearson correlation $r$ of demographic and
-clinical parameters with manifold coordinates ($x_1$, $x_2$). The stronger correlation in each column is
-highlighted in bold.}
+clinical parameters with manifold coordinates ($M_1$, $M_2$). The stronger
+correlation in each column is highlighted in bold.}
 \sisetup{
   round-mode = places,
   round-precision = 2,
@@ -430,13 +508,13 @@ highlighted in bold.}
 & $r$ & $p$-value \\
 \midrule
 % V1
-$x_1$ &
+$M_1$ &
 \num{-0.1734} & \num{0.03378} &
 \textbf{\num{0.4490381}} & \textbf{\num{8.239e-09}} &
 \num{0.0116499} & \num{0.8875} &
 \num{-0.03231144} & \num{0.6947} \\
 % V2
-$x_2$ &
+$M_2$ &
 \textbf{\num{0.4469}} & \textbf{\num{9.848e-09}} &
 \num{0.1860143} & \num{0.02266} &
 \textbf{\num{-0.4015518}} & \textbf{\num{3.527e-07}} &
@@ -448,24 +526,37 @@ $x_2$ &
 
 \section{Variability of Morphology and Lesion Distribution}
 
-We present a new method for modeling the variability in brain morphology and
-lesion distribution in a large set of MRIs of MS patients. Our method is built
-using a deep belief network (DBN) \cite{hinton2006b}, a layered network whose
-parameters can be learned from training images. An advantage of DBNs over other
-manifold learning methods is that it does not require a prebuilt proximity
-graph, which is particularly beneficial for modeling lesions, because the
-spareness and randomness of MS lesions make defining a suitable distance measure
-challenging and potentially biasing. Instead, the DBN approach assumes that a
-particular lesion configuration is a sample from an unknown distribution of
-lesion configurations that can be parameterized by a relatively small set of
-lesion distribution parameters. We model morphological and lesion variability
-with two individual DBNs, then form a joint model by replacing the individual
-top network layers with a new layer that joins both DBNs, similarly to the work
-on the joint modeling of auditory and visual signals for speech recognition
-\cite{ngiam2011}. Our results show that this model can automatically discover
+In this section, new method is presented for modeling the variability in brain
+morphology and lesion distribution in a large set of MRIs of MS patients.
+Similar to our previous work on modelling the manifold of brain MRIs of AD and
+healthy subjects, our method is built using a DBN \citep{hinton2006b}, a layered
+network whose parameters can be learned from training images. However, a
+difference to the previous approach is that the DBN is trained on deformation
+fields and lesions masks, instead of brain MRIs, in order to focus on the
+learning of the variability in brain morphology and lesion distribution, without
+the confounding influence of intensity variations produced by different
+scanners. An advantage of DBNs over other manifold learning methods is that it
+does not require a prebuilt proximity graph, which is particularly beneficial
+for modeling lesions, because the spareness and randomness of MS lesions make
+defining a suitable distance measure challenging and potentially biasing.
+Instead, the DBN approach assumes that a particular lesion configuration is a
+sample from an unknown distribution of lesion configurations that can be
+parameterized by a relatively small set of lesion distribution parameters. We
+model morphological and lesion variability with two individual DBNs, then form a
+joint model by replacing the individual top network layers with a new layer that
+joins both DBNs (see \ref{fig:msdbnmodel}), similarly to the work on the joint
+modeling of auditory and visual signals for speech recognition
+\citep{ngiam2011}. Our results show that this model can automatically discover
 the classic patterns of MS pathology, as well as more subtle ones, and that the
 distribution parameters computed are found to have strong relationships to MS
 clinical scores.
+
+\begin{figure}[tb]
+\centering
+\input{tikzfigures/jointmodel}
+\caption{DBN models used for discovering patterns.}
+\label{fig:msdbnmodel}
+\end{figure}
 
 % Short overview. New data. Deformation fields directly and lesion masks for MS.
 % Motivation for that: correspondence but without eliminating variability in
@@ -473,12 +564,13 @@ clinical scores.
 
 \subsection{Data Sets and Pre-processing}
 
-The proposed method was evaluated on a dataset from an MS clinical trial of 474
-secondary progressive MS patients. For each subject, the dataset contains one
-T1w, T2w, and PDw MRI with a resolution of \num{256x256x50} voxels and a voxel
-size of \SI{0.937x0.937x3.000}{\milli\meter}. The main preprocessing steps
-included rigid registration, brain extraction, intensity normalization, and
-background cropping.
+The proposed method was evaluated on a data set from an MS clinical trial of 474
+secondary progressive MS patients. For each subject, the data set contains one
+T1-weighted (T1w), T2-weighted (T2w), and proton density-weighted (PDw) MRI with
+a resolution of \num{256x256x50} voxels and a voxel size of
+\SI{0.937x0.937x3.000}{\milli\meter}. The main preprocessing steps included
+rigid registration, brain extraction, intensity normalization, and background
+cropping.
 
 \subsection{Method}
 
@@ -511,11 +603,7 @@ modes of morphological variability of MS brain images, by sampling the space of
 displacement fields spanned by $(D_1, \dotsc)^T$ by calculating the expectation
 $\E[u \mid D_1, \dotsc]$ for a range of values for $(D_1, \dotsc)^T$.
 
-\begin{figure}[tb]
-\centering
-\input{tikzfigures/jointmodel}
-\caption{DBN models used for discovering patterns.}
-\end{figure}
+\subsubsection{Morphology Model}
 
 The probability density function $p(u)$ is modeled by a deep belief network
 (DBN) \citep{hinton2006b}, a generative probabilistic graphical model consisting
@@ -527,26 +615,65 @@ dimensionality of each field by discovering patterns of similarity that are
 common within groups of displacement fields. Each subsequent RBM receives the
 hidden unit activations of the previous RBM as input, thus learning successively
 more complex and abstract patterns from the training data. In particular, we use
-a DBN with three strided convolutional RBMs\footnote{The three sconvRBMs have
-stride sizes of \num{2x2x1}, \num{2x2x2}, \num{1x1x1}, filter sizes of
-\num{10x10x7}, \num{10x10x10}, \num{3x5x3}, and 32, 64, 32 filters,
-respectively.} (sconvRBMs) and two dense RBMs \cite{Hinton2010} with 16 and 2
-hidden units, respectively. In the following, we will briefly review the
-sconvRBM, as this model is less often described in the literature, followed by
-how the visible and hidden units of the DBN relate to displacement fields and
-displacement field distribution parameters. A sconvRBM is a type of RBM in which
-the probabilistic relationships between the visible and hidden units are
-expressed in terms of strided convolutions, a type of convolution that shifts
-the filter kernel as a sliding window with a step size or stride $s > 1$. Due to
-the much smaller number of trainable parameters compared to dense RBMs,
-sconvRBMs are best suited for learning low- to mid-level features from very
-high-dimensional data. Compared to other more commonly used convolution-based
-RBMs \cite{Lee2009}, an advantage of sconvRBMs is that inference is invertible,
+a DBN with three sconvRBMs and two dense RBMs as described in
+\ref{sec:general_arch}. Compared to other more commonly used convolution-based
+RBMs \cite{lee2009}, an advantage of sconvRBMs is that inference is invertible,
 which allows the reconstruction of the visible units from the hidden unit
 activations. In our application, this would allow for the reconstruction of
-deformation fields from distribution parameters. The complete morphology DBN can
-be trained layer-by-layer by training each RBM individually using contrastive
-divergence \cite{Hinton2006b}. Once the parameters of the DBN have been learned
+deformation fields from distribution parameters.
+
+\begin{table}[t!]
+\caption[Training parameters of the morphology DBN, lesion DBN, and joint
+DBN]{Training parameters of the morphology DBN, lesion DBN, and joint DBN.
+The visible units of the joint DBN are composed of the concatenated hidden
+units of the first dense RBMs of the morphology and lesion DBNs.}
+\label{tab:msdbn}
+\centering
+\small
+\begin{tabular}{llccc}
+\toprule
+Layer & Parameter & Morphology DBN & Lesion DBN & Joint DBN \\
+\midrule
+Input     & Image size  & \num{40x48x22x3}  & \num{160x192x56x1} & --- \\
+\addlinespace
+sconvRBM1 & Stride size & \num{2x2x1}       & \num{4x4x2} & --- \\
+          & Filter size & \num{10x10x7}     & \num{20x20x10} & --- \\
+          & Filters     & 32                & 32 & --- \\
+          & Output size & \num{16x20x16x32} & \num{36x44x24x32} & --- \\
+\addlinespace
+sconvRBM2 & Stride size & \num{2x2x2}       & \num{2x2x2} & --- \\
+          & Filter size & \num{10x10x10}    & \num{14x14x10} & --- \\
+          & Filters     & \num{64}          & \num{64} & --- \\
+          & Output size & \num{4x6x4x64}    & \num{12x16x8x64} & --- \\
+\addlinespace
+sconvRBM3 & Stride size & \num{1x1x1}       & \num{2x2x2} & --- \\
+          & Filter size & \num{3x5x3}       & \num{10x14x6} & --- \\
+          & Filters     & 32                & 64 & --- \\
+          & Output size & \num{2x2x2x32}    & \num{2x2x2x64} & --- \\
+\addlinespace
+RBM1      & Visible units & 256 & 512 & --- \\
+          & Hidden units  &  16 & 16 & ---  \\
+\addlinespace
+RBM2      & Visible units & 16  & 16 & 32 \\
+          & Hidden units  &  2  &  2 &  4 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The parameters of the morphology DBN are summarized in \ref{tab:msdbn}. In
+contrast to the DBN used to learn the manifold of brain MRIs of AD and healthy
+subjects, we use valid convolutions for the sconvRBMs, because they allow a much
+faster reduction of the dimensionality, especially for layers two and three,
+where the image sizes are relatively small compared to the filter sizes. This
+allows for a greater reduction of dimensionality within the sconvRBM layers, and
+consequently for a gradual reduction of the number of hidden units during the
+transition of sconvRBMs to dense RBMs. To roughly compensate of the anisotropic
+voxel size of the input images and corresponding deformations fields, we chose
+an anisotropic filter and stride size of \num{10x10x7} and \num{2x2x1},
+respectively. After three sconvRBMs, the size of a deformation field is reduced
+to \num{2x2x2x32} and small enough for RBMs.
+
+Once the weights and bias terms of the DBN have been learned
 from training data, we can use the model for inference. Let
 $\vect{v}_{\text{d},1}, \dotsc, \vect{v}_{\text{d},5}$, $\vect{h}_{\text{d},1},
 \dotsc, \vect{h}_{\text{d},5}$, and $\thetas_{\text{d},1}, \dotsc,
@@ -575,62 +702,86 @@ by
 \end{align}
 where $i \in [1,4]$ and $\vect{h}_{\text{d},5} = (D_1,\dotsc)^T$.
 
+\subsubsection{Lesion Model}
+
 The input into our lesion model is a set of 3D binary lesion masks $l_n \in I$,
-which have been created from T2-weighted (T2w) and PD-weighted (PDw) MRIs by
-experts using a semi-automatic method. All lesion masks are spatially aligned to
-MNI space using the transformations as calculated for the corresponding T1w
-images. Analogous to the morphology model, we assume that lesion masks $l_n$ are
-samples from an unknown distribution $l_n \sim p(l \mid L_1, \dotsc)$ that can
-be parameterized by only relatively few parameters $(L_1, \dotsc)^T$. The task
-of finding lesion patterns is to discover the underlying probability density
-function $p(l \mid L_1, \dotsc)$, where the parameters $(L_1, \dotsc)^T$
-represent patterns of variability of MS lesions. Similar to the morphology DBN,
-the lesion DBN consists of three sconvRBMs\footnote{The three sconvRBMs have
-stride sizes of \num{4x4x2}, \num{2x2x2}, \num{2x2x2}, filter sizes of
-\num{20x20x10}, \num{14x14x10}, \num{10x14x6}, and 32, 64, 64 filters,
-respectively.} and two dense RBMs with 16 and 2 hidden units, respectively.
-However, we modified the energy function of the sconvRBMs to account for the
-sparse activation of MS lesion masks. Large black regions without local
-structure can lead to random activations of the hidden units and consequently
-the learning of random filters. To overcome this problem, we propose to
-incorporate a region of interest (ROI) term into the energy equation of the
-sconvRBM, which allows constraining the filter learning process to a given ROI.
-This can be achieved by element-wise multiplication of the visible and hidden
-units with a binary mask, which sets the visible and hidden units outside of the
-ROI to zero, thereby removing their contribution to the energy of the model.
-The ROI was chosen to include all white matter lesions from the training set.
-Similarly to the morphology model, for a trained lesion DBN and a given lesion
-mask $l_n$, we can calculate the parameters $(L_1,\dotsc)^T$ of $l_n \sim
-p(l\mid L_1,\dotsc)$ in the same manner as in \ref{eq:inferd} and
-\ref{eq:inferv}. Likewise, the mean lesion configuration $\bar{l}$ given the
-distribution parameters $(L_1,\dotsc)^T$ can be calculated in the same manner as
-in \ref{eq:inferu} and \ref{eq:inferh}.
+which have been created from T2w and PDw MRIs by experts using a semi-automatic
+method. All lesion masks are spatially aligned to MNI space using the
+transformations as calculated for the corresponding T1w images. Analogous to the
+morphology model, we assume that lesion masks $l_n$ are samples from an unknown
+distribution $l_n \sim p(l \mid L_1, \dotsc)$ that can be parameterized by only
+relatively few parameters $(L_1, \dotsc)^T$. The task of finding lesion patterns
+is to discover the underlying probability density function $p(l \mid L_1,
+\dotsc)$, where the parameters $(L_1, \dotsc)^T$ represent patterns of
+variability of MS lesions. Similar to the morphology DBN, the lesion DBN
+consists of three sconvRBMs and two dense RBMs, whose parameters are summarized
+in \ref{tab:msdbn}. For the first layer, we chose an anisotropic stride size of
+\num{4x4x2}, to roughly compensate for the anisotropic voxel size of the input
+images. A limiting factor for the choice of parameters is the amount of
+available GPU memory. Due to the much higher resolution of the lesion masks
+compared to the deformation fields, we increased the stride size compared to the
+morphology DBN in order to reduce the required amount of memory for storing the
+hidden units of the first layer and visible units of the second layer. Choosing
+a stride size of \num{4x4x2} reduces the size of one channel by a factor of
+roughly 32, which allows the use of 32 filters, while keeping the amount of
+memory required to train the second layer roughly equal compared to the first
+layer. To account for the sparse activation of MS lesion masks, we constrain the
+filter learning process to a pre-defined ROI, which was chosen to contain all
+white matter lesions from the training set. Similarly to the morphology model,
+for a trained lesion DBN and a given lesion mask $l_n$, we can calculate the
+parameters $(L_1,\dotsc)^T$ of $l_n \sim p(l\mid L_1,\dotsc)$ by
+\begin{align} 
+\label{eq:inferd}
+(L_1, \dotsc)^T &= \E[L_1, \dotsc \mid l_n] = \E[\vect{h} \mid
+\vect{v}_{\text{l},5}, \thetas_{\text{l},5}] \\
+\label{eq:inferv}
+\vect{v}_{\text{l},i+1} &= \E[\vect{h} \mid \vect{v}_{\text{l},i},
+\thetas_{\text{l},i}]
+\end{align}
+where $i \in [1,4]$ and $\vect{v}_{\text{l},1} = l_n$. Likewise, the mean lesion
+configuration $\bar{l}$ given the distribution parameters $(L_1,\dotsc)^T$ can
+be calculated by
+\begin{align}
+\bar{l} &= \E[l \mid L_1, \dotsc] = \E[\vect{v} \mid \vect{h}_{\text{l},1},
+\thetas_{\text{l},1}] \\
+\vect{h}_{\text{l},i} &= \E[\vect{v} \mid \vect{h}_{\text{l},i+1},
+\thetas_{\text{l},i+1}]
+\end{align}
+where $\vect{v}_{\text{l},1}, \dotsc, \vect{v}_{\text{l},5}$,
+$\vect{h}_{\text{l},1}, \dotsc, \vect{h}_{\text{l},5}$, and
+$\thetas_{\text{l},1}, \dotsc, \thetas_{\text{l},5}$ denote the visible units,
+hidden units, and parameters of each RBM of the lesion DBN, respectively, $i \in
+[1,4]$ and $\vect{h}_{\text{l},5} = (L_1,\dotsc)^T$.
+
+\subsubsection{Joint Model}
 
 To discover concurring patterns of morphology and lesion distribution, we
 combine the morphology DBN and the lesion DBN to form the joint DBN, which
 defines the joint distribution $p(u, l \mid J_1, \dotsc)$. The joint DBN
-consists of two pathways, each corresponding to the first 4 layers of the
-morphology and lesion DBNs, respectively, and a 5th RBM layer with 4 hidden
-units, which replaces the 5th layer of the individual DBNs and combines the
-hidden unit activations of the 4th layer RBMs. That is, the 5th RBM defines the
-joint probability $p(\vect{v}_\text{j}, \vect{h}_\text{j} \mid
+consists of two pathways (see \ref{fig:msdbnmodel}), each corresponding to the
+first 4 layers of the morphology and lesion DBNs, respectively, and a 5th RBM
+layer with 4 hidden units, which replaces the 5th layer of the individual DBNs
+and combines the hidden unit activations of the 4th layer RBMs. That is, the 5th
+RBM defines the joint probability $p(\vect{v}_\text{j}, \vect{h}_\text{j} \mid
 \thetas_\text{j})$, where $\vect{v}_\text{j} = (\vect{h}_{\text{d},4}^T,
 \vect{h}_{\text{l},4}^T)^T$ and $\vect{h}_\text{j} = (J_1, \dotsc)^T$ are the
 modes of variability of morphological and lesion distribution changes.
 
 \subsection{Results}
 
+\subsubsection{Visualization of Patterns of Variability}
+
 The invertibility of our model allows the reconstruction of images from the
 distribution parameters to visualize the discovered patterns of variability.
-\ref{fig:deformations} shows axial slices from volumes generated from the
-2-parameter morphology model $p(u \mid D_1, D_2)$. To generate these images, we
+\ref{fig:samples}\subref{fig:deformations} shows axial slices from volumes
+generated from the 2-parameter morphology model $p(u \mid D_1, D_2)$. To generate these images, we
 calculated the mean displacement fields for varying values of $D_1$ and $D_2$
 to span the range of variability represented by the
 training set and applied the inverse deformations to the ICBM 152 template
 image. The most apparent morphological variability captured by the morphology
 model is ventricular enlargement for $D_1$ and overall brain size for $D_2$.
-\ref{fig:lesions} shows axial slices from the mean lesion configurations
-$\E[l \mid L_1, L_2]$ for varying lesion distribution parameters. An increase of
+\ref{fig:samples}\subref{fig:lesions} shows axial slices from the mean lesion
+configurations $\E[l \mid L_1, L_2]$ for varying lesion distribution parameters. An increase of
 $L_2$ visually correlates with an increase of lesions specifically around the
 ventricles, whereas an increase of $L_1$ visually correlates with an increase of
 lesions in the entire white matter.
@@ -702,15 +853,17 @@ of the variability found in the individual models.}
 
 To visualize concurring patterns of morphology and lesion distribution, we
 sampled images from the joint model $p(u, l \mid J_1, \dotsc, J_4)$ as shown in
-\ref{fig:joint}. The images are deformed template images with superimposed
-lesion masks. For each row, we varied only one distribution parameter and set
-the remaining parameters to their mean values. Of the 4 parameters, $J_3$
-visually corresponds most closely to the ``classic'' progression of MS
-pathology, with an enlargement of the ventricles paired with an increased
-periventricular lesion load. The parameters $J_2$ and $J_4$ also reveal
-simultaneous morphological and lesion variations that are visible on the chosen
-axial slice. For $J_1$, a lesion pattern is not obvious unless the images are
-viewed sagittally, which reveals changes in lesion load in the pons.
+\ref{fig:samples}\subref{fig:joint}. The images are deformed template images
+with superimposed lesion masks. For each row, we varied only one distribution
+parameter and set the remaining parameters to their mean values. Of the 4
+parameters, $J_3$ visually corresponds most closely to the ``classic''
+progression of MS pathology, with an enlargement of the ventricles paired with
+an increased periventricular lesion load. The parameters $J_2$ and $J_4$ also
+reveal simultaneous morphological and lesion variations that are visible on the
+chosen axial slice. For $J_1$, a lesion pattern is not obvious unless the images
+are viewed sagittally, which reveals changes in lesion load in the pons.
+
+\subsubsection{Correlations with Clinical Scores}
 
 \begin{table}[tb]
 \centering 
@@ -781,11 +934,11 @@ number of asterisks (* $p < 0.05$, ** $p < 0.01$, *** $p < 0.001$).
 
 To evaluate the potential of the distribution parameters to reveal clinically
 relevant information, we have calculated the Pearson correlation $r$ of the
-clinical MS Functional Composite (MSFC) \cite{Fischer1999} and its components
+clinical MS Functional Composite (MSFC) \cite{fischer1999} and its components
 (Timed 25-Foot Walk, T25W; 9-Hole Peg Test, 9-HPT; Paced Auditory Serial
 Addition Test, PASAT) with the distribution parameters and two established MS
 imaging biomarkers (normalized brain volume, nBV, as calculated by SIENAX
-\cite{Smith2002} and lesion load, LL). The results of the correlation tests are
+\cite{smith2002} and lesion load, LL). The results of the correlation tests are
 summarized in Table~\ref{tab:correlations}. In the individual models, all
 parameters correlate significantly with 9-HPT, PASAT, and MSFC, except for $D_2$
 with PASAT. The morphology parameter $D_1$ correlates more strongly with these
@@ -833,6 +986,9 @@ decrease in MSFC shows the classic pattern of MS pathology.}
 \label{fig:msspectrum}
 \end{figure}
 
+\subsubsection{Progression of a ``Mean'' SPMS Brain along a Range of MSFC
+Scores}
+
 Another benefit of our model is the ability to visualize the progression of a
 ``mean'' secondary progressive MS brain along a range of MSFC scores.
 To demonstrate, we trained 4 independent linear models to predict the
@@ -848,3 +1004,38 @@ in the pons region.
 
 Potentially follow up with a discussion where I can discuss related approaches
 that came afterwards and what needs to be done.
+
+We have proposed a novel approach to learning the manifold of brain MRIs. In
+contrast to previous work, our approach does not require an explicitly defined
+similarity measure, or building a proximity graph. Furthermore, we have shown
+that the learned manifold coordinates capture shape variations of the brain that
+correlate with demographic and disease parameters. Our manifold learning method
+uses deep learning to discover patterns of similarity and variability within a
+group of images. Our proposed DBN training algorithm is much more efficient than
+traditional, convolution-based methods and, when parallelized on graphics
+processors, makes DBN training on 3D MRIs practical for the first time. For
+future work, we plan to incorporate clinical parameters into the training
+process to learn a model of the joint probability of images and associated
+clinical parameters. We would also like to investigate the effect of spatial
+normalization using affine or deformable registration, which we expect would
+result in further improvements in correlations with clinically relevant
+parameters. In addition, we would like to compare our method to other
+state-of-the-art brain manifold learning methods to investigate relative
+strengths and weaknesses for particular clinical applications such as the
+prediction of mild cognitive impairment to AD conversion, which is a topic of
+strong clinical interest.
+
+We have introduced a new method for modeling the variability in brain morphology
+and lesion distribution of a large set of MRIs of MS patients. Our method is a
+statistical model of brain images composed of three DBNs: one for morphology,
+one for lesion distribution, and one that jointly models both. We have
+demonstrated that such a model, which requires no built-in priors on image
+similarity, can automatically discover patterns of variability that can be
+parameterized in a low-dimensional space and are clinically relevant. In
+addition, our model can generate sample images from model parameters for
+visualization. For future work, we plan to incorporate clinical parameters into
+the learning stage using discriminative fine-tuning, which we expect would
+result in further improvements in the clinical score correlations. In addition,
+we would like to extend our approach to model longitudinal patterns of
+variability with the goal of predicting future clinical status from current
+images.
