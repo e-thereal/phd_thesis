@@ -1,6 +1,6 @@
 \begin{tikzpicture}[
   node distance=0.75cm and 0.65cm,
-  font=\footnotesize,
+  every node/.style={font=\footnotesize},
   conv/.style={green!60!black,-latex,thick},
   conv2/.style={green!60!black,latex-latex,thick},
   deconv/.style={-latex,blue!40!black,thick},
@@ -54,7 +54,7 @@
 % Layers
 
 \draw[decorate,decoration={brace,raise=30pt}] (inputs.south west)
---node[left=35pt,align=center] (convl) {Convolutional\\ layer} (inputs.south
+--node[left=35pt,align=center] (convl) {Conv.\\ layer} (inputs.south
 west|-clayer1.north west);
 
 \draw[decorate,decoration={brace,raise=22pt}] (clayer1.south west)
@@ -62,11 +62,11 @@ west|-clayer1.north west);
 west|-pooling1.north west);
 
 \draw[decorate,decoration={brace,raise=25pt}] (pooling1.south west)
---node[left=30pt,align=center] {Convolutional\\ layer} (clayer2.north
+--node[left=30pt,align=center] {Conv.\\ layer} (clayer2.north
 west-|pooling1.south west);
 
 \draw[decorate,decoration={brace,raise=30pt,mirror}] (outputs.south east)
---node[right=35pt,align=center] {Deconvolutional\\ layer with shortcut}
+--node[right=35pt,align=center] {Deconv.\\ layer with\\ shortcut}
  (dlayer1.north east-|outputs.south east);
 
 \draw[decorate,decoration={brace,raise=22pt,mirror}] (dlayer1.south east)
@@ -74,7 +74,7 @@ west-|pooling1.south west);
 (dpooling1.north east-|dlayer1.south east);
 
 \draw[decorate,decoration={brace,raise=25pt,mirror}] (dpooling1.south east)
---node[right=30pt,align=center] {Deconvolutional\\ layer}
+--node[right=30pt,align=center] {Deconv.\\ layer}
 (clayer2.north east-|dpooling1.south east);
 
 % Legend
@@ -112,7 +112,7 @@ west-|pooling1.south west);
 % Stack of CRBMs
 
 \begin{scope}[local bounding box=dbn]
-\node[channel=64pt and 3pt, left=6cm of inputs,pin=270:Input images] (rinputs)
+\node[channel=64pt and 3pt, left=3.9cm of inputs,pin=270:Input images] (rinputs)
 {}; 
 \node[channel=60pt and 16pt,above=of rinputs] (rclayer1) {};
 \node[channel=30pt and 16pt,above=of rclayer1] (rpooling1) {};
@@ -129,7 +129,7 @@ west-|pooling1.south west);
 \node[left=1pt of rclayer2] {$h^{(2)}$};
 
 \draw[decorate,decoration={brace,raise=5pt,mirror}] (rinputs.south east)
---node[right=10pt,align=center] (crbm) {convRBM$_1$} (rinputs.south
+--node[right=10pt,align=center] (crbm) {conv-\\ RBM$_1$} (rinputs.south
 east|-rclayer1.north east);
 
 \draw[decorate,decoration={brace,raise=5pt,mirror}] (rpooling1.south east)

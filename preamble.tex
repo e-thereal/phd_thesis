@@ -52,7 +52,7 @@
 % Tikz
 \usepackage{atbegshi}
 \usepackage{tikz}
-\usetikzlibrary{intersections,decorations.pathreplacing,fit,calc,positioning,shapes.geometric,matrix}
+\usetikzlibrary{intersections,decorations.pathreplacing,fit,calc,positioning,shapes.geometric,matrix,spy}
 \tikzstyle{every node}+=[font=\sffamily\small]
 \pgfdeclarelayer{background}
 \pgfsetlayers{background,main}
@@ -109,6 +109,10 @@
 
 \usepackage{varioref}
 \usepackage[
+  colorlinks=true,
+  linkcolor=black!50!black,
+  urlcolor=black!50!black,
+  citecolor=black!80!black,
 	pdfpagemode=UseOutlines,
 	pdfdisplaydoctitle=true,
 	pdflang=en,
