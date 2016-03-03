@@ -4,3 +4,32 @@ Future work: different models like RNNs, LSTMs. Learning
 invariance to rotations might help especially in 3D. What are other
 applications? Also need to understand models better. Visualize them maybe?
 Better training algorithms? More data? Better regularization?
+
+\section{New applications}
+
+\section{Advance technology}
+
+What can be calculated. Multiplications. Gated RBM models can calculate that.
+Allows three way connections. Also allows better model of natural images when
+putting the same image in twice. Allows multiplicative connection between
+images.
+
+Multiplication in neural networks. Need to cite that one paper that talked about
+it. Auditory system has neurons that calculate that and these are very
+important. Might be important for other tasks as well. Approaches maybe deep
+polynomial networks. Or look at gated RBMs and unroll them to a neural network,
+if possible. Might show the differences between the two models more and maybe
+might show, why generative models might still be a good idea.
+
+Invariance has been an important factor. Introduction of convolutional models
+and pooling greatly reduces the number of weights that need to be learned.
+Invariance to rotations might proof important as well. First approaches from
+Ronneberger. Might be even more important in 3D due to the much larger space of
+rotations.
+
+Long distance relations. Only way right now to take more context into account is
+increasing the size of the receptive field. However, this also leads to the
+learning of features on a larger scale. Need a way to have distant small
+features to effect the segmentation. E.g., tissue transition. Edge is a small
+feature but affects the interpretation that follows afterwards. RNNs and esp.
+LSTMs can do that.
