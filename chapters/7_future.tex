@@ -1,25 +1,205 @@
-\chapter{Future Work}
+\chapter{Discussion and Future Work}
 
-Future work: different models like RNNs, LSTMs. Learning
-invariance to rotations might help especially in 3D. What are other
-applications? Also need to understand models better. Visualize them maybe?
-Better training algorithms? More data? Better regularization?
+Deep learning has shown great potential for medical image processing
+applications. The success of deep learning methods mostly stems from their
+ability to learn feature hierarchies directly from the data. This allows deep
+learning methods to adapt to the challenges presented by the data, such as
+imaging artifacts and contrast variations, without explicitly having to model
+them, which makes deep learning methods very flexible and generally applicable
+to a wide range of problems. However, deep learning methods can take a lot of
+time to train and require large amounts of training data in order to learn a
+feature representation that generalizes well to new data samples. To overcome
+those challenges, first applications of deep learning were limited to problems
+that can be cast as a patch-wise classification problem, such as the
+segmentation of cell membranes \citep{ciresan2012} and the detection of cell
+carcinoma \citep{cancer}. In this fashion, every patch of an image is considered
+a training sample, which greatly increases the amount of labelled training
+cases. In addition, training on relatively small 2D patches made training
+feasible. Similarly, fully convolutional approach for image segmentation
+leverage every pixel of an image as a training sample, while being more
+computationally efficient than patch-based approaches. However, layers deeper in
+the hierarchy have increasingly fewer pixels, and are consequently trained with
+fewer training samples, which increases the risk of overfitting.
 
-\section{New applications}
+The application to entire images using deep learning is still a challenge, due
+to the higher computational burden and less amount of available labelled
+training data. Unsupervised approaches are a promising alternative to supervised
+approaches, because they generally are less prone to overfitting and can
+leverage large amounts of unlabelled training data, which is easier to require,
+but are still difficult to train due to the large number of trainable
+parameters. In this thesis, we have proposed a new training algorithms of
+convolutional models that performs training in the frequency domain. Our
+training algorithm made training on entire images feasible for the first time.
 
-\section{Advance technology}
+One way of dealing with the problem of limited training data is data
+augmentation. Data augmentation allows the artificial increase of the training
+data size but generating new training samples from existing once, in order to
+increase the variability in the data set. Hand-engineered data augmentation
+approaches depend on how well the variability in the data is understood and try
+to emulate the variability. It has been successfully be used for the recognition
+of hand-written digits and other natural image classification problem. Data
+augmentation can be used to encourage the learning of feature representation
+with certain invariance properties by artificially alternating the data set to
+contain these changes. Examples are rotation, translation, contrast variations
+and deformations.
 
-What can be calculated. Multiplications. Gated RBM models can calculate that.
-Allows three way connections. Also allows better model of natural images when
-putting the same image in twice. Allows multiplicative connection between
-images.
+\section{Future Work}
 
-Multiplication in neural networks. Need to cite that one paper that talked about
-it. Auditory system has neurons that calculate that and these are very
-important. Might be important for other tasks as well. Approaches maybe deep
-polynomial networks. Or look at gated RBMs and unroll them to a neural network,
-if possible. Might show the differences between the two models more and maybe
-might show, why generative models might still be a good idea.
+
+
+\begin{comment}
+
+Current state
+
+- strengths of deep learning
+- requires large amounts of training data
+	- limits problems it can be applied to
+	- often only relatively few training samples available
+	- patch-based
+		- every patch is a training sample
+		- segmentation of cell membranes
+		- cell detection
+	- fully convolutional
+		- every pixel is a training sample
+		- u-net
+		- segmentation
+		- localize key points
+		- but deeper layers have fewer pixels
+		- might overfit in deep layers
+	- entire image classification more challenging because less data
+		- Full image applications limited due to limited amount of training data and
+		  the risk of overfitting
+		- entire images when risk of overfitting is lower
+			- generative models
+			- regularization
+			- pattern detection
+			- modelling variability
+		- use of unlabelled data
+			- unlabelled data easier to acquire
+			- more unlabelled than labelled data
+			- unsupervised feature learning
+				- AD classification
+		- data augmentation
+			- Good understanding of variability
+				- hand-engineered data augmentation
+				- translations, rotations, deformations, contrast variations
+			- Conservative data augmentation, parameter choices
+				- Might not reflect the true variability well
+			- Crude data augmentation
+				- Might not be biologically plausible
+			- Learn variability from data
+				- Manifold learning and sampling
+		- regularization
+- can be slow
+	- training on patches
+	- application to 2D images (cell membrane detection, cancer detection)
+	- training in the frequency domain
+		- allows training in 3D for the first time
+	- fully convolutional approach eliminates redundant calculations
+	
+Future work
+
+- collect labelled data and make it available to researchers
+	- similar to computer vision community
+- learning features that are invariant or equivariant under various influences
+	- translational in- or equivariance
+		- convolutional models
+		- reduce relearning of feature at different locations
+	- intensity in- or equivariance
+		- rectified linear units to some extend
+		- avoid relearning of units for difference intensities
+	- new: rotational invariance or equivariance
+		- reduces the number of features, because only one instance of a feature needs
+		  to be learned, instead of multiple for different angles
+		- Esp. important in 3D were there are a lot more possible rotation angles
+		- Ronneberger et al.
+- new applications
+- understanding of deep learning
+- visualization
+- better training algorithms
+	- fast convergence
+	- saddle point problem
+- long distance relationships
+	- currently, only way is to increase the size of the receptive field
+	- more context
+	- However, this also leads to the learning of features at a larger scale
+	- need a way to model the correlation between distant small scale features
+	- e.g., tissue transition instead of tissue type
+	- edge is a small scale feature but affects the interpretation that follows
+	  afterwards
+	- RNNs and esp. LSTMs can do that
+- keep learning from biological neural networks
+- what can neurons compute \citep{london2005}
+	- long-term or long-distance relationships and memory
+		- RNNs, LSTMs
+	- multiplications
+		- Looming Sensitive Neurons in the Locust
+			- fires on objects approaching a collision course
+			- multiplication of angular size and speed of approaching
+			- possibly encoded as the sum of logarithmic inputs followed
+			  by exponentiation
+		- e.g., auditory system
+		- Three way connection and reasoning
+		- Gated RBMs
+			- learn transformations
+			- better model of natural images
+			-> better manifold learning of brain MRIs?
+		- multiplications in neural networks
+			- unroll gated RBM into neural network
+				- if that does not work, maybe generative models are still
+				  a good idea
+			- deep polynomial networks
+			
+Challenges: Require large amounts of training data, how to get more labels, and
+can be too slow to be feasible? Use every patch of an image as a training
+sample. More training data and smaller images. Patch-based segmentation of
+membranes one of the first applications that show cased deep learning. Other
+applications are cell cancer detection, because again, every cell is a sample
+and there are a lot of slides, plus it's done in 2D, so it can be applied
+faster. However, patch-based approaches have some weaknesses: 1) can't use every
+possible patch, it would be slow, 2) need patch-selection, which can be
+difficult to decide. Fully convolutional models can help here. E.g. u-net but
+also only applied to 2D images.
+
+In this thesis, we have shown how to speed up the training in order to apply it
+to 3D data. First paper to show how deep learning can be made feasible in order
+to apply it to full-resolution 3D medical images. Open new possibilities for
+research.
+
+A remaining challenge is how to deal with the limited amount of training data.
+Limited data currently limits its application to other problems such as the
+classification of entire volumes. Need more real or artificial data. If the data
+variations of the data is well understood, can perform hand-engineered data
+augmentation such as transformations and rotations, deformations. However,
+complex data that is not well understood might require learning of the data
+manifold.
+
+Tasks deep learning can be good at? Tedious and well defined tasks for which
+training data is available, identifying landmarks, segmentation, classification
+of voxels for, e.g., cancer cell detection. Why? Because a single image can
+provide a lot of data. For per-image deep learning need a lot of data. Finding
+patterns in images, diagnosis. Current models not sensitive enough, but if more
+sensitive, they might over fit.
+
+Training data is important. Patch-based approaches successfully, because
+generally only a few images to work with and every patch counts as training
+data. Fully convolutional approaches also very successful, because every pixel
+counts as a training sample. However, higher layers have fewer pixels and
+therefore fewer training samples. So deep models can overfit and might require
+more data. Full image classification challenging, because not much labelled
+data. Two approaches: use unsupervised learning because you can also leverage
+unlabelled data. Use unsupervised learning because it tends to overfit less.
+Large body on unsupervised feature learning for AD classification.
+
+What can be calculated \citep{london2005}. Multiplications. Auditory system has
+neurons that calculate that and these are very important. Might be important for
+other tasks as well. Gated RBM models can calculate that. Allows three way
+connections. Also allows better model of natural images when putting the same
+image in twice. Allows multiplicative connection between images. Other
+approaches maybe deep polynomial networks. Or look at gated RBMs and unroll them
+to a neural network, if possible. Might show the differences between the two
+models more and maybe might show, why generative models might still be a good
+idea.
 
 Invariance has been an important factor. Introduction of convolutional models
 and pooling greatly reduces the number of weights that need to be learned.
@@ -27,9 +207,4 @@ Invariance to rotations might proof important as well. First approaches from
 Ronneberger. Might be even more important in 3D due to the much larger space of
 rotations.
 
-Long distance relations. Only way right now to take more context into account is
-increasing the size of the receptive field. However, this also leads to the
-learning of features on a larger scale. Need a way to have distant small
-features to effect the segmentation. E.g., tissue transition. Edge is a small
-feature but affects the interpretation that follows afterwards. RNNs and esp.
-LSTMs can do that.
+\end{comment}

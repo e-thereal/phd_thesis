@@ -18,9 +18,50 @@ pathways. In the later stages of the diseases however, the amount of tissue
 damage is often to high to be compensated in addition to signs of axonal loss
 and neurodegeneration, which leads to the progressive accumulation of disease.
 
-\begin{figure}
-\missingfigure{Neuron with damage or maybe even half a brain with lesions shown}
-\caption{Need a caption.}
+\begin{figure}[tb]
+\centering
+\begin{tikzpicture}
+\node[] (healthy)
+{\includegraphics[width=0.5\textwidth]{figures/healthyneuron}};
+\node[,below=-1.5cm of healthy] (damaged)
+{\includegraphics[width=0.5\textwidth]{figures/damagedneuron}};
+
+\node[fit=(healthy)(damaged), inner sep=0] (neurons) {};
+
+\node[right=1cm of neurons] (brain)
+{\includegraphics[width=0.4\textwidth]{figures/brain}};
+
+\coordinate (m1) at (-0.75,0.9);
+\coordinate (m2) at (0.95,0.9);
+\coordinate (m3) at (2.4,-3);
+
+\node[fit=(m1)(m2)] (myelin) {};
+
+\node[above=0.65cm of myelin] (sheaths) {Myelin sheaths};
+
+\draw (m1)--(sheaths);
+\draw (m2)--(sheaths);
+
+\node[ellipse,draw=red,thick,minimum width=1.5cm, minimum height=0.9cm,
+label=90:Damaged myelin] at (m3) {};
+
+\coordinate (wm) at (7.2,-0.5);
+\coordinate (wml) at (6.9,-2.6);
+
+%\draw[red] (wm) circle (3pt);
+%\draw[red] (wml) circle (3pt);
+
+\draw[gray,thick] (wm)--(healthy);
+\draw[gray,thick] (wml)--(damaged);
+
+%\draw[step=1cm,gray,very thin] (-5,2) grid (10,-6);
+
+\end{tikzpicture}
+
+\caption{Due to the break down of the blood brain barrier, the bodies own immune
+system attacks the myelin sheaths of the axons, which causes the formation of
+demyelinating lesions, visible primarily in the white matter on conventional MRI
+scans. Lesions are highlighted in white.}
 \end{figure}
  
 The clinical presentation of MS is very heterogeneous due to the wide range of
@@ -48,7 +89,7 @@ clear superimposed relapses.
 
 % TODO: Back this one up with references
 
-\subsection{Measuring of Disease State and Progression}
+\subsection{Measuring Disease State and Progression}
 
 There is currently no cure for MS. Existing therapies that focus on symptomatic
 management and prevention of further damage have variable degrees of
@@ -185,7 +226,7 @@ than traditionally used volumetric measures.
 
 \subsection{Overview}
 
-The two methods developed for segmenting lesions and recognizing patterns of
+The two methods developed for segmenting MS lesions and recognizing patterns of
 variability are both based on algorithms and models that belong to the class of
 deep learning approaches. Deep learning is a field within machine learning that
 is inspired by the learning capabilities of the brain. Research on the visual

@@ -939,7 +939,7 @@ clinical MS Functional Composite (MSFC) \cite{fischer1999} and its components
 Addition Test, PASAT) with the distribution parameters and two established MS
 imaging biomarkers (normalized brain volume, nBV, as calculated by SIENAX
 \cite{smith2002} and lesion load, LL). The results of the correlation tests are
-summarized in Table~\ref{tab:correlations}. In the individual models, all
+summarized in \ref{tab:correlations}. In the individual models, all
 parameters correlate significantly with 9-HPT, PASAT, and MSFC, except for $D_2$
 with PASAT. The morphology parameter $D_1$ correlates more strongly with these
 scores than nBV, as does the lesion parameter $L_2$ than LL. For T25W, $D_1$
@@ -993,49 +993,49 @@ Another benefit of our model is the ability to visualize the progression of a
 ``mean'' secondary progressive MS brain along a range of MSFC scores.
 To demonstrate, we trained 4 independent linear models to predict the
 distribution parameters $J_1, \dotsc, J_4$ given the MSFC ($J_i = a_i +
-b_i\text{MSFC}$). Figure~\ref{fig:msspectrum} shows the axial (top row) and
+b_i\text{MSFC}$). \ref{fig:msspectrum} shows the axial (top row) and
 mid-sagittal (bottom row) slices of generated images representing the range of
 MSFC scores from \num{1.5} to \num{-4.5}. Consistent with previous results, a
 decrease in MSFC visually correlates with an increase in the size of the
 ventricles, an increase in periventricular lesions, and an increase in lesions
 in the pons region.
 
-\section{Discussion}
+\section{Summary}
 
-Potentially follow up with a discussion where I can discuss related approaches
-that came afterwards and what needs to be done.
-
-We have proposed a novel approach to learning the manifold of brain MRIs. In
-contrast to previous work, our approach does not require an explicitly defined
-similarity measure, or building a proximity graph. Furthermore, we have shown
-that the learned manifold coordinates capture shape variations of the brain that
-correlate with demographic and disease parameters. Our manifold learning method
-uses deep learning to discover patterns of similarity and variability within a
-group of images. Our proposed DBN training algorithm is much more efficient than
-traditional, convolution-based methods and, when parallelized on graphics
-processors, makes DBN training on 3D MRIs practical for the first time. For
-future work, we plan to incorporate clinical parameters into the training
-process to learn a model of the joint probability of images and associated
-clinical parameters. We would also like to investigate the effect of spatial
-normalization using affine or deformable registration, which we expect would
-result in further improvements in correlations with clinically relevant
-parameters. In addition, we would like to compare our method to other
-state-of-the-art brain manifold learning methods to investigate relative
-strengths and weaknesses for particular clinical applications such as the
-prediction of mild cognitive impairment to AD conversion, which is a topic of
-strong clinical interest.
+% We have proposed a novel approach to learning the manifold of brain MRIs. In
+% contrast to previous work, our approach does not require an explicitly defined
+% similarity measure, or building a proximity graph. Furthermore, we have shown
+% that the learned manifold coordinates capture shape variations of the brain that
+% correlate with demographic and disease parameters. Our manifold learning method
+% uses deep learning to discover patterns of similarity and variability within a
+% group of images. Our proposed DBN training algorithm is much more efficient than
+% traditional, convolution-based methods and, when parallelized on graphics
+% processors, makes DBN training on 3D MRIs practical for the first time. For
+% future work, we plan to incorporate clinical parameters into the training
+% process to learn a model of the joint probability of images and associated
+% clinical parameters. We would also like to investigate the effect of spatial
+% normalization using affine or deformable registration, which we expect would
+% result in further improvements in correlations with clinically relevant
+% parameters. In addition, we would like to compare our method to other
+% state-of-the-art brain manifold learning methods to investigate relative
+% strengths and weaknesses for particular clinical applications such as the
+% prediction of mild cognitive impairment to AD conversion, which is a topic of
+% strong clinical interest.
 
 We have introduced a new method for modeling the variability in brain morphology
-and lesion distribution of a large set of MRIs of MS patients. Our method is a
-statistical model of brain images composed of three DBNs: one for morphology,
-one for lesion distribution, and one that jointly models both. We have
+and lesion distribution of a large set of MRIs of AD and MS patients. We have
+proposed two models, both of which are based on DBNs. In our first approach,
+variability of brain morphology is modelled as a manifold of brain MRIs. In our
+second approach, we train three DBNs: one for morphology, one for lesion
+distribution, and one that jointly models both. The morphology model is learned
+from deformation fields, which allows the algorithm to focus on structural
+changes without the confound of contrast variations between images. We have
 demonstrated that such a model, which requires no built-in priors on image
 similarity, can automatically discover patterns of variability that can be
 parameterized in a low-dimensional space and are clinically relevant. In
 addition, our model can generate sample images from model parameters for
-visualization. For future work, we plan to incorporate clinical parameters into
-the learning stage using discriminative fine-tuning, which we expect would
-result in further improvements in the clinical score correlations. In addition,
-we would like to extend our approach to model longitudinal patterns of
-variability with the goal of predicting future clinical status from current
-images.
+visualization. 
+
+%In addition, we would like to extend our approach to model longitudinal
+% patterns of variability with the goal of predicting future clinical status from current
+%images.
