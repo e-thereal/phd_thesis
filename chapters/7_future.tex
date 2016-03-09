@@ -1,9 +1,9 @@
-\chapter{Discussion and Future Work}
+\chapter{Discussion: Deep Learning for Medical Image Analysis}
 
-Deep learning has shown great potential for medical image processing
-applications. The success of deep learning methods mostly stems from their
-ability to learn feature hierarchies directly from the data. This allows deep
-learning methods to adapt to the challenges presented by the data, such as
+In this thesis, we explored new potential applications of deep learning for
+medical image analysis. The success of deep learning methods mostly stems from
+their ability to learn feature hierarchies directly from the data. This allows
+deep learning methods to adapt to the challenges presented by the data, such as
 imaging artifacts and contrast variations, without explicitly having to model
 them, which makes deep learning methods very flexible and generally applicable
 to a wide range of problems. However, deep learning methods can take a lot of
@@ -27,25 +27,96 @@ training data. Unsupervised approaches are a promising alternative to supervised
 approaches, because they generally are less prone to overfitting and can
 leverage large amounts of unlabelled training data, which is easier to require,
 but are still difficult to train due to the large number of trainable
-parameters. In this thesis, we have proposed a new training algorithms of
-convolutional models that performs training in the frequency domain. Our
-training algorithm made training on entire images feasible for the first time.
+parameters. Alternatively, deep learning based approaches for classifying entire
+images rely on the extraction of a large set of manually designed features,
+which is in contrast to the end-to-end learning paradigm. In this thesis, we
+have proposed a new training algorithms for convolutional models that performs
+training in the frequency domain. Our training algorithm made training on entire
+images feasible for the first time.
+
+\section{Future Work}
+
+% A possible direction for future work is the development of network architecture
+% with build-in invariance properties. Although neural networks can learn feature
+% hierarchies that are invariant to rotations and translations, doing so requires
+% increasing the size of the network, which increases the number of trainable
+% parameters, the time required to train the network and the risk of overfitting.
+% To illustrate, consider the example of learning translation invariant features
+% using a dense neural network. Features learned by a dense neural network are not
+% inherently translational invariant. However, translation invariant features can
+% be learned through the combination of two layers. Units of the first layer
+% learn the same feature at different locations in the image, while the unit of the
+% second layer that corresponds to that features combines the activations of the
+% units of the previous layer, such that the unit is active when the feature is
+% detected at any position in the image. Similarly, rotation invariant features
+% can be learned by learning the same feature at different angles followed by the
+% summation of the activation of the different features. However, this greatly
+% increases the number of features that need to be learned in order to capture a
+% particular feature at a wide range of angels. This problem is elevated when
+% learning features in 3D, due to the presence of three rotation parameters
+% instead of only one in 2D. It might therefore be important to develop network
+% architectures that are inherently invariant or equivariant to rotations,
+% similarly to convolutional neural networks in order to reduce the number of
+% features that need to be learned in 3D.
 
 One way of dealing with the problem of limited training data is data
 augmentation. Data augmentation allows the artificial increase of the training
-data size but generating new training samples from existing once, in order to
+data size by generating new training samples from existing once, in order to
 increase the variability in the data set. Hand-engineered data augmentation
 approaches depend on how well the variability in the data is understood and try
 to emulate the variability. It has been successfully be used for the recognition
 of hand-written digits and other natural image classification problem. Data
-augmentation can be used to encourage the learning of feature representation
-with certain invariance properties by artificially alternating the data set to
-contain these changes. Examples are rotation, translation, contrast variations
-and deformations.
+augmentation can be used to encourage the learning of a classify that is robust
+to the variations added to the data set, such as rotation, translation, contrast
+variations and deformations.
 
-\section{Future Work}
+Although neural networks are able to learn features that are invariant to the
+variability in the data, doing so often requires the learning of different
+variants of the same feature in order to capture the range of variability. In
+order to decrease the number of weights of a neural network, and therefore to
+reduce the training time and risk of overfitting, different neural network
+architectures have been developed with build-in invariance or equivariance
+properties. For example, previously used sigmoidal activation functions are
+sensitive to the intensity of the input, which requires the relearning of
+feature detectors for images with varying contrast. To overcome, rectified
+linear units were proposed, which represent the same units with different bias,
+which makes them equivariant to different contrasts. In order to allow the
+learning of translational invariant features, convolutional neural networks
+were developed, which greatly reduces the number of features that need to be
+learned for natural images compared to dense neural networks. However, features
+learned by a convolutional neural network are not invariant to rations. This
+leads, for example, to the learning of a variety of edge detecting features that
+are sensitive to different angles. While the number of angles is rather low in
+2D, significantly more features are required to span the space of rotations in
+3D, due to the combination of three rotation parameters instead of only one. In
+order to learn sensitive features in 3D, it might therefore be necessary to
+develop neural network architectures that are inherently invariant or
+equivariant to rotations in order to reduce the number of variants of the same
+feature that need to be learned in order to detect the feature under different
+angles.
 
-
+Neural network architectures were inspired by the calculations that can be
+performed by the nerve cells of the central nervous system. However, the units
+of an artificial neural network can only calculate the the weighted sums of its
+inputs followed by a non-linear function, which is an oversimplified model of
+the computational properties of the nerve cells in the CNS. In their review of
+the computational properties of dendrites, \citet{london2005} noted that some
+neurons were found that are able to calculate the multiplication of its inputs.
+For example, the looming sensitive neurons in the locust's visual system are
+able to detect approaching objects on a collision course by calculating the
+multiplication of angular size and speed of approaching object. The
+multiplication is possible encoded as the sum of logarithmic inputs followed by
+exponentiation. Similarly, \citet{logarithmic} have proposed a type of neuron
+for artificial neural networks that is able to learn to calculate the logarithm
+or exponential of its inputs, which allows for the learning of networks that can
+calculate arbitrary polynomial with significantly fewer parameters than
+traditional ReLU or sigmoid neural networks. Alternatively, \citet{dpn} have
+proposed a network architecture that can learn arbitrary polynomials using a
+combination of units that calculate weighted sums of an arbitrary number of
+inputs and units that calculate the product of two inputs. However, these
+network architectures needs to be investigated further in order to show of the
+theoretical advantages can be translated into improvements on practical
+problems.
 
 \begin{comment}
 
