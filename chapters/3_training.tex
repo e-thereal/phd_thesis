@@ -18,7 +18,7 @@
 \chapter{Training of Convolutional Models in the Frequency Domain}
 \label{sec:training}
 
-\section{Related Work}
+\section[Related work]{Related Work}
 
 Deep learning has traditionally been computationally expensive and advances in
 training methods have been the prerequisite for expanding its application to a
@@ -92,7 +92,7 @@ which enables the efficient training of sconvDBNs in the frequency domain.
 % considerations and the likes. Also trick to do strided convolutions in the
 % frequency domain.
 
-\subsection{Training in the Spatial Domain}
+\subsection[Training in the spatial domain]{Training in the Spatial Domain}
 
 % Short revision of how training works. Put all the pieces together to make it
 % an algorithm. Make sure that I do this for convRBMs
@@ -232,7 +232,7 @@ transforms. The other operations are equivalent in both domains.}
 \label{fig:algorithms}
 \end{figure}
 
-\subsection{Training in the Frequency Domain}
+\subsection[Training in the frequency domain]{Training in the Frequency Domain}
 
 The computational bottleneck of the training algorithm in the spatial domain is
 the calculation of convolutions, which needs to be performed $5 \times
@@ -297,7 +297,8 @@ algorithm in the context of training convRBMs, the same mapping of operations
 can be used to speed up the training of other convolutional models, such as
 convolutional neural networks.
 
-\subsection{Mapping Strided Convolutions to Stride-1 Convolutions}
+\subsection[Mapping of strided convolutions to stride-1 convolutions]{Mapping of
+Strided Convolutions to Stride-1 Convolutions}
 \label{sec:training:strided}
 
 % Strided convolutions are a type of convolution that shifts the filter kernel as
@@ -361,7 +362,8 @@ visible units per channel and number of weights per channel after reorganization
 are given by $N_\text{C} = N_\text{c} \times s^2$, $N_\text{V}^2 = N_\text{v}^2
 / s^2$ and $N_\text{W}^2 = N_\text{w}^2 / s^2$, respectively.
 
-\subsection{GPU Implementation and Memory Considerations}
+\subsection[GPU implementation and memory considerations]{GPU Implementation and
+Memory Considerations}
 
 To further reduce training times, the algorithm can be efficiently implemented
 on graphics cards, which can perform hundreds of operations in parallel.
@@ -499,10 +501,11 @@ Layer & {$N_\text{b}$} & {$N_\text{v}$} & {$N_\text{c}$} & {$N_\text{w}$} &
 \end{tabular}\\[0.2em]
 \end{table}
 
-\section{Evaluation of Running Time}
+\section[Evaluation of running time]{Evaluation of Running Time}
 \label{sec:training:eval}
 
-\subsection{Comparison of Running Times for Training sconvDBNs}
+\subsection[Comparison of running times for training sconvDBNs]{Comparison of
+Running Times for Training sconvDBNs}
 
 To demonstrate where the performance gains are produced, we trained a two-layer
 sconvDBN on 2D and 3D images using our frequency-domain method and the following
@@ -575,7 +578,8 @@ images, we used 100 magnetic resonance images (MRIs) of the brain from the OASIS
 dataset \citep{marcus2007}. We resampled all volumes to a resolution of
 \num{128x128x128} voxels and a voxel size of \SI{2x2x2}{\milli\metre}.
 
-\subsubsection{Running Time Analysis on 2D Color Images (ImageNet)}
+\subsubsection[Running time analysis on 2D color images (ImageNet)]{Running Time
+Analysis on 2D Color Images (ImageNet)}
 
 \ref{fig:run_imgnet}\subref{fig:run_imgnet_l1} shows a comparison of running
 times for training the first sconvRBM layer on 256 images with varying filter
@@ -694,7 +698,8 @@ our proposed implementation in the frequency domain (freq).}
 \label{fig:run_oasis}
 \end{figure}
 
-\subsection{Comparison of Running Times for Calculating Convolutions with cuDNN}
+\subsection[Comparison of running times for calculating convolutions with
+cuDNN]{Comparison of Running Times for Calculating Convolutions with cuDNN}
 
 % TODO: Add used by Torch, Caffe, TensorFlow
 

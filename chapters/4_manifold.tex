@@ -61,11 +61,8 @@ learning method on two tasks: a) to learn the variability of MR images of the
 brain of AD patients, and b) to discover patterns of morphological variability
 and lesion distribution in MS.
 
-\section{Manifold Learning of Medical Image Analysis}
-
-% TODO: Extend review
-% REWORD: The objective of local methods is to find an embedding that preserves
-% ...
+\section[Manifold learning for medical image analysis]{Manifold Learning for
+Medical Image Analysis}
 
 Most popular manifold learning methods for medical image analysis can be roughly
 divided into local and global methods \citep{cayton2005}. Local algorithms such
@@ -83,8 +80,6 @@ linear, which means that distances between neighboring points in manifold space
 can be approximated by their distances in ambient space. Once the proximity
 graph has been created, a unique solution to the inherent optimization problem
 of each algorithm can be found analytically by solving an eigenvalue problem.
-
-
 
 \begin{comment}
 
@@ -159,7 +154,8 @@ distance measure is crucial for manifold learning using Isomaps and that the
 warping distance between brain images improves the learning performance over
 previously used Euclidean distances in the image space.
 
-\section{Manifold Learning using Deep Belief Networks}
+\section[Manifold learning using deep belief networks]{Manifold Learning using
+Deep Belief Networks}
 
 Deep generative models such as deep belief networks are a promising alternative
 to previously used brain manifold learning methods due to their ability to
@@ -176,7 +172,7 @@ architecture is crucial for the success. In this section, we will explain the
 choices we made in designing the overall manifold learning framework. Particular
 parameter choices are explained along with two applications.
 
-\subsection{General Architecture}
+\subsection[General architecture]{General Architecture}
 \label{sec:general_arch}
 
 The general architecture of the DBN used for manifold learning of brain MRIs is
@@ -216,7 +212,7 @@ are sconvRBMs followed by one or more dense RBM layers.}
 \label{fig:manidbn}
 \end{figure}
 
-\subsection{Unit Types}
+\subsection[Unit types]{Unit Types}
 
 To apply the model to real-valued data like the intensities of some medical
 images, the visible units are modeled as Gaussian units. As suggested in Hinton
@@ -228,7 +224,8 @@ only encode two states. In order to learn a range of patterns, we use noisy
 rectified linear units as the hidden units, which has shown to improve the
 learning performance~\cite{nair2010} of RBMs.
 
-\subsection{Incorporating a Region of Interest}
+\subsection[Incorporating a region of interest]{Incorporating a Region of
+Interest}
 
 Large black regions without local structure can lead to random activations of
 the hidden units and consequently the learning of random filters. To overcome
@@ -274,7 +271,8 @@ of sconvRBMs.
 % TODO: shorten it a bit and give more intuition behind it, why do we model it
 % like this?
 
-\section{Manifold of MRIs of Alzheimer's Disease Patients}
+\section[Manifold of MRIs of Alzheimer's disease patients]{Manifold of MRIs of
+Alzheimer's Disease Patients}
 
 % Motivation and short overview of the method and why use this one and not
 % alternatives. What data was used? Applied to RAW MRI images without much
@@ -295,7 +293,7 @@ images and that DBNs are able to learn a low-dimensional manifold of brain
 volumes that detects modes of variation that correlate to demographic and
 disease parameters.
 
-\subsection{Data sets and Pre-processing}
+\subsection[Data sets and pre-processing]{Data Sets and Pre-processing}
 
 We have evaluated the proposed method on a subset of the ADNI dataset
 \citep{petersen2010}, containing 300 T1-weighted MRIs of Alzheimer's disease
@@ -524,7 +522,8 @@ $M_2$ &
 \label{tab:corr}
 \end{table}
 
-\section{Variability of Morphology and Lesion Distribution}
+\section[Variability of morphology and lesion distribution]{Variability of
+Morphology and Lesion Distribution}
 
 In this section, new method is presented for modeling the variability in brain
 morphology and lesion distribution in a large set of MRIs of MS patients.
@@ -562,7 +561,7 @@ clinical scores.
 % Motivation for that: correspondence but without eliminating variability in
 % morphology. Why use deep learning and not another method for that?
 
-\subsection{Data Sets and Pre-processing}
+\subsection[Data sets and pre-processing]{Data Sets and Pre-processing}
 
 The proposed method was evaluated on a data set from an MS clinical trial of 474
 secondary progressive MS patients. For each subject, the data set contains one
@@ -769,7 +768,8 @@ modes of variability of morphological and lesion distribution changes.
 
 \subsection{Results}
 
-\subsubsection{Visualization of Patterns of Variability}
+\subsubsection[Visualization of patterns of variability]{Visualization of
+Patterns of Variability}
 
 The invertibility of our model allows the reconstruction of images from the
 distribution parameters to visualize the discovered patterns of variability.

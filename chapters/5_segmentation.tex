@@ -12,13 +12,13 @@ established their importance for assessing disease progression and treatment
 effect. However, lesions vary greatly in size, shape, intensity and location,
 which makes their automatic and accurate segmentation challenging.
 
-\section{Related Work}
+\section[Related work]{Related Work}
 
 Many automatic methods have been proposed for the segmentation of MS
 \mbox{lesions} over the last two decades \citep{garcia2013}, which can be
 classified into unsupervised and supervised methods.
 
-\subsection{Unsupervised Methods}
+\subsection[Unsupervised methods]{Unsupervised Methods}
 
 Unsupervised methods do not require a labeled data set for training. Instead,
 lesions are identified as an outlier of, e.g., a subject-specific generative
@@ -46,7 +46,7 @@ to remove false positives, while \citet{schmidt2012automated} used
 a conservative threshold for the initial detection of lesions, which are later
 grown in a separate step to yield an accurate delineation.
 
-\subsection{Supervised Methods}
+\subsection[Supervised methods]{Supervised Methods}
 
 Current supervised approaches typically start with a set of features, which can
 range from small and simple to large and highly variable, and are either
@@ -71,7 +71,8 @@ based on matched patches from a library containing pre-segmented images, where
 multiple matches are weighted using a similarity measure based on
 rotation-invariant features.
 
-\subsection{Patch-based Deep Learning Methods}
+\subsection[Patch-based deep learning methods]{Patch-based Deep Learning
+Methods}
 
 A recent breakthrough for the automatic segmentation using deep learning comes
 from the domain of cell membrane segmentation, in which \citet{ciresan2012}
@@ -84,7 +85,7 @@ specifically tuned to the segmentation task. However, the time required to train
 patch-based methods can make the approach infeasible when the size and number of
 patches are large.
 
-\subsection{Fully Convolutional Methods}
+\subsection[Fully convolutional methods]{Fully Convolutional Methods}
 
 Recently, different CNN architectures
 \citep{long2015,ronneberger2015,brosch2015,kang2014fully} have been proposed
@@ -156,7 +157,8 @@ input images, $x^{(0)}$, and segmentations, $y^{(0)}$.}
 \label{fig:network}
 \end{figure*}
 
-\subsection{Segmentation as an Optimization Problem}
+\subsection[Segmentation as an optimization problem]{Segmentation as an
+Optimization Problem}
 
 In this paper, the task of segmenting MS lesions is defined as finding a
 function $s$ that maps multi-modal images $I$, e.g., $I = (I_\text{FLAIR},
@@ -173,7 +175,7 @@ where $\mathcal{S}$ is the set of possible segmentation functions, and $E$ is an
 error measure that calculates the dissimilarity between ground truth
 segmentations and predicted segmentations.
 
-\subsection{Model Architecture}
+\subsection[Model architecture]{Model Architecture}
 
 The set of possible segmentation functions, $\mathcal{S}$, is modeled by the
 convolutional encoder network with shortcut connections (CEN-s) illustrated in
@@ -250,7 +252,7 @@ chose a fixed threshold such that the mean Dice similarity coefficient
 \citep{dice1945measures} is maximized on the training set and used the same
 threshold for the evaluation on the test set.
 
-\subsection{Gradient Calculation}
+\subsection[Gradient calculation]{Gradient Calculation}
 
 The parameters of the model can be efficiently learned by minimizing the error
 $E$ for each sample of the training set, which requires the calculation of the
@@ -441,7 +443,7 @@ direct comparison (see \ref{tab:usedmodels} on page \pageref{tab:usedmodels}).
  
 \sisetup{separate-uncertainty=true,detect-weight=true,detect-inline-weight=math}
 
-\section{Experiments and Results}
+\section[Experiments and results]{Experiments and Results}
 
 We evaluated our method on two publicly available data sets (from the MICCAI
 2008 MS lesion segmentation
@@ -458,9 +460,9 @@ was used to carry out a detailed analysis of different CEN architectures using
 different combinations of modalities, with a comparison to five publicly
 available state-of-the-art methods.
 
-\subsection{Data Sets and Pre-processing}
+\subsection[Data sets and pre-processing]{Data Sets and Pre-processing}
 
-\subsubsection{Public data sets}
+\subsubsection{Public Data Sets}
 The data set of the MICCAI 2008 MS lesion segmentation challenge
 \citep{styner20083d} consists of 43 T1-weighted (T1w), T2-weighted (T2w), and
 FLAIR MRIs, divided into 20 training cases for which ground truth segmentations
@@ -479,7 +481,7 @@ of the second place method by \cite{jesson2015} and third place method by
 \cite{maier2015} from the challenge proceedings. The paper of the first place
 method does not have sufficient details to replicate their evaluation.
 
-\subsubsection{Clinical trial data set}
+\subsubsection{Clinical Trial Data Sets}
 
 We used two different clinical trial data sets to evaluate our method. The first
 data set contains images of 500 subjects split equally into training and test
@@ -524,7 +526,7 @@ CEN-s took approximately 27 hours and 37 hours, respectively, on a single
 GeForce GTX 780 graphics card. Once the network is trained, new multi-contrast
 images can be segmented in less than one second.
 
-\subsection{Comparison to Other Methods}
+\subsection[Comparison to other methods]{Comparison to Other Methods}
 \label{sec:othermethods}
 
 We compared our method with the five publicly available methods, some of which
@@ -567,7 +569,8 @@ $\omega_\text{nb}$, $\omega_\text{ts}$, and $\alpha_\text{sls}$. We tuned these
 parameters on the training set via a grid-search over a range of values as
 suggested by \citet{roura2015}.
 
-\subsection{Measures of Segmentation Accuracy}
+\subsection[Measures of segmentation accuracy]{Measures of Segmentation
+Accuracy}
  
 We used the following six measures to produce a comprehensive evaluation
 of segmentation accuracy as there is generally no single measure that is
@@ -655,7 +658,7 @@ sets during training. Only small improvements can be observed after 400 epochs.}
 \label{fig:epochs}
 \end{figure}
 
-\subsection{Training Parameters}
+\subsection[Training parameters]{Training Parameters}
 \label{sec:trainparams}
 
 The most influential parameters of the training method are the number of epochs
@@ -692,7 +695,8 @@ to the choice of the sensitivity ratio, which mostly affects the optimal
 threshold. We chose a fixed sensitivity ratio of 0.02 for all our experiments.
 
 
-\subsection{Impact of the Training Set Size on the Segmentation Performance}
+\subsection[Impact of the training set size on the segmentation
+performance]{Impact of the Training Set Size on the Segmentation Performance}
 
 To evaluate the impact of the training set size on the segmentation performance,
 we trained a CEN with 3 layers on the first in-house data set with a varying
@@ -721,7 +725,7 @@ training data no longer occurs.}
 \label{fig:bioms}
 \end{figure}
 
-\subsection{Comparison on Public Data Sets}
+\subsection[Comparison on public data sets]{Comparison on Public Data Sets}
 
 To allow for a direct comparison with a large number of state-of-the-art
 methods, we evaluated our method on the MICCAI 2008 MS lesion segmentation
@@ -934,8 +938,9 @@ Our method (GT2) & 68.3 & 78.3 & 64.5 & 65.8 & 69.3 & 61.9 \\
 \end{tabular}
 \end{table}
 
-\subsection{Comparison of Network Architectures, Input Modalities, and
-Publicly Available Methods on Clinical Trial Data}
+\subsection[Comparison of network architectures, input modalities, and publicly
+available methods on clinical trial data]{Comparison of Network Architectures,
+Input Modalities, and Publicly Available Methods on Clinical Trial Data}
 
 \begin{table}[tb]
 \caption{Parameters of the 3-layer CEN used on the clinical trial data set.}
@@ -952,7 +957,7 @@ Deconvolutional & \num{9x9x5x32} & 1 & \num{164x206x52x1}\phantom{0} \\
 \end{tabular}
 \end{table}
 
-\subsubsection{Quantitative Comparison}
+\subsubsection[Quantitative comparison]{Quantitative Comparison}
 
 To determine the effect of network architectures, we compared the segmentation
 performance of three different networks using T1w and FLAIR MRIs.
@@ -1174,7 +1179,8 @@ and, hence, allows the 7-layer \mbox{CEN-s} to detect all three small lesions
 (highlighted by the white circles), while still being able to segment large
 lesions.
 
-\subsection{Comparison for Different Lesion Sizes}
+\subsection[Comparison for different lesion sizes]{Comparison for Different
+Lesion Sizes}
 
 \begin{table}[tb]
 \caption{Lesion size groups as used for the detailed analysis.}

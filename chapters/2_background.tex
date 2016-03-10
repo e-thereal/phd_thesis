@@ -44,7 +44,7 @@ networks (DBNs) \citep{hinton2006b}.
 % RBMs, DBNs, convRBMs, convDBNs for manifold learning and NN and CNN for lesion
 % segmentation.
 
-\section{Supervised Learning}
+\section[Supervised learning]{Supervised Learning}
 
 % If I put this first, I can argue with inspiration from biological models
 % first.
@@ -81,7 +81,7 @@ overview of convolutional neural networks.
 %   (DNN) and convolutional neural networks (CNN)
 % \end{itemize}
 
-\subsection{Dense neural networks}
+\subsection[Dense neural networks]{Dense Neural Networks}
 \label{sec:DNN}
 
 A dense neural network (see \ref{fig:dnn}) is a deterministic function that maps
@@ -143,7 +143,7 @@ f_l'(\vect{z}_l) & \text{for $l < L$,}\\
 where $\nabla_{\vect{x}_L}E$ denotes the gradient of the error function with
 respect to the predicted output and $\cdot$ denotes element-wise multiplication.
 
-\subsection{Convolutional Neural Networks}
+\subsection[Convolutional neural networks]{Convolutional Neural Networks}
 
 The structure of CNNs is inspired by the complex arrangement of simple and
 complex cells found in the visual cortex \citep{hubel1962,hubel1968}. Simple
@@ -208,7 +208,7 @@ information to set an adaptive learning rate for each parameter. This is
 especially important for the training of deep networks, where the optimal
 learning rates often differ greatly for each layer.
 
-\section{Unsupervised Learning}
+\section[Unsupervised learning]{Unsupervised Learning}
 
 % More statistical learning and finding patterns of similarity.
 
@@ -221,7 +221,8 @@ section, we will first introduce the restricted Boltzmann machines (RBMs)
 \citep{freund1992,hinton2010a}, which are the building blocks of the later
 described deep belief networks (DBNs) \citep{hinton2006b}.
 
-\subsection{From restricted Boltzmann machines to deep belief networks}
+\subsection[From restricted Boltzmann machines to deep belief networks]{From
+Restricted Boltzmann Machines to Deep Belief Networks}
 
 An RBM is a probabilistic graphical model defined by a bipartite graph as shown
 in Fig.~\ref{fig:rbm}. The units of the RBM are divided into two layers, one of
@@ -350,7 +351,7 @@ training of an RBM can be found in Hinton's RBM training guide
 \citep{hinton2010a}. A detailed explanation and comparison of different training
 algorithms is given in \ref{sec:training}.
 
-\subsubsection{Deep belief networks}
+\subsubsection[Deep belief networks]{Deep Belief Networks}
 
 % TODO: Perhaps more explicitly define DBN here and cite (Hinton et al. 2006)?
 %
@@ -363,8 +364,9 @@ layer, where the first RBM is trained on the input data and subsequent RBMs are
 trained on the hidden unit activations computed from the previous RBM. The
 stacking of RBMs can be repeated to initialize DBNs of any depth.
 
-\subsection{Variants of restricted Boltzmann machines and deep belief
-networks}
+\subsection[Variants of restricted Boltzmann machines and deep belief
+networks]{Variants of Restricted Boltzmann Machines and Deep Belief
+Networks}
 
 Many variants of RBMs and DBNs have been proposed to adapt them for different
 domains. In this section, we will first introduce the convolutional DBNs
@@ -497,7 +499,7 @@ analogous to convRBMs. Furthermore, in \ref{sec:training:strided}, I will show
 how to convert an sconvRBM into an equivalent convRBM by reorganizing the hidden
 units, which enables efficient training and inference of sconvRBMs.
 
-\subsubsection{Alternative unit types}
+\subsubsection{Alternative Unit Types}
 
 To model real-valued inputs like the intensities of some medical images, the
 binary visible units of an RBM can be replaced with Gaussian visible units, which
