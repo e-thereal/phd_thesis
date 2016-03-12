@@ -5,7 +5,7 @@ Deep learning is a field within machine learning that has been studied since the
 early 1980s \citep{fukushima1980}. However, deep learning methods did not gain
 in popularity until the late 2000s with the advent of fast general purpose
 graphics processors \citep{raina2009}, layerwise pre-training methods
-\citep{hinton2006b,hinton2006c}, and large datasets
+\citep{hinton2006b,hinton2006c}, and large data sets
 \citep{deng2009,krizhevsky2012}. Since then, deep learning methods have become
 the state-of-the-art in many non-medical \citep{krizhevsky2012,sainath2013} and
 medical \citep{ciresan2012,kamnitsas2015} applications. There are many different
@@ -29,15 +29,14 @@ $\num{3x3x3x3} = 81$ different prototypical faces with only $3+3+3+3=12$
 features. Without a hierarchical representation of the data, a model would
 require $81$ prototypical face features to span the same face manifold.
 
-In this chapter, I will briefly introduce the supervised and unsupervised deep
+In this chapter, we will briefly introduce the supervised and unsupervised deep
 learning models that form the basis for the lesion segmentation and manifold
-learning methods, which are discussed further in \ref{sec:segmentation}
-and \ref{sec:manifold}. I will start with a description of dense neural
-networks (DNNs) \citep{farley1954,werbos1974,rumelhart1986} and convolutional
-neural networks (CNNs) \citep{fukushima1980,lecun1989,lecun1998}. In the second
-part, I will give a brief overview of restricted Boltzmann Machines (RBMs)
-\citep{freund1992,hinton2010a}, which are the building blocks of deep belief
-networks (DBNs) \citep{hinton2006b}.
+learning methods, which are discussed further in \ref{sec:segmentation} and
+\ref{sec:manifold}. We will start with a description of \glspl{dnn}
+\citep{farley1954,werbos1974,rumelhart1986} and \glspl{cnn}
+\citep{fukushima1980,lecun1989,lecun1998}. In the second part, we will give a
+brief overview of \glspl{rbm} \citep{freund1992,hinton2010a}, which are the
+building blocks of \glspl{dbn} \citep{hinton2006b}.
 
 % Reduce overlap with introduction)
 
@@ -52,7 +51,7 @@ networks (DBNs) \citep{hinton2006b}.
 A typical pipeline for classifying images consists of two main steps. In the
 first step, predefined or learned features are extracted from the input images,
 which are then used to train a separate supervised learning model, such as a
-random forest \citep{breiman2001} or support vector machine \citep{cortes1995},
+\gls{rf} \citep{breiman2001} or a \gls{svm} \citep{cortes1995},
 to perform classification or prediction. Alternatively, classification and
 prediction can be performed with a single model that takes the raw input data
 and produces the desired output, such as class probabilities. This type of
@@ -127,9 +126,8 @@ $\vect{y}^{(i)}$
 \vect{y}^{(i)}\Big),
 \end{equation}
 where $\thetas$ denotes the trainable parameters of the neural network. Typical
-choices for the error function are the sum of squared differences (SSD) and the
-cross-entropy.
-The minimization problem can be solved using stochastic gradient descent (SGD)
+choices for the error function are the \gls{ssd} and the cross-entropy.
+The minimization problem can be solved using \gls{sgd}
 \citep{rumelhart1986,polyak1992}, which requires the calculation of the gradient
 of the error function with respect to the model parameters. The gradient can be
 calculated by backpropagation \citep{werbos1974} as follows
@@ -201,7 +199,7 @@ the model. However, the partial derivatives of parameters of different layers
 can vary substantially in magnitude, which can require different learning rates.
 In recent years, there has been an increasing interest in developing methods for
 automatically choosing independent learning rates. Most methods (e.g., AdaGrad
- by \citealp{duchi2011}; AdaDelta by \citealp{zeiler2012}; RMSprop
+by \citealp{duchi2011}; AdaDelta by \citealp{zeiler2012}; RMSprop
 by \citealp{dauphin2015}; and Adam by \citealp{kingma2014}) collect different
 statistics of the partial derivatives over multiple iterations and use this
 information to set an adaptive learning rate for each parameter. This is
@@ -217,15 +215,15 @@ variability in form of a feature hierarchy from unlabeled images. The key to
 learning such a hierarchy is the ability of deep models to be trained layer by
 layer, where each layer acts as a nonlinear feature extractor. Various methods
 have been proposed for feature extraction from unlabeled images. In this
-section, we will first introduce the restricted Boltzmann machines (RBMs)
+section, we will first introduce the restricted Boltzmann machines
 \citep{freund1992,hinton2010a}, which are the building blocks of the later
-described deep belief networks (DBNs) \citep{hinton2006b}.
+described deep belief networks \citep{hinton2006b}.
 
 \subsection[From restricted Boltzmann machines to deep belief networks]{From
 Restricted Boltzmann Machines to Deep Belief Networks}
 
 An RBM is a probabilistic graphical model defined by a bipartite graph as shown
-in Fig.~\ref{fig:rbm}. The units of the RBM are divided into two layers, one of
+in \ref{fig:rbm}. The units of the RBM are divided into two layers, one of
 visible units $\vect{v}$ and the other of hidden units $\vect{h}$. There are no
 direct connections between units within either layer. An RBM defines the joint
 probability of visible and hidden units in terms of the energy $E$
@@ -296,9 +294,9 @@ unit to be activated.
 
 RBMs can be trained by maximizing the likelihood or, more commonly, the
 log-likelihood of the training data, $\data = \{\vect{v}_n \given n \in [1, N]
-\}$, which is called maximum likelihood estimation (MLE). The gradient of the
-log-likelihood function with respect to the weights, $\vect{W}$, is given by the
-mean difference of two expectations
+\}$, which is called \gls{mle}. The gradient of the log-likelihood function with
+respect to the weights, $\vect{W}$, is given by the mean difference of two
+expectations
 \begin{equation}
 \label{eq:mle}
 \nabla_{\vect{W}} \log p(\mathcal{D} \given \thetas) =
@@ -338,18 +336,17 @@ $p(\vect{vh}\given \thetas)$.
 
 If the Gibbs sampler is initialized at a data point from the training set and
 only one Monte Carlo sample is used to approximate the second expectation in
-\eqref{eq:mle}, the learning algorithm is called contrastive divergence (CD)
-\citep{hinton2002}. Alternatively, persistent CD (PCD) \citep{tieleman2008} uses
-several separate Gibbs chains to generate data independent samples from the
-model, which results in a better approximation of the gradient of the
-log-likelihood than CD. To speed up the training, the dataset is usually divided
-into small subsets called mini-batches and a gradient step is performed for each
-mini-batch. To avoid confusion with a gradient step, the term ``iteration'' is
-generally avoided and the term ``epoch'' is used instead to indicate a sweep
-through the entire dataset. Additional tricks to monitor and speed up the
-training of an RBM can be found in Hinton's RBM training guide
-\citep{hinton2010a}. A detailed explanation and comparison of different training
-algorithms is given in \ref{sec:training}.
+\eqref{eq:mle}, the learning algorithm is called \gls{cd} \citep{hinton2002}.
+Alternatively, \gls{pcd} \citep{tieleman2008} uses several separate Gibbs chains
+to generate data independent samples from the model, which results in a better
+approximation of the gradient of the log-likelihood than CD. To speed up the
+training, the data set is usually divided into small subsets called mini-batches
+and a gradient step is performed for each mini-batch. To avoid confusion with a
+gradient step, the term ``iteration'' is generally avoided and the term
+``epoch'' is used instead to indicate a sweep through the entire data set.
+Additional tricks to monitor and speed up the training of an RBM can be found in
+Hinton's RBM training guide \citep{hinton2010a}. A detailed explanation and
+comparison of different training algorithms is given in \ref{sec:training}.
 
 \subsubsection[Deep belief networks]{Deep Belief Networks}
 
@@ -369,10 +366,10 @@ networks]{Variants of Restricted Boltzmann Machines and Deep Belief
 Networks}
 
 Many variants of RBMs and DBNs have been proposed to adapt them for different
-domains. In this section, we will first introduce the convolutional DBNs
-(convDBNs), which allows DBNs to be applied to high-resolution images, followed
-by a discussion of different unit types, which allow DBNs to be applied to
-real-valued data like the intensities of some medical images.
+domains. In this section, we will first introduce the \glspl{cdbn}, which allows
+DBNs to be applied to high-resolution images, followed by a discussion of
+different unit types, which allow DBNs to be applied to real-valued data like
+the intensities of some medical images.
 
 \subsubsection{Convolutional DBNs}
 
@@ -381,20 +378,19 @@ dependent. Hence, features that can occur at many different locations in an
 image, such as edges and corners, must be relearned for every possible location,
 which dramatically increases the number of features required to capture the
 content of large images. To increase the translational invariance of the learned
-features, Lee et al. introduced the convolutional deep belief network (convDBN)
-\citep{lee2009,lee2011}. In a convDBN, the units of each layer are organized in
-a multidimensional array that reflects the arrangement of pixels in the input
-image. The units of one layer are only connected to the units of a sub-region of
-the previous layer, and share the same weights with all other units of the same
-layer. This greatly reduces the number of trainable weights, which reduces the
-risk of overfitting, reduces the memory required to store the model parameters,
-speeds up the training, and thereby facilitates the application to
-high-resolution images.
+features, Lee et al. introduced the convDBN \citep{lee2009,lee2011}. In a
+convDBN, the units of each layer are organized in a multidimensional array that
+reflects the arrangement of pixels in the input image. The units of one layer
+are only connected to the units of a sub-region of the previous layer, and share
+the same weights with all other units of the same layer. This greatly reduces
+the number of trainable weights, which reduces the risk of overfitting, reduces
+the memory required to store the model parameters, speeds up the training, and
+thereby facilitates the application to high-resolution images.
 
 A convDBN consists of alternating convolutional and pooling layers, which are
 followed by one or more dense layers. Each convolutional layer of the model can
-be trained in a greedy layerwise fashion by treating it as a convolutional
-restricted Boltzmann machine (convRBM). The energy of a convRBM is defined as
+be trained in a greedy layerwise fashion by treating it as a \gls{crbm}. The
+energy of a convRBM is defined as
 \begin{align} 
 E(\vect{v},\vect{h}) 
 &= -\sum_{i=1}^{N_\text{c}} \sum_{j=1}^{N_\text{k}}
@@ -476,8 +472,7 @@ $p(\vect{h}^{(j)} \given \vect{v}_n)$ and $p(\vect{h}^{(j)} \given
 Strided convolutions are a type of convolution that shifts the filter kernel as
 a sliding window with a step size or stride $s > 1$, stopping at only
 $N_\text{v} / s$ positions. Replacing stride-1 convolutions with strided
-convolutions, we can define the energy function of a strided convolutional RBM
-(sconvRBM) as follows
+convolutions, we can define the energy function of a \gls{scrbm} as follows
 \begin{equation} 
 E(\vect{v},\vect{h}) = 
 -\sum_{i=1}^{N_\text{c}}\sum_{j=1}^{N_\text{k}}\sum_{x,y=1}^{N_\text{h}}
@@ -490,14 +485,14 @@ Strided convolutional RBMs have several advantages over traditional convRBMs.
 The use of a strided convolutions reduces the number of hidden units per channel
 to $N_\text{h} = N_\text{v} / s$, hence significantly reducing training times
 and memory required for storing the hidden units during training. Furthermore,
-strided convolutional DBNs (sconvDBNs) do not require pooling layers to
-reduce the dimensionality, because dimensionality reduction is already performed
-within the sconvRBM layers. Consequently, inference in an sconvDBN is
-invertible, which allows for the visualization of detected patterns similar to
-DBNs. Rules for inference, sampling, and training of an sconvRBM can be derived
-analogous to convRBMs. Furthermore, in \ref{sec:training:strided}, I will show
-how to convert an sconvRBM into an equivalent convRBM by reorganizing the hidden
-units, which enables efficient training and inference of sconvRBMs.
+\glspl{scdbn} do not require pooling layers to reduce the dimensionality,
+because dimensionality reduction is already performed within the sconvRBM
+layers. Consequently, inference in an sconvDBN is invertible, which allows for
+the visualization of detected patterns similar to DBNs. Rules for inference,
+sampling, and training of an sconvRBM can be derived analogous to convRBMs.
+Furthermore, in \ref{sec:training:strided}, I will show how to convert an
+sconvRBM into an equivalent convRBM by reorganizing the hidden units, which
+enables efficient training and inference of sconvRBMs.
 
 \subsubsection{Alternative Unit Types}
 
@@ -525,13 +520,13 @@ b_i.
 \end{align}
 
 A binary hidden unit can only encode two states. In order to increase the
-expressive power of the hidden units, Nair et al. proposed using noisy rectified
-linear units (NReLU) \citep{nair2010} as the hidden units, and showed that this
-can improve the learning performance of RBMs. The signal of an NReLU is the sum
-of an infinite number of binary units, all of which having the same weights but
-different bias terms. In the special case where the offsets of their bias
-terms are set to $-0.5, -1.5, \dotsc$, the sum of their probabilities and
-therefore the expectation of an NReLU is extremely close to having a closed form:
+expressive power of the hidden units, Nair et al. proposed using \glspl{nrelu}
+\citep{nair2010} as the hidden units, and showed that this can improve the
+learning performance of RBMs. The signal of an NReLU is the sum of an infinite
+number of binary units, all of which having the same weights but different bias
+terms. In the special case where the offsets of their bias terms are set to
+$-0.5, -1.5, \dotsc$, the sum of their probabilities and therefore the
+expectation of an NReLU is extremely close to having a closed form:
 \begin{align}
 \E[h_j \given \vect{v}, \thetas] &=
 \sum_{i=1}^\infty \sigm(\vect{w}_{\cdot,j}^\text{T}\vect{v} + c_j - i + 0.5),\\
@@ -548,6 +543,6 @@ where $\Norm(0, \sigma^2)$ denotes Gaussian noise.
 
 In this section, we have introduced the most basic deep learning methods, which
 form the basis for the segmentation and manifold learning methods explained in
-Chapter~\ref{sec:segmentation} and Chapter~\ref{sec:manifold}, respectively. The
-next chapter details our training algorithm of convDBNs and CNNs in full, along
-with a comparison of alternative training methods.
+\ref{sec:segmentation} and \ref{sec:manifold}, respectively. The next chapter
+details our training algorithm of convDBNs and CNNs in full, along with a
+comparison of alternative training methods.

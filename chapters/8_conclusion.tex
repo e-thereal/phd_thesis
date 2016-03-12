@@ -1,4 +1,5 @@
 \chapter{Conclusions and Future Work}
+\label{sec:conclusions}
 
 In this thesis, we have addressed two challenges for measuring the state and
 progression of MS. In \ref{sec:segmentation}, we presented a fully automatic
@@ -57,7 +58,7 @@ graph.
 
 \section[Future work]{Future Work}
 
-\subsection[New Applications of deep learning]{New Applications of Deep
+\subsection[New applications of deep learning]{New Applications of Deep
 Learning}
 
 Motivated by the success of deep learning for the two applications explored in
@@ -95,20 +96,21 @@ original landmark map.
 
 A different stream of potential applications is to incorporate deep learning
 into existing model learning frameworks. Originally, active shape
-\cite{cootes1995} and active appearance \cite{cootes2001q} models employ
+\citep{cootes1995} and active appearance \citep{cootes2001} models employ
 principal component analysis in order to reduce the dimensionality of the input
 feature space. Similarly, deep belief networks or stacked autoencoders can be
 used for dimensionality reduction, which might yield to the learning of more
 biologically plausible models, due to their ability to find highly nonlinear
 patterns of variability in the data.
 
-\subsection[Dealing with small data set using data augmentation]{Dealing with
-Small Data Set using Data Augmentation}
+\subsection[Improving the performance on small data sets using data
+augmentation]{Improving the Performance on Small Data Sets using Data
+Augmentation}
 
-One way of dealing with the problem of limited training data is data
+A promising approach of improving the performance on small data sets is data
 augmentation. Data augmentation allows the artificial increase of the training
 data set size by generating new training samples from existing ones. Data
-augmentation has been successfully be used for to deal with the problem of small
+augmentation has been successfully used to deal with the problem of small
 medical data sets. For example, \citet{ronneberger2015} used automatically
 generated deformations to artificially increase the data set size for segmenting
 cells, but also simpler data augmentation techniques such as adding rotations,
@@ -172,6 +174,5 @@ traditional ReLU or sigmoid neural networks. Alternatively, \citet{livni2013}
 have proposed a network architecture that can learn arbitrary polynomials using
 a combination of units that calculate weighted sums of an arbitrary number of
 inputs and units that calculate the product of two inputs. However, these
-network architectures needs to be investigated further in order to show of the
-theoretical advantages can be translated into improvements on practical
-problems.
+network architectures needs to be investigated further in order to show if the
+theoretical advantages translate into improvements on practical problems.

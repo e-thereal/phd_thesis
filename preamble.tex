@@ -66,9 +66,12 @@
 }
 
 % Special Table hacks
-\usepackage{array,booktabs,dcolumn,rotating,multirow,etoolbox}
+\usepackage{array,booktabs,dcolumn,rotating,multirow}
 
-\robustify\bfseries % requires etoolbox
+\usepackage{etoolbox}
+\robustify\bfseries  % robustify in order to use it in S columns
+\preto\chapter\glsresetall  % reset acronyms at the beginning of each chapter
+
 \newcommand{\minitab}[2][l]{\begin{tabular}{#1}#2\end{tabular}}
 
 \newcolumntype{d}[1]{%
@@ -203,11 +206,12 @@
 \SetArgSty{}
 \DontPrintSemicolon
 
-\usepackage[acronym,nonumberlist,toc,nomain]{glossaries}
-\renewcommand*{\glspostdescription}{}
+\usepackage[acronym,toc,nonumberlist,nopostdot,nomain]{glossaries}
+%nogroupskip,nopostdot,nomain,nonumberlist
+%\renewcommand*{\glspostdescription}{}
+%\renewcommand*{\glsgroupskip}{}
 \setlength{\glsdescwidth}{0.7\textwidth}
 \glossarystyle{super}
-\renewcommand*{\glsgroupskip}{}
 
 \AtBeginDocument{\labelformat{lstlisting}{Listing #1}}
 \AtBeginDocument{\labelformat{chapter}{Chap\mbox{ter #1}}}

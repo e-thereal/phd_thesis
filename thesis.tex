@@ -4,7 +4,7 @@
   paper=letter,
   numbers=noenddot,
   captions=tableheading,
-  %chapterprefix,
+  chapterprefix,
   %parskip=half,
   %fontsize=10.5pt,
   fontsize=11pt,
@@ -25,7 +25,7 @@ Lesion Segmentation with Application to Multiple Sclerosis}
 %\usepackage[margin=3cm]{geometry}
 \input{preamble}
 \usepackage{typearea}
-% \input{acronyms}
+\input{acronyms}
 
 %\hypersetup{pdfsubject={\longtitle, Rev. \svnrev}}
 
@@ -42,8 +42,6 @@ Lesion Segmentation with Application to Multiple Sclerosis}
 \title{\longtitle}
 \author{Tom Brosch}
 
-% TODO: Unify capitalization of headings
-
 %\includeonly{chapters/3_training}
 
 \begin{document}
@@ -59,11 +57,10 @@ Lesion Segmentation with Application to Multiple Sclerosis}
 \addcontentsline{toc}{chapter}{Table of Contents}
 \listoftables
 \listoffigures
-%\printglossary[type=acronym,title=List of Abbreviations,toctitle=List of
-%Abbreviations]
+\printglossary[type=acronym,title=List of Abbreviations,toctitle=List of
+Abbreviations]
 \clearpage
 
-\glsresetall
 \pagenumbering{arabic}
 
 \include{chapters/1_introduction}
@@ -71,8 +68,6 @@ Lesion Segmentation with Application to Multiple Sclerosis}
 \include{chapters/3_training}
 \include{chapters/5_segmentation}
 \include{chapters/4_manifold}
-%\include{chapters/6_discussion}
-%\include{chapters/7_future}
 \include{chapters/8_conclusion}
 
 \singlespacing
@@ -84,3 +79,6 @@ Lesion Segmentation with Application to Multiple Sclerosis}
 %\include{chapters/A_gpudetails}
 
 \end{document}
+
+%\include{chapters/6_discussion}
+%\include{chapters/7_future}

@@ -1,17 +1,6 @@
 % TODO: add tiling strategy to cope with memory contrains. Mention that it does
 % not impact run time.
 
-% TODO: figure out the impact of the important function on the overall runtime.
-% Redo the individual tests with real parameters and compare real runtime with
-% lab runtimes (individual runtimes added)
-
-% TODO: If individual stuff is really the bottle neck, then analyse how much in
-% each layer and compare to cuDNN. Mention that cuDNN is the new standard and
-% has outperformed Alex's implementation.
-
-% TODO: Masking and impact of masking for feature learning, manifold learning
-% and segmentation. Also lesion prior for segmentation and impact
-
 % \chapter[Accelerating the Training of 3D Convolutional Models by Training in the
 % Frequency Domain]{Accelerating the Training of\\ 3D Convolutional Models by\\
 % Training in the Frequency Domain}
@@ -27,19 +16,18 @@ methods \citep{hinton2006b} greatly improved the efficiency of the training of
 deep belief networks (DBNs), which has made feasible the use of large sets of
 small images (e.g. \num{28x28}), such as those used for hand-written digit
 recognition. Subsequently, new directions for speeding up the training of deep
-models were opened with the advance of programmable graphics cards (GPUs), which
-can perform thousands of operations in parallel. \citet{raina2009} demonstrated
-that by using graphics cards, training of restricted Boltzmann machines (RBMs)
-on small image patches (e.g. \num{24x24}) can be performed up to \num{70} times
-faster than on the CPU, facilitating the application to larger training sets.
-However, the number of trainable weights of a DBN increases greatly with the
-resolution of the training images, which can make training on large images
-impracticable. In order to scale DBNs to high-resolution images,
-\citet{lee2009,lee2011} introduced the convolutional deep belief network
-(convDBN), a deep generative model that uses weight sharing to reduce the number
-of trainable weights. They showed that a convDBN can be used to classify images
-with a resolution up to \num{200x200} pixels. To speed up the training of
-convolutional neural networks (CNNs) on high-resolution images,
+models were opened with the advance of \glslink{gpu}{programmable graphics cards
+(GPUs)}, which can perform thousands of operations in parallel.
+\citet{raina2009} demonstrated that by using graphics cards, training of
+\glspl{rbm} on small image patches (e.g. \num{24x24}) can be performed up to
+\num{70} times faster than on the CPU, facilitating the application to larger
+training sets. However, the number of trainable weights of a \gls{dbn} increases
+greatly with the resolution of the training images, which can make training on
+large images impracticable. In order to scale DBNs to high-resolution images,
+\citet{lee2009,lee2011} introduced the \gls{cdbn}, a deep generative model that
+uses weight sharing to reduce the number of trainable weights. They showed that
+a convDBN can be used to classify images with a resolution up to \num{200x200}
+pixels. To speed up the training of \glspl{cnn} on high-resolution images,
 \citet{krizhevsky2012} replaced traditional convolutions of the first layer of
 their CNN with strided convolutions, a type of convolution that shifts the
 filter kernel as a sliding window with a fixed step size or stride greater than
@@ -51,7 +39,7 @@ pixels, achieving state-of-the-art performance on the ILSVRC-2010 and
 ILSVRC-2012 competitions \citep{krizhevsky2012}. An alternative approach for
 calculating convolutions was proposed by \citet{mathieu2013} who sped up the
 training of CNNs by calculating convolutions between batches of images and
-filters using fast Fourier transforms (FFTs), albeit at the cost of additional
+filters using \glspl{fft}, albeit at the cost of additional
 memory required for storing the filters. Recently, NVIDIA have released a
 library called cuDNN \cite{chetlur2014} that provides GPU-optimized
 implementations of 2D and 3D convolutions among other operations that are
@@ -75,10 +63,10 @@ required amount of scarce GPU memory.
 % We show that our method can be efficiently implemented on multiple graphics
 % cards, further improving the runtime performance over other GPU-accelerated
 % training methods.
-In addition, we formalize the expression of the strided convolutional DBN
-(sconvDBN), a type of convDBN that uses strided convolutions to speed up
-training and reduce memory requirements, in terms of stride-1 convolutions,
-which enables the efficient training of sconvDBNs in the frequency domain.
+In addition, we formalize the expression of the \gls{scdbn}, a type of convDBN
+that uses strided convolutions to speed up training and reduce memory
+requirements, in terms of stride-1 convolutions, which enables the efficient
+training of sconvDBNs in the frequency domain.
 
 % TODO: Follow up with how to train them in the medical domain.
 % Introduction and motivation. Talks about special challenges. Training in the
@@ -99,8 +87,8 @@ which enables the efficient training of sconvDBNs in the frequency domain.
 
 Before we look at the training algorithm of convRBMs in the frequency domain,
 let us revise the basic steps for training in the spatial domain. The weights
-and bias terms of a convRBM can be learned by CD. During each iteration of the
-algorithm, the gradient of each parameter is estimated and a gradient step with
+and bias terms of a convRBM can be learned by \gls{cd}. During each iteration of
+the algorithm, the gradient of each parameter is estimated and a gradient step with
 a fixed learning rate is applied. The gradient of the filter weights can be
 approximated by
 \begin{equation}
@@ -123,7 +111,7 @@ expectation of the visible units is given by
 \label{eq:convvis}
 \end{equation}
 A binary hidden unit can only encode two states. In order to increase the
-expressive power of the hidden units, we use noisy rectified linear units as the
+expressive power of the hidden units, we use \glspl{nrelu} as the
 hidden units, which have been shown to improve the learning performance
 of RBMs \citep{nair2010}. The hidden units can be sampled with
 \begin{align} 
@@ -132,7 +120,7 @@ of RBMs \citep{nair2010}. The hidden units can be sampled with
 \label{eq:convhid}
 \end{align} 
 where $\Norm(0, \sigma^2)$ denotes Gaussian noise. The learning algorithm in the
-spatial domain is summarized in Figure~\ref{alg:spatial}.
+spatial domain is summarized in \ref{fig:algorithms}\subref{alg:spatial}.
 
 \begin{figure}[t!]
 \hspace{-1.75em}
@@ -277,7 +265,7 @@ b_i & \text{for } x,y = 0 \\
 where $\sigma^2 = \sigm(\F^{-1}(\hat{\mu}^{(j)})+c_j)$, $\F^{-1}$ denotes the
 inverse Fourier transform, and $\cdot$ denotes element-wise multiplication. The
 algorithm for approximating the gradient in the frequency domain is summarized
-in Figure~\ref{alg:frequency}.
+in \ref{fig:algorithms}\subref{alg:frequency}.
 
 The only operations that cannot be directly mapped to the frequency domain are
 the calculation of the maximum function, the generation of Gaussian noise, and
@@ -512,7 +500,7 @@ sconvDBN on 2D and 3D images using our frequency-domain method and the following
 methods that all compute convolutions on the GPU, but using different
 approaches: 1) our spatial domain implementation that convolves a single 2D or
 3D image with a single 2D or 3D filter kernel at a time, 2)~Krizhevsky's spatial
-domain convolution implementation \citep{Krizhevsky2012b}, which is a widely
+domain convolution implementation \citep{krizhevsky2012b}, which is a widely
 used method \citep[e.g.,][]{scherer2010,hinton2012,zeiler2013} that calculates
 the convolution of batches of 2D images and 2D filter kernels in parallel (note
 that this method cannot be applied to 3D images, so it was only used for the 2D
@@ -571,11 +559,11 @@ GPU Memory & 2\,GB \\
 \end{tabular}
 \end{table}
 
-For the comparison on 2D images, we used a dataset of 256 natural color images
-from the ImageNet dataset \citep{deng2009}. All images were resampled to a
+For the comparison on 2D images, we used a data set of 256 natural color images
+from the ImageNet data set \citep{deng2009}. All images were resampled to a
 resolution of \num{512x512} pixels per color channel. For the evaluation on 3D
-images, we used 100 magnetic resonance images (MRIs) of the brain from the OASIS
-dataset \citep{marcus2007}. We resampled all volumes to a resolution of
+images, we used 100 \gls{mri} scans of the brain from the \gls{oasis}
+data set \citep{marcus2007}. We resampled all volumes to a resolution of
 \num{128x128x128} voxels and a voxel size of \SI{2x2x2}{\milli\metre}.
 
 \subsubsection[Running time analysis on 2D color images (ImageNet)]{Running Time
@@ -703,24 +691,24 @@ cuDNN]{Comparison of Running Times for Calculating Convolutions with cuDNN}
 
 % TODO: Add used by Torch, Caffe, TensorFlow
 
-The NVIDIA CUDA Deep Neural Network library (cuDNN) \citep{chetlur2014} is a
-GPU-accelerated library of primitives that are frequently used to implement deep
-learning methods such as CNNs and convDBNs. The library provides highly
-optimized implementations for calculating, e.g., batched 2D and 3D convolutions,
-pooling operations, and different transfer functions. In this set of
-experiments, we directly compared the time required to calculate convolutions
-when training a CNN using our frequency domain implementation with cuDNN. We
-only consider convolutions because they are the most time-consuming operations
-and because all other operations are calculating in the same way. For the
-frequency domain implementation, all measurements include the time required to
-calculate FFTs for calculating gradients and for transforming the accumulated
-gradient to spatial domain in order to calculate the parameters updates. The
-parameters that we used for evaluating the speed of different convolution
-implementations are summarized in \ref{tab:cudnn_parameters}. The parameters
-represent typical values of the first and second layer of a CNN, which are the
-layers that typically take the most time to train. The key parameters that we
-varied are the image size, filter size, and batch size. The hardware details of
-our test environment are summarized in \ref{tab:cudnn_hardware}.
+The \gls{cudnn} \citep{chetlur2014} is a GPU-accelerated library of primitives
+that are frequently used to implement deep learning methods such as CNNs and
+convDBNs. The library provides highly optimized implementations for calculating,
+e.g., batched 2D and 3D convolutions, pooling operations, and different transfer
+functions. In this set of experiments, we directly compared the time required to
+calculate convolutions when training a CNN using our frequency domain
+implementation with cuDNN. We only consider convolutions because they are the
+most time-consuming operations and because all other operations are calculating
+in the same way. For the frequency domain implementation, all measurements
+include the time required to calculate FFTs for calculating gradients and for
+transforming the accumulated gradient to spatial domain in order to calculate
+the parameters updates. The parameters that we used for evaluating the speed of
+different convolution implementations are summarized in
+\ref{tab:cudnn_parameters}. The parameters represent typical values of the first
+and second layer of a CNN, which are the layers that typically take the most
+time to train. The key parameters that we varied are the image size, filter
+size, and batch size. The hardware details of our test environment are
+summarized in \ref{tab:cudnn_hardware}.
 
 % TODO: explain training of CNNs: already have forward pass, but also need
 % backwards pass and gradient calculation
@@ -774,7 +762,7 @@ GPU Memory & 3\,GB \\
 \end{tabular}
 \end{table}
 
-\ref{fig:imagesize} shows a comparison of the running times for calculating
+\Ref{fig:imagesize} shows a comparison of the running times for calculating
 convolutions using our frequency domain implementation and cuDNN for varying
 image sizes. The FFT implementation that we used internally, cuFFT, is optimized
 for image sizes that can be factorized as $2^a\times3^b\times5^c$. Therefore, we
@@ -889,8 +877,8 @@ CNN layer for varying number of channels and filter sizes.}
 
 \ref{tab:usedmodels} shows a comparison of running times for calculating
 convolutions of our frequency domain implementation with cuDNN for the 7-layer
-convolutional encoder network (CEN) that is used in \ref{sec:segmentation} to
-segment MS lesions, and the first sconvRBM of the DBN model described in
+\gls{cen} that is used in \ref{sec:segmentation} to
+segment \gls{ms} lesions, and the first sconvRBM of the DBN model described in
 \ref{sec:manifold} to model the variability in lesion distribution and brain
 morphology. For the 7-layer CEN, the second convolutional and the first
 deconvolutional layer benefits the most from training in the frequency domain
@@ -912,7 +900,7 @@ implementation than the direct implementation of strided convolutions of cuDNN.
 \begin{table}
 \caption[Comparison of running times of time critical operations of two example
 deep learning models.]{Comparison of running times of time critical operations
-of the 7-layer CEN-s used for segmentating lesions, and the first sconvRBM of
+of the 7-layer CEN-s used for segmenting lesions, and the first sconvRBM of
 the lesion DBN using to model lesion distribution. The running times of pooling
 layers we excluded.}
 \label{tab:usedmodels}
@@ -961,9 +949,9 @@ greatly decreases training times over performing only the convolutions in the
 frequency domain. In addition, our method can be efficiently implemented on the
 GPU and is faster than a highly optimized GPU implementation of batched
 convolutions in the spatial domain. We have evaluated the running time
-improvements using two standard benchmark datasets, showing a speed-up of up to
-8 times on 2D images from the ImageNet dataset and up to 200 times on 3D volumes
-from the OASIS dataset. In addition, we have directly compared to the time
+improvements using two standard benchmark data sets, showing a speed-up of up to
+8 times on 2D images from the ImageNet data set and up to 200 times on 3D
+volumes from the OASIS data set. In addition, we have directly compared the time
 required to calculate convolutions using our method with cuDNN, the current
 state-of-the-art library for calculating 2D and 3D convolutions, with the
 results showing that our method can calculate convolutions up to 20 times faster
