@@ -41,7 +41,7 @@ calculating convolutions was proposed by \citet{mathieu2013} who sped up the
 training of CNNs by calculating convolutions between batches of images and
 filters using \glspl{fft}, albeit at the cost of additional
 memory required for storing the filters. Recently, NVIDIA have released a
-library called cuDNN \cite{chetlur2014} that provides GPU-optimized
+library called cuDNN \citep{chetlur2014} that provides GPU-optimized
 implementations of 2D and 3D convolutions among other operations that are
 frequently used to implement deep learning methods, which further reduces
 training times compared to the previous state-of-the-art.
@@ -396,7 +396,7 @@ filters is given by the sum of their respective terms
 4N_\text{v}^2N_\text{c} + \frac{4N_\text{v}^2 N_\text{k}}{s^2} +
 4N_\text{v}^2N_\text{k}N_\text{c}.
 \end{equation}
-As a comparison, the training method of \cite{krizhevsky2012} processes batches
+As a comparison, the training method of \citep{krizhevsky2012} processes batches
 of images in order to fully utilize the GPU, which requires the storing of
 batches of visible and hidden units. The memory needed for storing the key
 variables is given by

@@ -2,34 +2,33 @@
 \label{sec:conclusions}
 
 In this thesis, we have addressed two challenges for measuring the state and
-progression of MS. In \ref{sec:segmentation}, we presented a fully automatic
-segmentation method of MS lesions, which enables the accurate computation of
-lesion-based imaging biomarkers such as lesion load and lesion count. In
-\ref{sec:manifold}, we presented a novel method for the automatic discovery of
-patterns of variability in MS subjects that show improved correlations to
-clinical scores over traditional volumetric biomarkers. Both methods are based
-on deep learning, a class of algorithms that can learn a feature hierarchy from
-a set of images. A major challenge of deep learning methods is the time and
-memory required to process large 3D volumes. To address this challenge, we have
-developed a novel training algorithm for convolutional deep learning methods
-that facilitates the training of full resolution 3D medical images and presented
-our algorithm with a comprehensive comparison with alternative training
-methods in \ref{sec:training}. Although the developed methods were
-developed and evaluated in the context of MS, the methods are very general and
-can potentially be applied to various segmentation and manifold learning
-problems.
+progression of \gls{ms}. In \ref{sec:segmentation}, we presented a fully
+automatic segmentation method of MS lesions, which enables the accurate
+computation of lesion-based imaging biomarkers such as lesion load and lesion
+count. In \ref{sec:manifold}, we presented a novel method for the automatic
+discovery of patterns of variability in MS subjects that show improved
+correlations to clinical scores over traditional volumetric biomarkers. Both
+methods are based on deep learning, a class of algorithms that can learn a
+feature hierarchy from a set of images. A major challenge of deep learning
+methods is the time and memory required to process large 3D volumes. To address
+this challenge, we have developed a novel training algorithm for convolutional
+deep learning methods that facilitates the training of full resolution 3D
+medical images and presented our algorithm with a comprehensive comparison with
+alternative training methods in \ref{sec:training}. Although the developed
+methods were developed and evaluated in the context of MS, the methods are very
+general and can potentially be applied to various segmentation and manifold
+learning problems.
 
 \section{Contributions}
 
 In the course of developing deep learning-based methods for MS lesion
 segmentation and pattern discovery, we have made the following contributions:
 \begin{itemize}
-\item We have developed a novel training algorithm for convolutional deep belief
-networks and convolutional neural networks that performs training in the
-frequency domain. The speed-ups gained by our method compared to spatial domain
-implementations and the reduced memory requirements compared to other frequency
-domain methods facilitate the application of deep learning to high-resolution
-3D medical images.
+\item We have developed a novel training algorithm for \glspl{cdbn} and
+\glspl{cnn} that performs training in the frequency domain. The speed-ups gained
+by our method compared to spatial domain implementations and the reduced memory
+requirements compared to other frequency domain methods facilitate the
+application of deep learning to high-resolution 3D medical images.
   
 \item We have developed a neural network architecture that jointly learns the
 features required to segment MS lesions and to perform the segmentation based on

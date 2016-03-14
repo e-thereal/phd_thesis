@@ -3,14 +3,14 @@
 
 \section{Introduction}
 
-Multiple sclerosis (MS) is an inflammatory and demyelinating disease of the
-central nervous system with pathology that can be observed in vivo by magnetic
-resonance imaging (MRI). MS is characterized by the formation of lesions,
-primarily visible in the white matter on conventional MRI. Imaging biomarkers
-based on the delineation of lesions, such as lesion load and lesion count, have
-established their importance for assessing disease progression and treatment
-effect. However, lesions vary greatly in size, shape, intensity and location,
-which makes their automatic and accurate segmentation challenging.
+\Gls{ms} is an inflammatory and demyelinating disease of the central nervous
+system with pathology that can be observed in vivo by \gls{mri}.
+MS is characterized by the formation of lesions, primarily visible in the white
+matter on conventional MRI. Imaging biomarkers based on the delineation of
+lesions, such as lesion load and lesion count, have established their importance
+for assessing disease progression and treatment effect. However, lesions vary
+greatly in size, shape, intensity and location, which makes their automatic and
+accurate segmentation challenging.
 
 \section[Related work]{Related Work}
 
@@ -57,11 +57,11 @@ features and labels of each voxel into a general classification algorithm, such
 as a random forest \citep{breiman2001}, to classify each voxel and to determine
 which set of features are the most important for segmentation in the particular
 domain. Voxel features and the labels of neighboring voxels can be incorporated
-into Markov random field-based (MRF-based) approaches
+into \glslink{mrf}{Markov random field-based (MRF-based)} approaches
 \citep{subbanna2009,subbanna2015} to produce a spatially consistent
 segmentation. As a strategy to reduce false positives, \citet{subbanna2015}
-combined a voxel-level MRF with a regional MRF, which integrates a large set of
-intensity and textural features extracted from the regions produced by the
+combined a voxel-level MRF with a regional MRF, which integrates a large
+set of intensity and textural features extracted from the regions produced by the
 voxel-level MRF with the labels of neighboring nodes of the regional MRF.
 Library-based approaches leverage a library of pre-segmented images to carry out
 the segmentation. For example, \citet{guizard2015} proposed a segmentation
@@ -76,14 +76,14 @@ Methods}
 
 A recent breakthrough for the automatic segmentation using deep learning comes
 from the domain of cell membrane segmentation, in which \citet{ciresan2012}
-proposed classifying the centers of image patches directly using a convolutional
-neural network (CNN) \citep{lecun1998} without a dedicated feature extraction
-step. Instead, features are learned indirectly within the lower layers of the
-neural network during training, while the higher layers can be regarded as
-performing the classification, which allows the learning of features that are
-specifically tuned to the segmentation task. However, the time required to train
-patch-based methods can make the approach infeasible when the size and number of
-patches are large.
+proposed classifying the centers of image patches directly using a \gls{cnn}
+\citep{lecun1998} without a dedicated feature extraction step. Instead, features
+are learned indirectly within the lower layers of the neural network during
+training, while the higher layers can be regarded as performing the
+classification, which allows the learning of features that are specifically
+tuned to the segmentation task. However, the time required to train patch-based
+methods can make the approach infeasible when the size and number of patches are
+large.
 
 \subsection[Fully convolutional methods]{Fully Convolutional Methods}
 
@@ -92,16 +92,15 @@ Recently, different CNN architectures
 that are able to feed through entire images, which removes the need to select
 representative patches, eliminates redundant calculations where patches overlap,
 and therefore these models scale up more efficiently with image resolution.
-\citet{kang2014fully} introduced the fully convolutional neural network (fCNN)
-for the segmentation of crowds in surveillance videos. However, fCNNs produce
-segmentations of lower resolution than the input images due to the successive
-use of convolutional and pooling layers, both of which reduce the
-dimensionality. To predict segmentations of the same resolution as the input
-images, we recently proposed using a 3-layer convolutional encoder network (CEN)
-\citep{brosch2015} for MS lesion segmentation. The combination of convolutional
-\citep{lecun1998} and deconvolutional \citep{zeiler2011} layers allows our
-network to produce segmentations that are of the same resolution as the input
-images.
+\citet{kang2014fully} introduced the \gls{fcnn} for the segmentation of crowds
+in surveillance videos. However, fCNNs produce segmentations of lower resolution
+than the input images due to the successive use of convolutional and pooling
+layers, both of which reduce the dimensionality. To predict segmentations of the
+same resolution as the input images, we recently proposed using a 3-layer
+\gls{cen} \citep{brosch2015} for MS lesion segmentation. The combination of
+convolutional \citep{lecun1998} and deconvolutional \citep{zeiler2011} layers
+allows our network to produce segmentations that are of the same resolution as
+the input images.
 
 Another limitation of the traditional CNN is the trade-off between localization
 accuracy, represented by lower-level features, and contextual information,
@@ -178,17 +177,15 @@ segmentations and predicted segmentations.
 \subsection[Model architecture]{Model Architecture}
 
 The set of possible segmentation functions, $\mathcal{S}$, is modeled by the
-convolutional encoder network with shortcut connections (CEN-s) illustrated in
-\ref{fig:network}. A CEN-s is a type of convolutional neural network (CNN)
-\citep{lecun1998} that is divided into two interconnected pathways, the
-convolutional pathway and the deconvolutional \citep{zeiler2011} pathway. The
-convolutional pathway consists of alternating convolutional and pooling layers.
-The input layer of the convolutional pathway is composed of the image voxels
-$x^{(0)}_i(\vect{p})$, $i \in [1, C]$, where $i$ indexes the modality or input
-channel, $C$ is the number of modalities or channels, and $\vect{p} \in \N^3$
-are the coordinates of a particular voxel. The convolutional layers
-automatically learn a feature hierarchy from the input images. A convolutional
-layer is a deterministic function of the following form
+\gls{cens} illustrated in \ref{fig:network}. A CEN-s is a type of \gls{cnn}
+\citep{lecun1998} that is divided into two interconnected pathways, the convolutional pathway and the deconvolutional \citep{zeiler2011}
+pathway. The convolutional pathway consists of alternating convolutional and
+pooling layers. The input layer of the convolutional pathway is composed of the
+image voxels $x^{(0)}_i(\vect{p})$, $i \in [1, C]$, where $i$ indexes the
+modality or input channel, $C$ is the number of modalities or channels, and
+$\vect{p} \in \N^3$ are the coordinates of a particular voxel. The convolutional
+layers automatically learn a feature hierarchy from the input images. A
+convolutional layer is a deterministic function of the following form
 \begin{equation}
 x^{(l)}_j = \max \Bigg(0, \sum_{i=1}^C\tilde{w}^{(l)}_{\text{c},ij}*x^{(l-1)}_i
 + b^{(l)}_j\Bigg),
@@ -198,16 +195,16 @@ denotes the feature map corresponding to the trainable convolution filter
 $w^{(l)}_{\text{c},ij}$, $F$ is the number of filters of the current layer,
 $b^{(l)}_j$ are trainable bias terms, $*$ denotes valid convolution, and
 $\tilde{w}$ denotes a flipped version of $w$, i.e., $\tilde{w}(a) = w(-a)$. To
-be consistent with the inference rules of convolutional restricted Boltzmann
-machines (convRBMs) \citep{lee2009convolutional}, which are used for
-pre-training, convolutional layers convolve the input signal with flipped filter
-kernels, while deconvolutional layers calculate convolutions with non-flipped
-filter kernels. We use rectified linear units \citep{nair2010} in all layers
-except for the output layers, which have shown to improve the classification
-performance of CNNs \citep{krizhevsky2012}. A convolutional layer is followed by
-an average pooling layer \citep{scherer2010evaluation} that halves the number of
-units in each dimension by calculating the average of each block of \num{2x2x2}
-units per channel.
+be consistent with the inference rules of \glspl{crbm}
+\citep{lee2009convolutional}, which are used for pre-training, convolutional
+layers convolve the input signal with flipped filter kernels, while
+deconvolutional layers calculate convolutions with non-flipped filter kernels.
+We use rectified linear units \citep{nair2010} in all layers except for the
+output layers, which have shown to improve the classification performance of
+CNNs \citep{krizhevsky2012}. A convolutional layer is followed by an average
+pooling layer \citep{scherer2010evaluation} that halves the number of units in
+each dimension by calculating the average of each block of \num{2x2x2} units per
+channel.
 
 The deconvolutional pathway consists of alternating deconvolutional and
 unpooling layers with shortcut connections to the corresponding
@@ -257,8 +254,8 @@ threshold for the evaluation on the test set.
 The parameters of the model can be efficiently learned by minimizing the error
 $E$ for each sample of the training set, which requires the calculation of the
 gradient of $E$ with respect to the model parameters \citep{lecun1998}.
-Typically, neural networks are trained by minimizing the sum of squared
-differences (SSD), which can be calculated for a single image as follows
+Typically, neural networks are trained by minimizing the \gls{ssd}, which
+can be calculated for a single image as follows
 \begin{equation}
 % Error function
 E = \frac{1}{2}\sum_{\vect{p}}\left(S(\vect{p}) -
@@ -348,11 +345,11 @@ We formulate the sensitivity and specificity errors as squared errors in order
 to yield smooth gradients, which makes the optimization more robust. The
 sensitivity ratio $r$ can be used to assign different weights to the two terms.
 Due to the large number of non-lesion voxels, weighting the specificity error
-higher is important, but based on preliminary experimental results \cite{brosch2015},
-the algorithm is stable with respect to changes in $r$, which largely affects the
-threshold used to binarize the probabilistic output. A detailed evaluation of
-the impact of the sensitivity ratio on the learned model is presented in
-\ref{sec:trainparams}.
+higher is important, but based on preliminary experimental results
+\citep{brosch2015}, the algorithm is stable with respect to changes in $r$,
+which largely affects the threshold used to binarize the probabilistic output. A
+detailed evaluation of the impact of the sensitivity ratio on the learned model
+is presented in \ref{sec:trainparams}.
 
 To train our model, we must compute the derivatives of the modified objective
 function with respect to the model parameters. Equations
@@ -429,17 +426,17 @@ hyperparameters, so we used AdaDelta for all results reported.
 
 Pre-training and fine-tuning were performed using the highly optimized
 GPU-accelerated implementation of 3D convRBMs and CENs explained in
-\ref{sec:training}. Our frequency domain
-implementation significantly speeds up the training by mapping the calculation
-of convolutions to simple element-wise multiplications, while adding only a
-small number of Fourier transforms. This is especially beneficial for the
-training on 3D volumes, due to the increased number of weights of 3D kernels
-compared to 2D. Although GPU-accelerated deep learning libraries based on cuDNN
-\citep{chetlur2014} are publicly available (e.g.,
-\citealp{jia2014,bastien2012,collobert2011torch7}), we trained our models using
-our own implementation, because we have found that it performs the most
-computationally intensive training operations 6 times faster than cuDNN in a
-direct comparison (see \ref{tab:usedmodels} on page \pageref{tab:usedmodels}).
+\ref{sec:training}. Our frequency domain implementation significantly speeds up
+the training by mapping the calculation of convolutions to simple element-wise
+multiplications, while adding only a small number of Fourier transforms. This is
+especially beneficial for the training on 3D volumes, due to the increased
+number of weights of 3D kernels compared to 2D. Although GPU-accelerated deep
+learning libraries based on the \gls{cudnn} \citep{chetlur2014} are publicly
+available (e.g., \citealp{jia2014,bastien2012,collobert2011torch7}), we trained
+our models using our own implementation, because we have found that it performs
+the most computationally intensive training operations 6 times faster than cuDNN
+in a direct comparison (see \ref{tab:usedmodels} on page
+\pageref{tab:usedmodels}).
  
 \sisetup{separate-uncertainty=true,detect-weight=true,detect-inline-weight=math}
 
@@ -464,21 +461,21 @@ available state-of-the-art methods.
 
 \subsubsection{Public Data Sets}
 The data set of the MICCAI 2008 MS lesion segmentation challenge
-\citep{styner20083d} consists of 43 T1-weighted (T1w), T2-weighted (T2w), and
-FLAIR MRIs, divided into 20 training cases for which ground truth segmentations
-are made publicly available, and 23 test cases. In a first experiment, we
-evaluated our method on the 20 training cases using 5-fold cross-validation. In
-a second experiment, we trained our model on the 20 training cases and then used
-the trained model to segment the 23 test cases, which were sent to the challenge
-organizers for independent evaluation.
+\citep{styner20083d} consists of 43 \gls{t1w}, \gls{t2w}, and
+\gls{flair} MRIs, divided into 20 training cases for which ground truth
+segmentations are made publicly available, and 23 test cases. In a first
+experiment, we evaluated our method on the 20 training cases using 5-fold
+cross-validation. In a second experiment, we trained our model on the 20
+training cases and then used the trained model to segment the 23 test cases,
+which were sent to the challenge organizers for independent evaluation.
 
 The data set of the ISBI 2015 longitudinal MS lesion segmentation challenge
-consists of 21 visit sets, each with T1w, T2w, proton density-weighted (PDw),
-and FLAIR MRIs. The challenge was not open for new submissions at the time of
-writing this article. Therefore, we evaluated our method on the training set
-using leave-one-subject-out cross-validation, following the evaluation protocol
-of the second place method by \cite{jesson2015} and third place method by
-\cite{maier2015} from the challenge proceedings. The paper of the first place
+consists of 21 visit sets, each with T1w, T2w, \gls{pdw}, and FLAIR MRIs. The
+challenge was not open for new submissions at the time of writing this article.
+Therefore, we evaluated our method on the training set using
+leave-one-subject-out cross-validation, following the evaluation protocol of the
+second place method by \citet{jesson2015} and third place method by
+\citet{maier2015} from the challenge proceedings. The paper of the first place
 method does not have sufficient details to replicate their evaluation.
 
 \subsubsection{Clinical Trial Data Sets}
@@ -534,12 +531,12 @@ are widely used for clinical research and are established in the literature
 (e.g., \citealp{sudre2015,subbanna2015,guizard2015}) as reference points for
 comparison. These five methods include:
 \begin{enumerate}
-\item Expectation maximization segmentation (EMS) method \citep{vanleemput2001};
-\item Lesion growth algorithm (LST-LGA) \citep{schmidt2012automated}, as
-implemented in the Lesion Segmentation Toolbox (LST) version 2.0.11;
-\item Lesion prediction algorithm (LST-LPA) also implemented in the same LST toolbox;
+\item \Gls{ems} method \citep{vanleemput2001};
+\item \Gls{lga} \citep{schmidt2012automated}, as
+implemented in the \gls{lst} version 2.0.11;
+\item \Gls{lpa} also implemented in the same LST toolbox;
 \item Lesion-TOADS version 1.9 R \citep{shiee2010topology}; and 
-\item Salem Lesion Segmentation (SLS) toolbox \citep{roura2015}.
+\item \Gls{sls} toolbox \citep{roura2015}.
 \end{enumerate}
 The Lesion-TOADS software only takes T1w and FLAIR MRIs and has no tunable
 parameters, so we used the default parameters to carry out the segmentations.
@@ -577,21 +574,21 @@ of segmentation accuracy as there is generally no single measure that is
 sufficient to capture all information relevant to the quality of a produced
 segmentation \citep{garcia2013review}.
 
-The first measure is the Dice similarity coefficient (DSC)
-\cite{dice1945measures} that computes a normalized overlap value between the
+The first measure is the \gls{dsc}
+\citep{dice1945measures} that computes a normalized overlap value between the
 produced and ground truth segmentations, and is defined as
 \begin{equation}
 \text{DSC} = \frac{2 \times \text{TP}}{2 \times \text{TP} + \text{FP} +
 \text{FN}},
 \end{equation}
-where TP, FP, and FN denote the number of true positive, false positive, and
-false negative voxels, respectively. A value of \SI{100}{\percent} indicates a
-perfect overlap of the produced segmentation and the ground truth.
+\glsunset{tp}\glsunset{fp}\glsunset{fn}%
+where \gls{tp}, \gls{fp}, and \gls{fn} denote the number of true positive, false
+positive, and false negative voxels, respectively. A value of \SI{100}{\percent}
+indicates a perfect overlap of the produced segmentation and the ground truth.
 The DSC incorporates measures of over- and underestimation into a single metric,
 which makes it a suitable measure to compare overall segmentation accuracy. In
-addition, we have used the true positive rate (TPR) and the positive predictive
-value (PPV) to provide further information on specific aspects of segmentation
-performance. The TPR is used to measure the fraction of the lesion regions in
+addition, we have used the \gls{tpr} and the \gls{ppv} to provide further
+information on specific aspects of segmentation performance. The TPR is used to measure the fraction of the lesion regions in
 the ground truth that are correctly identified by an automatic method. It is
 defined as
 \begin{equation}
@@ -609,27 +606,24 @@ where a value of \SI{100}{\percent} indicates that all voxels that are
 classified as lesion voxels are indeed lesion voxels as defined by the ground
 truth (no false positives).
 
-We also measured the relative absolute volume difference between the
-ground truth and the produced segmentation by computing their volumes
-($\text{\textit{Vol}}$), i.e.,
+We also measured the \gls{vd} between the ground truth and the produced
+segmentation by computing their volumes ($\text{\textit{Vol}}$), i.e.,
 \begin{equation}
 \text{VD} = \frac{\text{\textit{Vol}}(\text{\textit{Seg}}) -
                     \text{\textit{ Vol}}(\text{\textit{GT}})}
                 {\text{\textit{ Vol}}(\text{\textit{GT}})},
 \end{equation}
-where $Seg$ and $GT$ denote the obtained segmentation and ground truth,
-respectively. However, it has been noted \cite{garcia2013review} that wide
+where Seg and GT denote the obtained segmentation and ground truth,
+respectively. However, it has been noted \citep{garcia2013review} that wide
 variability exists even between the lesion segmentations of trained experts, and
 thus, the achieved volume differences reported in the literature have ranged
 from \SI{10}{\percent} to \SI{68}{\percent}.
 
-For more precise evaluation, we have also included the lesion-wise true positive
-rate (LTPR) and the lesion-wise false positive rate (LFPR) that are much more
-sensitive in measuring the segmentation accuracy of smaller lesions, which are
-important to detect when performing early disease diagnosis
-\cite{garcia2013review}.
-More specifically, the LTPR measures the true positive rate (TPR) on a per
-lesion-basis and is defined as
+For more precise evaluation, we have also included the \gls{ltpr} and the
+\gls{lfpr} that are much more sensitive in measuring the segmentation accuracy
+of smaller lesions, which are important to detect when performing early disease
+diagnosis \citep{garcia2013review}. More specifically, the LTPR measures the TPR
+on a per lesion-basis and is defined as
 \begin{equation}
 \text{LTPR} = \frac{\text{LTP}}{\text{\#RL}},
 \end{equation}
@@ -688,7 +682,7 @@ our method with respect to the sensitivity ratio.}
 To determine an effective sensitivity ratio, we measured the performance on the
 validation set over a range of values. For each choice of ratio, we binarized
 the segmentations using a threshold that maximized the DSC on the training set.
-\ref{fig:ratio} shows a set of ROC curves for different choices of the
+\ref{fig:ratio} shows a set of \gls{roc} curves for different choices of the
 sensitivity ratio ranging from 0.01 to 0.10 and the corresponding optimal
 thresholds. The plots illustrate our findings that our method is not sensitive
 to the choice of the sensitivity ratio, which mostly affects the optimal
@@ -857,7 +851,7 @@ without subsequent parameter-tuning and adjustments) out of 52 entries submitted
 to the challenge, outperforming the recent SLS by \citet{roura2015}, and popular
 methods such as the random forest approach by \citet{geremia2010}, and
 Lesion-TOADS by \citet{shiee2010topology}, but not as well as the patch-based
-segmentation approach by \citet{guizard2015}, or the MOPS approach by
+segmentation approach by \citet{guizard2015}, or the \gls{mops} approach by
 \citet{tomas2015}, which used additional images to build the intensity model of
 a healthy population. This is a very promising result for the first submission
 of our method given the simplicity of the model and the small training set size.
@@ -1035,7 +1029,7 @@ EMS \citep{vanleemput2001} & 39.70 & 49.08 & 85.01 & 34.51 \\
 All CEN architectures performed significantly better than all other methods
 regardless of the input modalities, with LST-LGA being the closest in overall
 segmentation accuracy. Comparing CEN to LST-LGA, the improvements in the mean
-DSC scores ranged from 3 percentage points (pp) for the 3-layer CEN to 17\,pp
+DSC scores ranged from 3 \gls{pp} for the 3-layer CEN to 17\,pp
 for the 7-layer CEN with shortcut trained on all four modalities. The improved
 segmentation performance was mostly due to an increase in lesion sensitivity.
 LST-LGA achieved a mean lesion TPR of \SI{37.50}{\percent}, compared to
@@ -1068,7 +1062,15 @@ receptive field size of \num{49x53x26} voxels, which allows it to learn features
 that can capture much larger lesions. Consequently, the 7-layer CEN, with and
 without shortcut, is able to learn a feature set that captures large lesions
 much better than the 3-layer CEN, which results in an improved segmentation.
-However, increasing the depth of the network
+However, increasing the depth of the network without adding shortcut connections
+reduces the network's sensitivity to very small lesions as illustrated in
+\ref{fig:small}. In this example, the 3-layer CEN was able to detect three small
+lesions, indicated by the white circles, which were missed by the 7-layer CEN.
+Adding shortcut connections enables our model to learn a feature set that spans
+a wider range of lesion sizes, which increases the sensitivity to small lesions
+and, hence, allows the 7-layer \mbox{CEN-s} to detect all three small lesions
+(highlighted by the white circles), while still being able to segment large
+lesions.
 
 \begin{figure}[p]
 \centering
@@ -1166,18 +1168,6 @@ detect large lesions (see \ref{fig:large}). This figure is best viewed in
 color.}
 \label{fig:small}
 \end{figure}
-
-% TODO: check that the page break hasn't changed 
-
-\noindent without adding shortcut connections
-reduces the network's sensitivity to very small lesions as illustrated in
-\ref{fig:small}. In this example, the 3-layer CEN was able to detect three small
-lesions, indicated by the white circles, which were missed by the 7-layer CEN.
-Adding shortcut connections enables our model to learn a feature set that spans
-a wider range of lesion sizes, which increases the sensitivity to small lesions
-and, hence, allows the 7-layer \mbox{CEN-s} to detect all three small lesions
-(highlighted by the white circles), while still being able to segment large
-lesions.
 
 \subsection[Comparison for different lesion sizes]{Comparison for Different
 Lesion Sizes}
