@@ -23,14 +23,14 @@ classified into unsupervised and supervised methods.
 Unsupervised methods do not require a labeled data set for training. Instead,
 lesions are identified as an outlier of, e.g., a subject-specific generative
 model of tissue intensities
-\citep{vanleemput2001,tomas2015,schmidt2012automated,roura2015}, or a generative
+\citep{vanleemput2001,tomas2015,schmidt2012,roura2015}, or a generative
 model of image patches representing a healthy population \citep{weiss2013}.
 Alternatively, clustering methods have been used to segment healthy and lesion
 tissue, where lesions are modelled as a separate tissue class
-\citep{shiee2010topology,sudre2015}. In many methods, spatial priors of healthy
+\citep{shiee2010,sudre2015}. In many methods, spatial priors of healthy
 tissues are used to reduce false positives. For example, in addition to
 modeling MS lesions as a separate intensity cluster, Lesion-TOADS
-\citep{shiee2010topology} employs topological and statistical atlases to produce
+\citep{shiee2010} employs topological and statistical atlases to produce
 a topology-preserving segmentation of all brain tissues.
 
 To account for local changes of the tissue intensity distributions,
@@ -42,7 +42,7 @@ specific to lesions and can also be caused by intensity inhomogeneities, partial
 volume, imaging artifacts, and small anatomical structures such as blood
 vessels, which leads to the generation of false positives. To overcome these
 limitations, \citet{roura2015} employed an additional set of rules
-to remove false positives, while \citet{schmidt2012automated} used
+to remove false positives, while \citet{schmidt2012} used
 a conservative threshold for the initial detection of lesions, which are later
 grown in a separate step to yield an accurate delineation.
 
@@ -50,8 +50,8 @@ grown in a separate step to yield an accurate delineation.
 
 Current supervised approaches typically start with a set of features, which can
 range from small and simple to large and highly variable, and are either
-predefined by the user \citep{geremia2010,guizard2015,subbanna2015} or gathered
-in a feature extraction step such as by deep learning \citep{yoo2014}.
+predefined by the user \citep{geremia2010,geremia2011,guizard2015,subbanna2015}
+or gathered in a feature extraction step such as by deep learning \citep{yoo2014}.
 Voxel-based segmentation algorithms \citep{geremia2010,yoo2014} feed the
 features and labels of each voxel into a general classification algorithm, such
 as a random forest \citep{breiman2001}, to classify each voxel and to determine
@@ -88,11 +88,11 @@ large.
 \subsection[Fully convolutional methods]{Fully Convolutional Methods}
 
 Recently, different CNN architectures
-\citep{long2015,ronneberger2015,brosch2015,kang2014fully} have been proposed
+\citep{long2015,ronneberger2015,brosch2015,kang2014} have been proposed
 that are able to feed through entire images, which removes the need to select
 representative patches, eliminates redundant calculations where patches overlap,
 and therefore these models scale up more efficiently with image resolution.
-\citet{kang2014fully} introduced the \gls{fcnn} for the segmentation of crowds
+\citet{kang2014} introduced the \gls{fcnn} for the segmentation of crowds
 in surveillance videos. However, fCNNs produce segmentations of lower resolution
 than the input images due to the successive use of convolutional and pooling
 layers, both of which reduce the dimensionality. To predict segmentations of the
@@ -380,7 +380,7 @@ S\big) y^{(0)}_1 \big(1 - y^{(0)}_1\big).
 
 At the beginning of the training procedure, the model parameters need to be
 initialized and the choice of the initial parameters can have a big impact on
-the learned model \citep{sutskever2013importance}. In our experiments, we found
+the learned model \citep{sutskever2013}. In our experiments, we found
 that initializing the model using pre-training \citep{hinton2006c} on the input
 images was required in order to be able to fine-tune the model using the ground
 truth segmentations without getting stuck early in a local minimum. Pre-training
@@ -425,18 +425,19 @@ hyperparameters, so we used AdaDelta for all results reported.
 % TODO: Implementation outlined in a previous section
 
 Pre-training and fine-tuning were performed using the highly optimized
-GPU-accelerated implementation of 3D convRBMs and CNNs explained in
-\ref{sec:training}. Our frequency domain implementation significantly speeds up
-the training by mapping the calculation of convolutions to simple element-wise
-multiplications, while adding only a small number of Fourier transforms. This is
-especially beneficial for the training on 3D volumes, due to the increased
-number of weights of 3D kernels compared to 2D. Although GPU-accelerated deep
-learning libraries based on the \gls{cudnn} \citep{chetlur2014} are publicly
-available (e.g., \citealp{jia2014,bastien2012,collobert2011torch7}), we trained
-our models using our own implementation, because we optimized it for memory
-facilitating the training on large 3D volumes and because it performs the most
-computationally intensive training operations six times faster than cuDNN in a
-direct comparison (see \ref{tab:usedmodels} on page \pageref{tab:usedmodels}).
+GPU-accelerated implementation of 3D convRBMs and CNNs
+\citep{brosch2015efficient} explained in \ref{sec:training}. Our frequency
+domain implementation significantly speeds up the training by mapping the
+calculation of convolutions to simple element-wise multiplications, while adding
+only a small number of Fourier transforms. This is especially beneficial for the
+training on 3D volumes, due to the increased number of weights of 3D kernels
+compared to 2D. Although GPU-accelerated deep learning libraries based on the
+\gls{cudnn} \citep{chetlur2014} are publicly available (e.g.,
+\citealp{jia2014,bastien2012,collobert2011torch7}), we trained our models using
+our own implementation, because we optimized it for memory facilitating the
+training on large 3D volumes and because it performs the most computationally
+intensive training operations six times faster than cuDNN in a direct comparison
+(see \ref{tab:usedmodels} on page \pageref{tab:usedmodels}).
  
 \sisetup{separate-uncertainty=true,detect-weight=true,detect-inline-weight=math}
 
@@ -503,7 +504,7 @@ require these modalities. The image dimensions and voxel sizes vary by site, but
 most of the T1w images have close to \SI{1}{\milli\meter} isotropic voxels,
 while the other images have voxel sizes close to \SI{1x1x3}{\milli\meter}. All
 images were skull-stripped using the brain extraction tool (BET)
-\citep{jenkinson2005bet2}, followed by an intensity normalization to the
+\citep{jenkinson2005}, followed by an intensity normalization to the
 interval $[0,1]$, and a 6 degree-of-freedom intra-subject registration using one
 of the \SI{3}{\milli\meter} scans as the target image to align the different
 modalities. To speed-up the training, all images were cropped to a
@@ -511,7 +512,7 @@ modalities. To speed-up the training, all images were cropped to a
 truth segmentations for both data sets were produced using an existing
 semiautomatic 2D region-growing technique, which has been used successfully in a
 number of large MS clinical trials (e.g.,
-\citealp{kappos2006long,traboulsee2008reduction}).
+\citealp{kappos2006,traboulsee2008}).
 Each lesion was manually identified by an experienced radiologist and then
 interactively grown from the seed point by a trained technician.
 
@@ -534,10 +535,10 @@ are widely used for clinical research and are established in the literature
 comparison. These five methods include:
 \begin{enumerate}
 \item \Gls{ems} method \citep{vanleemput2001};
-\item \Gls{lga} \citep{schmidt2012automated}, as
+\item \Gls{lga} \citep{schmidt2012}, as
 implemented in the \gls{lst} version 2.0.11;
 \item \Gls{lpa} also implemented in the same LST toolbox;
-\item Lesion-TOADS version 1.9 R \citep{shiee2010topology}; and 
+\item Lesion-TOADS version 1.9 R \citep{shiee2010}; and 
 \item \Gls{sls} toolbox \citep{roura2015}.
 \end{enumerate}
 The Lesion-TOADS software only takes T1w and FLAIR MRIs and has no tunable
@@ -819,8 +820,8 @@ methods is summarized in \ref{tab:state}. Our method outperforms the winning
 method \citep{souplet2008} of the MS lesion segmentation challenge 2008 and the
 currently best unsupervised method reported on that data set \citep{weiss2013}
 in terms of mean TPR and PPV. Our method performs comparably to a current method
-\citep{geremia2010} that uses a carefully designed set of features specifically
-designed for lesion segmentation, despite our method having learned its features
+\citep{geremia2010,geremia2011} that uses a carefully designed set of features
+specifically designed for lesion segmentation, despite our method having learned its features
 solely from a relatively small training set.
 
 \begin{table}[tb]
@@ -856,7 +857,7 @@ ranked 6th (2nd if only considering methods with only one submission, i.e.,
 without subsequent parameter-tuning and adjustments) out of 52 entries submitted
 to the challenge, outperforming the recent SLS by \citet{roura2015}, and popular
 methods such as the random forest approach by \citet{geremia2010}, and
-Lesion-TOADS by \citet{shiee2010topology}, but not as well as the patch-based
+Lesion-TOADS by \citet{shiee2010}, but not as well as the patch-based
 segmentation approach by \citet{guizard2015}, or the \gls{mops} approach by
 \citet{tomas2015}, which used additional images to build the intensity model of
 a healthy population. This is a very promising result for the first submission
@@ -888,7 +889,7 @@ $5,7$ & \citet{jerman2015}        & 84.1555 & 65.15 & 63.75 & 77.45 \\
 6  & Our method    & 84.0743 & 51.55 & 51.25 & 57.75 \\
 11 & \citet{roura2015} & 82.3442 & 50.15 & 41.85 & 111.60 \\
 13 & \citet{geremia2010}     & 82.0691 & 55.1 & 74.1 & 48.90 \\
-24 & \citet{shiee2010topology} & 79.8975 & 52.4 & 72.7 & 74.45 \\
+24 & \citet{shiee2010} & 79.8975 & 52.4 & 72.7 & 74.45 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1014,10 +1015,10 @@ Method & DSC [\%] & LTPR [\%] & LFPR [\%] & VD [\%] \\
 3-layer CEN & 49.24 & 57.33 & 61.39 & 43.45 \\
 7-layer CEN & 52.07 & 43.88 & 29.06 & 37.01 \\ 
 7-layer CEN-s & 55.76 & 54.55 & 38.64 & 36.30 \\[0.2em]
-Lesion-TOADS \citep{shiee2010topology} & 40.04 & 56.56 & 82.90 & 49.36 \\ 
+Lesion-TOADS \citep{shiee2010} & 40.04 & 56.56 & 82.90 & 49.36 \\ 
 SLS \citep{roura2015}  & 43.20 &  56.80 & 50.80 & 12.30 \\
-LST-LGA \citep{schmidt2012automated} & 46.64 & 37.50 & 38.06 & 36.77 \\
-LST-LPA \citep{schmidt2012automated} & 46.07 & 48.02 & 52.94 & 41.62 \\
+LST-LGA \citep{schmidt2012} & 46.64 & 37.50 & 38.06 & 36.77 \\
+LST-LPA \citep{schmidt2012} & 46.07 & 48.02 & 52.94 & 41.62 \\
 \midrule
 \multicolumn{5}{c}{\textit{Input modalities: T1w, T2w, and PDw}} \\
 \midrule
