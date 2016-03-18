@@ -71,6 +71,9 @@
 \usepackage{etoolbox}
 \robustify\bfseries  % robustify in order to use it in S columns
 \preto\chapter\glsresetall  % reset acronyms at the beginning of each chapter
+\AtBeginEnvironment{tabular}{%
+   \small%
+}
 
 \newcommand{\minitab}[2][l]{\begin{tabular}{#1}#2\end{tabular}}
 
