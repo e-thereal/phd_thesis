@@ -22,37 +22,55 @@ learning problems.
 \section{Contributions}
 
 In the course of developing deep learning-based methods for MS lesion
-segmentation and pattern discovery, we have made the following contributions:
+segmentation and pattern discovery, we have made the following main
+contributions:
 \begin{itemize}
-\item We have developed a novel training algorithm for \glspl{cdbn} and
-\glspl{cnn} that performs training in the frequency domain. The speed-ups gained
-by our method compared to spatial domain implementations and the reduced memory
-requirements compared to other frequency domain methods facilitate the
-application of deep learning to high-resolution 3D medical images.
+
+\item We have developed a novel training algorithm for convolutional deep belief
+networks and convolutional neural networks that performs training in the
+frequency domain. The speed-ups gained by our method compared to state-of-the
+art spatial domain implementations and the reduced memory requirements compared
+to other frequency domain methods enable the application of deep learning to
+high-resolution 3D medical images.
   
 \item We have developed a neural network architecture that jointly learns the
 features required to segment MS lesions and to perform the segmentation based on
 the automatically learned features. The joint learning of feature extractor and
-classifier facilitates the learning of features that are robust to the
+classifier facilitates the learning of features that are robust to the large
 variability of MS lesions and varying contrasts produced by different scanners.
+
+\item In contrast to previous patch-based deep learning segmentation approaches,
+our network feeds through entire volumes, which removes the need to select
+representative patches, eliminates redundant calculations where patches overlap,
+and therefore scales up more efficiently with image resolution.
+
+\item In contrast to previous fully convolutional deep learning segmentation
+approaches, our method produces segmentations of the same resolution and scale
+as the input images, independent of the parameters of the network architecture,
+which enables the use of deeper networks without requiring special handling
+of the border regions.
 
 \item We have developed a novel objective function for training neural networks
 that is suitable for the classification of vastly unbalanced classes, such as
 the segmentation of MS lesions, which typically comprise less than one percent
 of the image.
 
-\item We have demonstrated that the use of shortcut connections in the proposed
-neural network architecture allows for the learning of features at different
-scales, which facilitates the segmentation of both very small and very large
-lesions.
+\item Our proposed network architecture contains shortcut connections between
+the feature extraction and segmentation pathways, which allows for the learning
+of features at different scales and thereby facilitates the accurate
+segmentation of MS lesions across a wide range of sizes.
 
-\item We have developed a framework for modelling changes in brain morphology
+\item We have developed a framework for modeling changes in brain morphology
 and lesion distribution with only a few parameters, which also show improved
 correlation with clinical scores compared to established volumetric imaging
-biomarkers. In contrast to previous manifold learning approaches, our method
-does not assume that the ambient space is locally linear and also does not
-require the definition of a suitable similarity measure, or building a proximity
-graph.
+biomarkers.
+
+\item In contrast to previous manifold learning approaches, our method does not
+assume the ambient space to be locally linear and also does not require the
+definition of a suitable similarity measure, or building a proximity graph,
+which is particularly advantageous for modeling lesions, because their sparse
+and random nature makes defining a suitable distance measure between lesion
+images challenging.
 \end{itemize}
 
 \section[Future work]{Future Work}
@@ -62,69 +80,74 @@ Learning}
 
 Motivated by the success of deep learning for the two applications explored in
 this theses, a possible direction for further research is to investigate new
-applications of deep learning. The success of deep learning methods mostly stems
-from their ability to learn feature hierarchies directly from the data. This
-allows deep learning methods to adapt to the challenges presented by the data,
-such as imaging artifacts and contrast variations, without explicitly having to
-model them. However, deep learning methods can take a lot of time to train and
-require large amounts of training data in order to learn a feature
-representation that generalizes well to new data samples. To overcome those
-challenges, first applications of deep learning were limited to problems that
-can be cast as a patch-wise classification problem, such as the segmentation of
-cell membranes \citep{ciresan2012} and the detection of cell carcinoma
-\citep{cruz2013}. In this fashion, every patch of an image is considered a
-training sample, which greatly increases the amount of labelled training cases.
+applications of deep learning for medical image analysis. The success of deep
+learning methods mostly stems from their ability to learn feature hierarchies
+directly from the data. This allows deep learning methods to adapt to the
+challenges presented by the data, such as imaging artifacts and contrast
+variations, without explicitly having to model them. However, deep learning
+methods can take a lot of time to train and require large amounts of training
+data in order to learn a feature representation that generalizes well to new
+data samples. To overcome those challenges, first applications of deep learning
+for medical image analysis were limited to problems that can be cast as a
+patch-wise classification problem, such as the segmentation of cell membranes
+\citep{ciresan2012} and the detection of cell carcinoma \citep{cruz2013}. In
+this fashion, every patch of an image is considered a training sample, which
+greatly increases the amount of labelled training cases.
 In addition, training on relatively small 2D patches made training feasible.
 Similarly, fully convolutional approach for image segmentation leverage every
 pixel of an image as a training sample, while being more computationally
-efficient than patch-based approaches. However, layers deeper in the hierarchy
-have increasingly fewer pixels, and are consequently trained with fewer training
-samples, which increases the risk of overfitting.
+efficient than patch-based approaches. However, the number of voxels within a
+layer decreases with the depth of the network, with the result that deeper
+layers are trained with fewer training samples, which increases the risk of
+overfitting.
 
-An interesting research question is therefore what other problems can be solved
-using deep learning. The proposed segmentation framework can readily be applied
-to various segmentation problems. Preliminary results on the segmentation of the
-corpus callosum show great promise. For future work, it will be important to
-explore other segmentation problems. Another potential application could be the
-detection of landmark points. Detecting landmarks is similar to segmentation in
-that every voxel of an image can be leveraged as a training sample. However, the
-number of positive samples per image is much lower than for segmentation, which
-might require further research. A potential solution to deal with the sparseness
-of a landmark map is to train the model on a distance transformation of the
-original landmark map.
+A possible direction for future research is to investigate the application of
+the proposed deep learning segmentation framework to other segmentation tasks.
+Preliminary results on the segmentation of the corpus callosum and the gray
+matter of the spinal cord show great promise. Another potential application
+could be the detection of landmark points. Detecting landmarks is similar to
+segmentation in that every voxel of an image can be leveraged as a training
+sample. However, the number of positive samples per image is typically much
+smaller than for segmentation, which might require the development of
+alternative training approaches.
 
-A different stream of potential applications is to incorporate deep learning
-into existing model learning frameworks. Originally, active shape
-\citep{cootes1995} and active appearance \citep{cootes2001} models employ
-principal component analysis in order to reduce the dimensionality of the input
-feature space. Similarly, deep belief networks or stacked autoencoders can be
-used for dimensionality reduction, which might yield to the learning of more
-biologically plausible models, due to their ability to find highly nonlinear
-patterns of variability in the data.
+% , such as the training on a distance transformation further research.
+% A potential solution to deal with the sparseness of a landmark map is to train
+% the model on a distance transformation of the original landmark map.
+
+A different direction for future research is to investigate the potential of
+deep learning methods to be incorporated into existing model learning
+frameworks. Originally, active shape \citep{cootes1995} and active appearance
+\citep{cootes2001} models employ principal component analysis in order to reduce
+the dimensionality of the input feature space. Similarly, our proposed manifold
+learning framework can be used for dimensionality reduction, which might yield
+to the learning of more biologically plausible models, due to their ability to
+find highly nonlinear patterns of variability in the data.
 
 \subsection[Improving the performance on small data sets using data
 augmentation]{Improving the Performance on Small Data Sets using Data
 Augmentation}
 
-A promising approach of improving the performance on small data sets is data
+A promising approach for improving the performance on small data sets is data
 augmentation. Data augmentation allows the artificial increase of the training
 data set size by generating new training samples from existing ones. Data
 augmentation has been successfully used to deal with the problem of small
 medical data sets. For example, \citet{ronneberger2015} used automatically
 generated deformations to artificially increase the data set size for segmenting
-cells, but also simpler data augmentation techniques such as adding rotations,
-translations and contrast variations can help to avoid overfitting. However,
-hand-engineered data augmentation approaches depend on how well the variability
-in the data is understood. Alternatively, automatically learned unsupervised
-deep generative models such as deep belief networks can potentially be used to
-learn the variability of the training data in order to generate new samples that
-are biologically plausible.
+neuronal structures in electron microscopic stacks, but also simpler data
+augmentation techniques such as adding rotations, translations and contrast
+variations can help to avoid overfitting. However, hand-engineered data
+augmentation approaches depend on how well the variability in the data is
+understood. Alternatively, automatically learned unsupervised deep generative
+models such as deep belief networks can potentially be used to learn the
+variability of the training data in order to generate new samples that are
+biologically plausible.
 
 \subsection[Rotation-invariant neural networks]{Rotation-invariant Neural
 Networks}
 
 Although neural networks are able to learn features that are invariant to the
-variability in the data, doing so often requires the learning of different
+variability in the data, doing so often requires the learning of multiple
 variants of the same feature in order to capture the range of variability. In
 order to decrease the number of weights of a neural network, and therefore to
 reduce the training time and risk of overfitting, different neural network
@@ -132,46 +155,47 @@ architectures have been developed with build-in invariance or equivariance
 properties. For example, previously used sigmoid activation functions are
 sensitive to the intensity range of the input, which requires the relearning of
 feature detectors for images with varying contrast. To overcome, rectified
-linear units were proposed, which represent the same units with different
-biases, which makes them equivariant to intensity variations. In order to allow
-the learning of translational invariant features, convolutional neural networks
-were developed, which greatly reduce the number of weights required to capture
-simple edge detecting features at different locations in the image compared to
-dense neural networks. However, features learned by a convolutional neural
-network are not invariant to rotations. This leads, for example, to the learning
-of a variety of edge detecting features that are sensitive to different angles.
-While the number of angles is rather low in 2D, significantly more features are
-required to span the space of rotations in 3D, due to the combination of three
-rotation parameters. In order to avoid the learning of very basic features with
-different rotation parameters in 3D, it might therefore be necessary to develop
-neural network architectures that are inherently invariant or equivariant to
-rotations, which would allow for the learning of a diverse set of features that
-capture fine details in 3D with much fewer weights than currently employed
-convolutional neural network architectures.
+linear units have been proposed, which are equivariant to intensity variations.
+In order to allow the learning of translation-invariant features, convolutional
+neural networks have been proposed, which greatly reduce the number of weights
+required to capture reoccurring patterns at different locations in the image
+compared to dense neural networks. However, features learned by a convolutional
+neural network are not invariant to rotations, which leads to the relearning of
+the same class of features at different poses, and consequently increases the
+number of filters required to sample the pose space. This problem is especially
+pronounced in 3D. While sampling one feature under 2D rotations in 30 degree
+steps leads to 12 samples, it leads to 1728 samples for full 3D rotations, as
+three angles are required to determine a 3D pose. In order to reduce the number
+of filters required to capture structures in 3D, it might therefore be
+necessary to develop neural network architectures that are inherently invariant
+or equivariant to rotations, which would allow for the learning of a diverse set
+of features that capture fine details in 3D with much fewer weights than
+currently employed convolutional neural networks.
 
 \subsection[Increasing the expressive power of single neurons]{Increasing the
 Expressive Power of Single Neurons}
 
 Current neural networks can only calculate the weighted sum of its inputs
 followed by the application of a nonlinear function. Although it has been shown
-that this model is able to approximate any function, doing so might require a
-lot of units and layers, which makes them harder to train and requires more
-training data in order to reduce the risk of overfitting. One way to increase
-the expressive power of neural networks without increasing their complexity is
-to design more computationally powerful units. In their review of the
-computational properties of dendrites, \citet{london2005} noted that some
-neurons were found that are able to calculate the multiplication of its inputs.
-For example, the looming sensitive neurons in the locust's visual system are
-able to detect approaching objects on a collision course by calculating the
-multiplication of angular size and speed of approaching object. The
-multiplication is possible encoded as the sum of logarithmic inputs followed by
-exponentiation. Similarly, \citet{godfrey2016} have proposed a type of neuron
-for artificial neural networks that is able to learn to calculate the logarithm
-or exponential of its inputs, which allows for the learning of networks that can
-calculate arbitrary polynomial with significantly fewer parameters than
-traditional ReLU or sigmoid neural networks. Alternatively, \citet{livni2013}
-have proposed a network architecture that can learn arbitrary polynomials using
-a combination of units that calculate weighted sums of an arbitrary number of
-inputs and units that calculate the product of two inputs. However, these
-network architectures needs to be investigated further in order to show if the
-theoretical advantages translate into improvements on practical problems.
+that this model is able to approximate arbitrary functions \citep{cybenko1989},
+doing so might require a large number of units and layers, which makes them more
+difficult to train and requires more training data in order to reduce the risk
+of overfitting. An alternative for increasing the expressive power of neural
+networks without increasing their complexity is to design more computationally
+powerful units. In their review of the computational properties of dendrites,
+\citet{london2005} noted that some neurons were found that are able to calculate
+the multiplication of its inputs. For example, the looming sensitive neurons in
+the locust's visual system are able to detect approaching objects on a collision
+course by calculating the multiplication of angular size and speed of
+approaching object \citep{london2005}. The multiplication is possible encoded as
+the sum of logarithmic inputs followed by exponentiation. Similarly,
+\citet{godfrey2016} have proposed a type of neuron for artificial neural
+networks that is able to learn to calculate the logarithm or exponential of its
+inputs, which allows for the learning of networks that can calculate arbitrary
+polynomial with significantly fewer parameters than traditional rectified linear
+or sigmoid neural networks. Alternatively, \citet{livni2013} have proposed a
+network architecture that can learn arbitrary polynomials using a combination of
+units that calculate weighted sums of its inputs and units that calculate the
+product of two input numbers. However, these network architectures needs to be
+investigated further in order to show if the theoretical advantages translate
+into improvements on practical problems.

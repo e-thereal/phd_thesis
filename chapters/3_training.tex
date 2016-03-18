@@ -25,41 +25,41 @@ training sets. However, the number of trainable weights of a \gls{dbn} increases
 greatly with the resolution of the training images, which can make training on
 large images impracticable. In order to scale DBNs to high-resolution images,
 \citet{lee2009,lee2011} introduced the \gls{cdbn}, a deep generative model that
-uses weight sharing to reduce the number of trainable weights. They showed that
-a convDBN can be used to classify images with a resolution up to \num{200x200}
-pixels. To speed up the training of \glspl{cnn} on high-resolution images,
-\citet{krizhevsky2012} replaced traditional convolutions of the first layer of
-their CNN with strided convolutions, a type of convolution that shifts the
-filter kernel as a sliding window with a fixed step size or stride greater than
-one. Through the use of strided convolutions, the number of hidden units in each
-convolutional layer is greatly reduced, which reduces both training time and
-required memory. Using a highly optimized GPU implementation of convolutions,
-they were able to train a CNN on images with a resolution of \num{256x256}
-pixels, achieving state-of-the-art performance on the ILSVRC-2010 and
-ILSVRC-2012 competitions \citep{krizhevsky2012}. An alternative approach for
-calculating convolutions was proposed by \citet{mathieu2013} who sped up the
-training of CNNs by calculating convolutions between batches of images and
-filters using \glspl{fft}, albeit at the cost of additional
-memory required for storing the filters. Recently, NVIDIA have released a
-library called cuDNN \citep{chetlur2014} that provides GPU-optimized
-implementations of 2D and 3D convolutions among other operations that are
-frequently used to implement deep learning methods, which further reduces
-training times compared to the previous state-of-the-art.
+uses weight sharing and local connectivity to reduce the number of trainable
+weights. They showed that a convDBN can be used to classify images with a
+resolution up to \num{200x200} pixels. To speed up the training of \glspl{cnn}
+on high-resolution images, \citet{krizhevsky2012} replaced traditional
+convolutions of the first layer of their CNN with strided convolutions, a type
+of convolution that shifts the filter kernel as a sliding window with a fixed
+step size or stride greater than one. Through the use of strided convolutions,
+the number of hidden units in each convolutional layer is greatly reduced, which
+reduces both training time and required memory. Using a highly optimized GPU
+implementation of convolutions, they were able to train a CNN on images with a
+resolution of \num{256x256} pixels, achieving state-of-the-art performance on
+the ILSVRC-2010 and ILSVRC-2012 natural image classification competitions
+\citep{krizhevsky2012}. An alternative approach for calculating convolutions was
+proposed by \citet{mathieu2013} who sped up the training of CNNs by calculating
+convolutions between batches of images and filters using \glspl{fft}, albeit at
+the cost of additional memory required for storing the filters. Recently, NVIDIA
+have released a library called cuDNN \citep{chetlur2014} that provides
+GPU-optimized implementations of 2D and 3D convolutions among other operations
+that are frequently used to implement deep learning methods, which further
+reduces training times compared to the previous state-of-the-art.
 
 \section{Overview}
 
 In this chapter, we detail our training algorithm and GPU implementation in
 full, with a thorough analysis of the running time on high-resolution 2D images
 (\num{512x512}) and 3D volumes (\num{128x128x128}), showing speed-ups of up to
-8-fold and 200-fold, respectively for training RBMs and a 7-fold speed up for
-computing key operations for the training CNNs compared to cuDNN. The proposed
-method performs training in the frequency domain, which replaces the calculation
-of time-consuming convolutions with simple element-wise multiplications, while
-adding only a small number of FFTs. In contrast to similar FFT-based approaches
-\citep[e.g.,][]{mathieu2013}, our method does not use batch processing of the
-images as a means to reduce the number of FFT calculations, but rather minimizes
-FFTs even when processing a single image, which significantly reduces the
-required amount of scarce GPU memory.
+8-fold and 200-fold, respectively for training \glspl{crbm} and a 7-fold speed
+up for computing key operations for the training CNNs compared to cuDNN. The
+proposed method performs training in the frequency domain, which replaces the
+calculation of time-consuming convolutions with simple element-wise
+multiplications, while adding only a small number of FFTs. In contrast to
+similar FFT-based approaches \citep[e.g.,][]{mathieu2013}, our method does not
+use batch processing of the images as a means to reduce the number of FFT
+calculations, but rather minimizes FFTs even when processing a single image,
+which significantly reduces the required amount of scarce GPU memory.
 % We show that our method can be efficiently implemented on multiple graphics
 % cards, further improving the runtime performance over other GPU-accelerated
 % training methods.
@@ -85,12 +85,12 @@ training of sconvDBNs in the frequency domain.
 % Short revision of how training works. Put all the pieces together to make it
 % an algorithm. Make sure that I do this for convRBMs
 
-Before we look at the training algorithm of convRBMs in the frequency domain,
-let us revise the basic steps for training in the spatial domain. The weights
-and bias terms of a convRBM can be learned by \gls{cd}. During each iteration of
-the algorithm, the gradient of each parameter is estimated and a gradient step with
-a fixed learning rate is applied. The gradient of the filter weights can be
-approximated by
+Before we explain the training algorithm in the frequency domain, we will
+briefly revise the basic steps for training convRBMs in the spatial domain. The
+weights and bias terms of a convRBM can be learned by \gls{cd}. During each
+iteration of the algorithm, the gradient of each parameter is estimated and a
+gradient step with a fixed learning rate is applied. The gradient of the filter
+weights can be approximated by
 \begin{equation}
 \Delta \vect{w}^{(ij)} \approx
 \frac{1}{N}(\vect{v}^{(i)}_n*\tilde{\vect{h}}^{(j)}_n -
@@ -100,27 +100,31 @@ approximated by
 where $\vect{v}_n, n \in [1,N]$ are images from the training set,
 $\vect{h}_n^{(j)}$ and $\vect{h}'^{(j)}_n$ are samples drawn from
 $p(\vect{h}^{(j)} \given \vect{v}_n)$ and $p(\vect{h}^{(j)} \given
-\vect{v}'_n)$, and $\vect{v}'^{(i)}_n = \E[\vect{v}^{(i)} \given \vect{h}_n]$.
-To apply the model to real-valued data like certain types of images, the visible
-units can be modeled as Gaussian units.
-When the visible units are mean--centered and standardized to unit variance, the
-expectation of the visible units is given by
+\vect{v}'_n)$, $\vect{v}'^{(i)}_n = \E[\vect{v}^{(i)} \given \vect{h}_n]$, $*$
+denotes valid convolution, and $\tilde{\vect{h}}^{(j)}_n$ denotes a horizontal
+and vertical flipped version of $\vect{h}^{(j)}_n$. To apply the model to
+real-valued data like certain types of images, the visible units can be modeled
+as Gaussian units. When the visible units are mean--centered and standardized to
+unit variance, the expectation of the visible units is given by
 \begin{equation} 
 \E[\vect{v}^{(i)} \given \vect{h}] = \sum_{j=1}^{N_\text{k}}
-\vect{w}^{(ij)}*\vect{h}^{(j)} + b_i
+\vect{w}^{(ij)}\circledast\vect{h}^{(j)} + b_i,
 \label{eq:convvis}
 \end{equation}
-A binary hidden unit can only encode two states. In order to increase the
-expressive power of the hidden units, we use \glspl{nrelu} as the
-hidden units, which have been shown to improve the learning performance
-of RBMs \citep{nair2010}. The hidden units can be sampled with
+where $\circledast$ denotes full convolution. A binary hidden unit can only
+encode two states. In order to increase the expressive power of the hidden
+units, we use \glspl{nrelu} as the hidden units, which have been shown to
+improve the learning performance of RBMs \citep{nair2010}. The hidden units can
+be sampled with
 \begin{align} 
 \vect{h}^{(j)} &\sim \max(0, \mu^{(j)} + \Norm(0, \sigm(\mu^{(j)}))) \\
 \mu^{(j)} &= \sum_{i=1}^{N_\text{c}}\tilde{\vect{w}}^{(ij)}*\vect{v}^{(i)} +c_j
 \label{eq:convhid}
 \end{align} 
-where $\Norm(0, \sigma^2)$ denotes Gaussian noise. The learning algorithm in the
-spatial domain is summarized in \ref{fig:algorithms}\subref{alg:spatial}.
+where $\Norm(0, \sigma^2)$ denotes Gaussian noise, and $\sigm(x)$ is the sigmoid
+function defined as $\sigm(x) = (1+ \exp(-x))^{-1}, x \in \R$. The learning
+algorithm in the spatial domain is summarized in
+\ref{fig:algorithms}\subref{alg:spatial}.
 
 \begin{figure}[t!]
 \hspace{-1.75em}
@@ -148,7 +152,8 @@ $\Delta \vect{w} = 0$\;
     \For{$i = 1$ \KwTo $N_\text{c}$} {
       $\Delta \vect{w}^{(ij)} = \Delta \vect{w}^{(ij)} + \tilde{\vect{h}}^{(j)}
       * \vect{v}^{(i)}$\;
-      $\vect{v}'^{(i)} = \vect{v}'^{(i)} + \vect{w}^{(ij)} * \vect{h}^{(j)}$\;
+      $\vect{v}'^{(i)} = \vect{v}'^{(i)} + \vect{w}^{(ij)} \circledast
+      \vect{h}^{(j)}$\;
     }
   }
   $\forall i \colon \vect{v}'^{(i)} = \vect{v}'^{(i)} + b_i$\;
@@ -232,7 +237,7 @@ weights of a 3D kernel compared to 2D. To minimize the number of Fourier
 transforms, we map all operations needed for training to the frequency domain
 whenever possible, which allows the training algorithm to stay almost entirely
 in the frequency domain. All of the scalar operations needed for training
-(multiplications and additions) can be readily mapped to the frequency domain
+(multiplications and additions) can be readily mapped to the frequency domain,
 because the Fourier transform is a linear operation. Another necessary operation
 is the flipping of a convolutional kernel, $\tilde{w}(u,v) =
 w(N_\text{w}-u+1,N_\text{w}-v+1)$. To calculate flipping efficiently, we reindex
@@ -242,11 +247,11 @@ N_\text{w}/2\rfloor,\lfloor(N_\text{w}-1)/2\rfloor$, which simplifies the
 calculation of a flipped kernel to $\tilde{w}(u,v) = w(-u,-v)$.
 This allows flipping of a kernel in the spatial domain to be expressed by the
 element-wise calculation of the complex conjugate in the frequency domain, which
-follows directly from the time-reversal property of the Fourier transform, if
-$h(x) = f(-x)$, then $\hat{h}(\xi) = \hat{f}(-\xi)$; and the reality condition,
-$\hat{f}(-\xi)=\overline{\hat{f}(\xi)}$, where $\hat{x} = \F(x)$ denotes
-$x$ in the frequency domain. Using the aforementioned mappings, equations
-\ref{eq:convgra} to \ref{eq:convhid} can be rewritten as
+follows directly from the time-reversal property of the Fourier transform, i.e.,
+if $h(x) = f(-x)$, then $\hat{h}(\xi) = \hat{f}(-\xi)$; and the reality
+condition, $\hat{f}(-\xi)=\overline{\hat{f}(\xi)}$, where $\hat{x} = \F(x)$
+denotes $x$ in the frequency domain. Using the aforementioned mappings,
+equations \ref{eq:convgra} to \ref{eq:convhid} can be rewritten as
 \begin{align}
 \Delta \hat{\vect{w}}^{(ij)} &=
 \hat{\vect{v}}^{(i)}\cdot\overline{\hat{\vect{h}}^{(j)}} - \hat{\vect{v}}'^{(i)}
@@ -345,10 +350,11 @@ h_{xy}^{(j)}W_{uv}^{(ij)}V_{x+u-1, y+v-1}^{(i)}
 \sum_{i=1}^{N_\text{C}}b_i\!\sum_{x,y = 1}^{N_\text{V}}\!V_{xy}^{(i)} -
 \sum_{j=1}^{N_\text{k}}c_j\!\sum_{x,y = 1}^{N_\text{h}}\!h_{xy}^{(j)}
 \end{align}
-where $*$ denotes periodic convolution. The number of channels, number of
-visible units per channel and number of weights per channel after reorganization
-are given by $N_\text{C} = N_\text{c} \times s^2$, $N_\text{V}^2 = N_\text{v}^2
-/ s^2$ and $N_\text{W}^2 = N_\text{w}^2 / s^2$, respectively.
+where $\bullet$ denotes the element-wise product followed by summation. The
+number of channels, number of visible units per channel and number of weights
+per channel after reorganization are given by $N_\text{C} = N_\text{c} \times
+s^2$, $N_\text{V}^2 = N_\text{v}^2 / s^2$ and $N_\text{W}^2 = N_\text{w}^2 /
+s^2$, respectively.
 
 \subsection[GPU implementation and memory considerations]{GPU Implementation and
 Memory Considerations}
@@ -359,7 +365,7 @@ To optimize efficiency, it is crucial to maximize the utilization of the large
 number of available GPU cores, while minimizing the required amount of GPU
 memory. Because our algorithm requires only a relatively small number of FFT
 calculations per iteration, the computational bottleneck is the calculation of
-the element-wise operations, which can be performed in parallel. Thus we
+the element-wise operations, which can be performed in parallel. Thus, we
 distribute the processing of a single 2D image over $N_\text{v}(\lfloor
 N_\text{v}/2 \rfloor + 1) \times N_\text{c}$ independent threads, with one
 thread per element in the frequency domain. The large number of parallel threads
@@ -396,8 +402,8 @@ filters is given by the sum of their respective terms
 4N_\text{v}^2N_\text{c} + \frac{4N_\text{v}^2 N_\text{k}}{s^2} +
 4N_\text{v}^2N_\text{k}N_\text{c}.
 \end{equation}
-As a comparison, the training method of \citep{krizhevsky2012} processes batches
-of images in order to fully utilize the GPU, which requires the storing of
+As a comparison, the training method of \citet{krizhevsky2012} processes
+batches of images in order to fully utilize the GPU, which requires the storing of
 batches of visible and hidden units. The memory needed for storing the key
 variables is given by
 \begin{equation} 
@@ -409,7 +415,7 @@ N_\text{b}N_\text{k}}{s^2} + 4N_\text{w}^2N_\text{k}N_\text{c},
 where $N_\text{b}$ is the number of images per mini-batch. Depending on the
 choice of the batch size, this method requires more memory for storing the
 visible and hidden units, while requiring less memory for storing the filters.
-Alternatively, \citet{mathieu2013} proposed to speed up the training of CNNs by
+Alternatively, \citet{mathieu2013} proposed speeding up the training of CNNs by
 calculating convolutions between batches of images and filters using FFTs. The
 memory required for storing the visible units, hidden units, and filters using
 this method is given by
@@ -418,7 +424,7 @@ this method is given by
 %\times (N_\text{b}N_\text{c} + N_\text{b}N_\text{k} + N_\text{k}N_\text{c}) \\
 %&\approx 
 4 N_\text{v}^2 N_\text{b}N_\text{c} + 4
-N_\text{v}^2 N_\text{b}N_\text{k} + 4 N_\text{v}^2 N_\text{k}N_\text{c}
+N_\text{v}^2 N_\text{b}N_\text{k} + 4 N_\text{v}^2 N_\text{k}N_\text{c}.
 \end{equation}
 \Ref{tab:memory} shows a comparison of the memory per GPU required for
 storing key variables when training a network used in previous work by
@@ -692,21 +698,25 @@ cuDNN]{Comparison of Running Times for Calculating Convolutions with cuDNN}
 % TODO: Add used by Torch, Caffe, TensorFlow
 
 The \gls{cudnn} \citep{chetlur2014} is a GPU-accelerated library of primitives
-that are frequently used to implement deep learning methods such as CNNs and
-convDBNs. The library provides highly optimized implementations for calculating,
-e.g., batched 2D and 3D convolutions, pooling operations, and different transfer
-functions. In this set of experiments, we directly compared the time required to
-calculate convolutions when training a CNN using our frequency domain
-implementation with cuDNN. We only consider convolutions because they are the
-most time-consuming operations and because all other operations are calculating
-in the same way. For the frequency domain implementation, all measurements
-include the time required to calculate FFTs for calculating gradients and for
-transforming the accumulated gradient to spatial domain in order to calculate
-the parameters updates. The parameters that we used for evaluating the speed of
-different convolution implementations are summarized in
+that are commonly required to implement deep learning methods such as CNNs and
+convDBNs. It is used internally by state-of-the-art deep learning frameworks
+such as Caffe \citep{jia2014}, Theano \citep{bastien2012}, and Torch
+\citep{collobert2011torch7}. The library provides highly optimized
+implementations for calculating, e.g., batched 2D and 3D convolutions, pooling
+operations, and different transfer functions. In this set of experiments, we
+directly compared the time required to calculate convolutions when training a
+CNN using our frequency domain implementation with cuDNN. We only consider
+convolutions because they are the most time-consuming operations and because all
+other operations are calculated in the same way. For the comparison with our
+frequency domain implementation, the time measurements also include the time
+required to calculate FFTs during the gradient calculation and for transforming
+the accumulated gradient to spatial domain and back in order to trim the padded
+filters to the original filter size. The parameters that we used for evaluating
+the running time of different convolution implementations are summarized in
 \ref{tab:cudnn_parameters}. The parameters represent typical values of the first
-and second layer of a CNN, which are the layers that typically take the most
-time to train. The key parameters that we varied are the image size, filter
+and second layer of a CNN, which are the layers that require the most time to
+train, because the visible units of subsequent layers are commonly of much
+smaller resolution. The key parameters that we varied are the image size, filter
 size, and batch size. The hardware details of our test environment are
 summarized in \ref{tab:cudnn_hardware}.
 
@@ -772,14 +782,14 @@ sizes larger than $110^3$ voxels, cuFFT requires significantly more temporary
 memory for calculating FFTs of unoptimized image sizes. Consequently, only the
 running times of the padded frequency domain implementation and cuDNN were
 measured for image sizes larger than $110^3$ voxels. Calculating convolutions in
-the frequency domain scale better with increasing image size than cuDNN. While
-cuDNN is the fastest method for very small image sizes, the padded frequency
-domain implementation is more than 20 times faster for images with a size of
-$128^3$ voxels and 2 input channels, and more than 18 times faster for images
-with a size of $64^3$ voxels and 32 channels. Calculating the FFT and therefore
-the running time of the frequency domain implementation varies significantly
-depending on the input image size, and careful padding of the input images is
-required to achieve consistently high performance.
+the frequency domain scales better with an increase of the image size than
+cuDNN. While cuDNN is the fastest method for very small image sizes, the padded
+frequency domain implementation is more than 20 times faster for images with a
+size of $128^3$ voxels and 2 input channels, and more than 18 times faster for
+images with a size of $64^3$ voxels and 32 channels. Calculating the FFT and
+therefore the running time of the frequency domain implementation varies
+significantly depending on the input image size, and careful padding of the
+input images is required to achieve consistently high performance.
 
 % \begin{itemize}
 % \item Improvements over cuDNN are larger for higher number of channels where the
@@ -810,9 +820,9 @@ the required amount of GPU memory. In contrast, the implementation in the
 frequency domain does not require more memory, because each image of a
 mini-batch is processed sequentially. Increasing the batch size reduces the
 average running time per image of our frequency domain implementation, because
-the FFTs required to calculate the parameter updates need to be calculated only
-once per mini-batch, and have therefore a smaller impact on the overall running
-time when the number of images per mini-batch is larger.
+the FFTs required to trim the padded filters to the original filter size need to
+be calculated only once per mini-batch, and have therefore a smaller impact on
+the overall running time when the number of images per mini-batch is larger.
 
 \begin{table}[tb]
 \centering
@@ -858,13 +868,14 @@ channels}
 \end{tabular}
 \end{table}
 
-The impact of the filter size on running time is shown in \ref{fig:filtersize}.
-Training in the frequency domain is faster for all filter sizes, where the
-speed-ups are larger for larger filters. At a filter size of $9$, the speed-up
-is 20 times. For $32$ channels, cuDNN is faster for very small filter sizes and
-training in the frequency domain breaks even at a filter size of $3$.
-For filter sizes larger than $3$, training in the frequency domain is
-substantially faster with a speed-up of up to $18$ times a filter size of $9$.
+The impact of the filter size on the running time is shown in
+\ref{fig:filtersize}. For the first layer, training in the frequency domain is
+faster for all filter sizes, where the speed-ups are larger for larger filters.
+At a filter size of $9$, the speed-up is 20 times. For $32$ channels, cuDNN is
+faster for very small filter sizes and training in the frequency domain breaks
+even at a filter size of $3$. For filter sizes larger than $3$, training in the
+frequency domain is substantially faster with a speed-up of up to $18$ times for
+a filter size of $9$.
 
 \begin{figure}
 \centering
@@ -877,25 +888,25 @@ CNN layer for varying number of channels and filter sizes.}
 
 \ref{tab:usedmodels} shows a comparison of running times for calculating
 convolutions of our frequency domain implementation with cuDNN for the 7-layer
-\gls{cen} that is used in \ref{sec:segmentation} to
-segment \gls{ms} lesions, and the first sconvRBM of the DBN model described in
-\ref{sec:manifold} to model the variability in lesion distribution and brain
-morphology. For the 7-layer CEN, the second convolutional and the first
-deconvolutional layer benefits the most from training in the frequency domain
-due to the relatively large number of channels in these layers. Overall, the
-convolutions required to train the 7-layer CEN can be calculated 6.3 times
-faster in the frequency domain compared to cuDNN. In a second experiment, we
-compared the time required to directly calculate strided convolutions with
-mapping strided convolutions to stride-1 convolutions by reorganizing the
-visible units of an sconvRBM. For the frequency domain implementation, the
-direct method calculates stride-1 convolutions instead of strided
-convolutions and discards the unnecessary hidden units afterwards, because
-strided convolutions cannot directly be calculated in the frequency domain.
-Mapping strided convolutions to stride-1 convolutions speeds up the training in
-the frequency domain by a factor of four compared to calculating stride-1
-convolutions in the frequency domain. Overall, calculating the convolutions for
-training the first sconvRBM is 3.7 times faster using our frequency domain
-implementation than the direct implementation of strided convolutions of cuDNN.
+\gls{cen} that we use in \ref{sec:segmentation} to segment \gls{ms} lesions, and
+the first sconvRBM of the DBN model described in \ref{sec:manifold} to model the
+variability in lesion distribution and brain morphology. For the 7-layer CEN,
+the second convolutional and the first deconvolutional layer benefits the most
+from training in the frequency domain due to the relatively large number of
+channels in these layers. Overall, the convolutions required to train the
+7-layer CEN can be calculated 6.3 times faster in the frequency domain compared
+to cuDNN. In a second experiment, we compared the time required to directly
+calculate strided convolutions with mapping strided convolutions to stride-1
+convolutions by reorganizing the visible units of an sconvRBM. For the frequency
+domain implementation, the direct method calculates stride-1 convolutions
+instead of strided convolutions and discards the additional hidden units
+afterwards, because strided convolutions cannot directly be calculated in the
+frequency domain. Mapping strided convolutions to stride-1 convolutions speeds
+up the training in the frequency domain by a factor of four compared to
+calculating stride-1 convolutions in the frequency domain. Overall, calculating
+the convolutions for training the first sconvRBM is 3.7 times faster using our
+frequency domain implementation than the direct implementation of strided
+convolutions of cuDNN.
 
 \begin{table}
 \caption[Comparison of running times of time critical operations of two example

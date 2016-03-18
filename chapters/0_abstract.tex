@@ -20,57 +20,56 @@
 % Context scope
 % Problem and why is it challenging
 
-\Gls{ms} is a chronic and degenerative disease of the \gls{cns} characterized by
-the formation of inflammatory and demyelinating lesions as well as
-neurodegeneration causing regional and global atrophy. Imaging biomarkers based
-on the delineation of lesions, such as lesion load and lesion count, have
-established their importance for assessing disease progression and treatment
-effect. However, lesions vary greatly in size, shape, intensity and location,
-which makes their automatic and accurate segmentation challenging. Furthermore,
-the current established imaging biomarkers largely capture volumetric changes,
-which are important and relatively easy to compute, but do not reflect
-potentially important structural variations, such as shape changes in the brain
-and spatial dispersion of the lesions. It would be highly desirable to have a
-method that can automatically discover potentially important patterns of
-variability in brain morphology and lesion distribution, which would advance our
-understanding of the complex pathology of MS.
+\Gls{ms} is a inflammatory and degenerative disease of the central nervous
+system characterized by the formation of lesions and axonal loss leading to
+regional and global atrophy. Imaging biomarkers based on the delineation of
+lesions, such as lesion load and lesion count, have established their importance
+for assessing disease progression and treatment effect. However, lesions vary
+greatly in size, shape, intensity and location, which makes their automatic and
+accurate segmentation challenging. Furthermore, the current established imaging
+biomarkers largely capture volumetric changes, which are important and
+relatively easy to compute, but do not reflect potentially important structural
+variations, such as shape changes in the brain and spatial dispersion of the
+lesions.
+% It would be highly desirable to have a method that can automatically
+% discover potentially important patterns of variability in brain morphology and
+% lesion distribution, which would advance our understanding of the complex
+% pathology of MS.
 
 % What is the goal of the thesis and how were they achieved
 
-We propose a novel segmentation approach based on deep 3D convolutional encoder
-networks with shortcut connections and apply it to the segmentation of MS
-lesions in magnetic resonance images. Our model is a neural network that
-consists of two interconnected pathways for feature extraction and lesion
-prediction. The joint training of the feature extraction and prediction pathways
-allows for the automatic learning of features at different scales that are
-optimized for accuracy for any given combination of image types and segmentation
-task. We have evaluated our method on two publicly available data sets with the
-results showing that our method performs comparably to the top-ranked
-state-of-the-art methods, even when only relatively small data sets are
-available for training. In addition, we have compared our method with five
-freely available and widely used MS lesion segmentation methods on a large data
-set from an MS clinical trial. The results show that our method consistently
-outperforms these other methods across a wide range of lesion sizes.
+We propose a novel segmentation approach for MS lesions based on a neural
+network that consists of two interconnected pathways for feature extraction and
+lesion prediction, which allows for the automatic learning of features at
+different scales that are optimized for accuracy for any given combination of
+image types and segmentation task. We have evaluated our method on publicly
+available data sets and a proprietary data set from a large MS clinical trial,
+with the results showing that our method performs comparably to the top-ranked
+methods on the public data sets, and outperforms five freely available and
+widely used methods when a sufficiently large data set is available.
 
-To further our understanding of complex MS pathology, we aim to build a
-statistical model of brain images that can automatically discover spatial
-patterns of variability in brain morphology and lesion distribution. We propose
-building such a model using a deep belief network (DBN), a layered network whose
-parameters can be learned from training images.
-%
-% In contrast to other manifold learning algorithms, the DBN approach does not
+% . In addition, we have compared our method with five
+% freely available and widely used MS lesion segmentation methods on a large data
+% set from an MS clinical trial. The results show that our method consistently
+% outperforms these other methods across a wide range of lesion sizes.
+
+To further our understanding of complex MS pathology, we build a statistical
+model of brain images that can automatically discover patterns of variability in
+brain morphology and lesion distribution. We propose building such a model using
+a deep belief network, a layered network whose parameters can be learned
+from training images.
+%  In contrast to other manifold learning algorithms, the DBN approach does not
 % require a prebuilt proximity graph, which is particularly advantageous for
 % modeling lesions, because their sparse and random nature makes defining a
 % suitable distance measure between lesion images challenging.
-%
-Our results show that this model can automatically discover the
-classic patterns of MS pathology, as well as more subtle ones, and that the
-parameters computed have strong relationships to MS clinical scores.
+Our results show that this model can automatically discover the classic patterns
+of MS pathology, as well as more subtle ones, and that the parameters computed
+have strong relationships to MS clinical scores.
 
-DBNs and neural networks have traditionally been too computationally expensive
-for application to 3D images due to the large number of trainable parameters. In
+Deep learning has traditionally been too computationally expensive for
+application to 3D images due to the large number of trainable parameters. In
 this thesis, we propose a much more computationally efficient training method
-for DBNs and neural networks that makes training on 3D medical images with high
+for deep convolutional models that makes training on 3D medical images with high
 resolution practical.
 
 \begin{comment}

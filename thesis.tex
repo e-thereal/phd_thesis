@@ -2,6 +2,7 @@
 \documentclass[
   pagesize=pdftex,
   paper=letter,
+  %paper=a0,
   numbers=noenddot,
   captions=tableheading,
   chapterprefix,
@@ -38,6 +39,8 @@ Lesion Segmentation with Application to Multiple Sclerosis}
 %\usepackage{draftwatermark}
 %\SetWatermarkLightness{0.95}
 
+% TODO: Unify tables (font size, cmidrule vs midrule, @{} on the border)
+
 
 \title{\longtitle}
 \author{Tom Brosch}
@@ -60,6 +63,8 @@ Lesion Segmentation with Application to Multiple Sclerosis}
 \printglossary[type=acronym,title=List of Abbreviations,toctitle=List of
 Abbreviations]
 \clearpage
+\include{chapters/0_acknowledgements}
+\include{chapters/0_dedication}
 
 \pagenumbering{arabic}
 

@@ -29,7 +29,7 @@ Alternatively, clustering methods have been used to segment healthy and lesion
 tissue, where lesions are modelled as a separate tissue class
 \citep{shiee2010topology,sudre2015}. In many methods, spatial priors of healthy
 tissues are used to reduce false positives. For example, in addition to
-modelling MS lesions as a separate intensity cluster, Lesion-TOADS
+modeling MS lesions as a separate intensity cluster, Lesion-TOADS
 \citep{shiee2010topology} employs topological and statistical atlases to produce
 a topology-preserving segmentation of all brain tissues.
 
@@ -131,15 +131,15 @@ resolution, and special handling of the border regions is still required.
 \label{sec:method}
 
 We propose a new convolutional network architecture that combines the advantages
-of a CEN \citep{brosch2015} and a u-net \citep{ronneberger2015}. Our
-network is divided into two pathways, a traditional convolutional pathway, which
-consists of alternating convolutional and pooling layers, and a deconvolutional
-pathway, which consists of alternating deconvolutional and unpooling layers and
-predicts the final segmentation. Similar to the u-net, we introduce shortcut
-connections between layers of the two pathways. In contrast to the u-net, our
-network uses deconvolution instead of upsampling in the expanding pathway and
-predicts segmentations that have the same resolution as the input images and
-therefore does not require special handling of the border regions.
+of a CEN \citep{brosch2015} and a u-net \citep{ronneberger2015}. Our network is
+divided into two pathways, a traditional convolutional pathway, which consists
+of alternating convolutional and pooling layers, and a deconvolutional pathway,
+which consists of alternating deconvolutional and unpooling layers and predicts
+the final segmentation. Similar to the u-net, we introduce shortcut connections
+between layers of the two pathways. In contrast to the u-net, our method
+produces segmentations of the same resolution as the input images, independent
+of the number of layers and filter sizes used, which enables the use of deeper
+networks without requiring special handling of the border regions.
 
 \begin{figure*}[tb]
 \centering
@@ -196,13 +196,13 @@ $w^{(l)}_{\text{c},ij}$, $F$ is the number of filters of the current layer,
 $b^{(l)}_j$ are trainable bias terms, $*$ denotes valid convolution, and
 $\tilde{w}$ denotes a flipped version of $w$, i.e., $\tilde{w}(a) = w(-a)$. To
 be consistent with the inference rules of \glspl{crbm}
-\citep{lee2009convolutional}, which are used for pre-training, convolutional
+\citep{lee2009}, which are used for pre-training, convolutional
 layers convolve the input signal with flipped filter kernels, while
 deconvolutional layers calculate convolutions with non-flipped filter kernels.
 We use rectified linear units \citep{nair2010} in all layers except for the
 output layers, which have shown to improve the classification performance of
 CNNs \citep{krizhevsky2012}. A convolutional layer is followed by an average
-pooling layer \citep{scherer2010evaluation} that halves the number of units in
+pooling layer \citep{scherer2010} that halves the number of units in
 each dimension by calculating the average of each block of \num{2x2x2} units per
 channel.
 
@@ -242,12 +242,12 @@ y^{(1)}_j +
 w^{(1)}_{\text{s},1j}\circledast x^{(1)}_j\Big) + c^{(0)}_1\Bigg),
 \end{equation}
 where we use the sigmoid function defined as $\sigm(z) = (1 + \exp(-z))^{-1}, z
-\in \R$ instead of the rectified linear function in order to obtain a
+\in \R$, instead of the rectified linear function in order to obtain a
 probabilistic segmentation with values in the range between 0 and 1.
 To produce a binary lesion mask from the probabilistic output of our model, we
-chose a fixed threshold such that the mean Dice similarity coefficient
-\citep{dice1945measures} is maximized on the training set and used the same
-threshold for the evaluation on the test set.
+chose a fixed threshold such that the mean \gls{dsc} \citep{dice1945measures}
+is maximized on the training set and used the same threshold for the evaluation
+on the test set.
 
 \subsection[Gradient calculation]{Gradient Calculation}
 
@@ -284,7 +284,7 @@ calculated using the delta rule and are given by
 \frac{\partial E}{\partial b^{(l)}_i} &= \sum_{\vect{p}}
 \delta^{(l)}_{\text{c},i}(\vect{p}).
 \end{align}
-For the first layer, $\delta^{(0)}_{\text{d},1}$ can be calculated by
+For the output layer, $\delta^{(0)}_{\text{d},1}$ can be calculated by
 \begin{equation}
 % Delta update
 \delta^{(0)}_{\text{d},1} = \big(y^{(0)}_1
@@ -381,7 +381,7 @@ S\big) y^{(0)}_1 \big(1 - y^{(0)}_1\big).
 At the beginning of the training procedure, the model parameters need to be
 initialized and the choice of the initial parameters can have a big impact on
 the learned model \citep{sutskever2013importance}. In our experiments, we found
-that initializing the model using pre-training \citep{hinton2006} on the input
+that initializing the model using pre-training \citep{hinton2006c} on the input
 images was required in order to be able to fine-tune the model using the ground
 truth segmentations without getting stuck early in a local minimum. Pre-training
 can be performed layer by layer \citep{hinton2006b} using a stack of convRBMs
@@ -410,8 +410,8 @@ the model. However, the partial derivatives of parameters of different layers
 can vary substantially in magnitude, which can require different learning rates.
 In recent years, there has been an increasing interest in developing methods for
 automatically choosing independent learning rates. Most methods (e.g., AdaGrad
-by \citealp{duchi2011adaptive}; AdaDelta by \citealp{zeiler2012adadelta};
-RMSprop by \citealp{dauphin2015rmsprop}; and Adam by \citealp{kingma2014adam})
+by \citealp{duchi2011}; AdaDelta by \citealp{zeiler2012};
+RMSprop by \citealp{dauphin2015}; and Adam by \citealp{kingma2014})
 collect different statistics of the partial derivatives over multiple iterations
 and use this information to set an adaptive learning rate for each parameter.
 This is especially important for the training of deep networks, where the
@@ -425,7 +425,7 @@ hyperparameters, so we used AdaDelta for all results reported.
 % TODO: Implementation outlined in a previous section
 
 Pre-training and fine-tuning were performed using the highly optimized
-GPU-accelerated implementation of 3D convRBMs and CENs explained in
+GPU-accelerated implementation of 3D convRBMs and CNNs explained in
 \ref{sec:training}. Our frequency domain implementation significantly speeds up
 the training by mapping the calculation of convolutions to simple element-wise
 multiplications, while adding only a small number of Fourier transforms. This is
@@ -433,10 +433,10 @@ especially beneficial for the training on 3D volumes, due to the increased
 number of weights of 3D kernels compared to 2D. Although GPU-accelerated deep
 learning libraries based on the \gls{cudnn} \citep{chetlur2014} are publicly
 available (e.g., \citealp{jia2014,bastien2012,collobert2011torch7}), we trained
-our models using our own implementation, because we have found that it performs
-the most computationally intensive training operations 6 times faster than cuDNN
-in a direct comparison (see \ref{tab:usedmodels} on page
-\pageref{tab:usedmodels}).
+our models using our own implementation, because we optimized it for memory
+facilitating the training on large 3D volumes and because it performs the most
+computationally intensive training operations six times faster than cuDNN in a
+direct comparison (see \ref{tab:usedmodels} on page \pageref{tab:usedmodels}).
  
 \sisetup{separate-uncertainty=true,detect-weight=true,detect-inline-weight=math}
 
@@ -448,16 +448,18 @@ challenge\footnote{\url{http://www.ia.unc.edu/MSseg/}} and the ISBI 2015
 longitudinal MS lesion segmentation
 challenge\footnote{\url{http://iacl.ece.jhu.edu/MSChallenge}}), which allows for
 a direct comparison with many state-of-the-art methods. In addition, we have
-used a much larger data set containing four different MRI sequences from a
-multi-center clinical trial in relapsing remitting MS, which tends to have the
-most heterogeneity among the MS subtypes. This data test is challenging due to
-the large variability in lesion size, shape, location, and intensity as well as
-varying contrasts produced by different scanners. The clinical trial data set
-was used to carry out a detailed analysis of different CEN architectures using
-different combinations of modalities, with a comparison to five publicly
-available state-of-the-art methods.
+used two much larger data sets containing two and four different MRI sequences
+from a multi-center clinical trial in secondary progressive MS and relapsing
+remitting MS, which tends to have the most heterogeneity among the MS subtypes.
+These data sets are challenging due to the large variability in lesion size,
+shape, location, and intensity as well as varying contrasts produced by
+different scanners. The clinical trial data sets were used to estimate the
+number of images required to train a CEN without overfitting and to carry out a
+detailed analysis of different CEN architectures using different combinations of
+modalities, with a comparison to five publicly available state-of-the-art
+methods.
 
-\subsection[Data sets and pre-processing]{Data Sets and Pre-processing}
+\subsection[Data sets and preprocessing]{Data Sets and Preprocessing}
 
 \subsubsection{Public Data Sets}
 The data set of the MICCAI 2008 MS lesion segmentation challenge
@@ -499,7 +501,7 @@ contrast to the previous data set, this data set also contains T1w and FLAIR
 MRIs, which allows for a direct comparison with other competing methods, which
 require these modalities. The image dimensions and voxel sizes vary by site, but
 most of the T1w images have close to \SI{1}{\milli\meter} isotropic voxels,
-while the other images have voxel sizes close \SI{1x1x3}{\milli\meter}. All
+while the other images have voxel sizes close to \SI{1x1x3}{\milli\meter}. All
 images were skull-stripped using the brain extraction tool (BET)
 \citep{jenkinson2005bet2}, followed by an intensity normalization to the
 interval $[0,1]$, and a 6 degree-of-freedom intra-subject registration using one
@@ -526,7 +528,7 @@ images can be segmented in less than one second.
 \subsection[Comparison to other methods]{Comparison to Other Methods}
 \label{sec:othermethods}
 
-We compared our method with the five publicly available methods, some of which
+We compared our method with five publicly available methods, some of which
 are widely used for clinical research and are established in the literature
 (e.g., \citealp{sudre2015,subbanna2015,guizard2015}) as reference points for
 comparison. These five methods include:
@@ -560,8 +562,8 @@ LST-LPA to binarize the probabilistic segmentations for $t = 0.05, 0.10, \dotsc,
 Similarly, the SLS toolbox, which is the most recently published work
 \citep{roura2015} also only takes T1w and FLAIR MRIs as input. This method uses
 an initial brain tissue segmentation obtained from the T1w images and segments
-lesions by treating lesional pixels as outliers to the normal appearing GM brain
-tissue on the FLAIR images. This method has three key parameters:
+lesions by treating lesional pixels as outliers to the normal appearing gray
+matter brain tissue on the FLAIR images. This method has three key parameters:
 $\omega_\text{nb}$, $\omega_\text{ts}$, and $\alpha_\text{sls}$. We tuned these
 parameters on the training set via a grid-search over a range of values as
 suggested by \citet{roura2015}.
@@ -572,7 +574,7 @@ Accuracy}
 We used the following six measures to produce a comprehensive evaluation
 of segmentation accuracy as there is generally no single measure that is
 sufficient to capture all information relevant to the quality of a produced
-segmentation \citep{garcia2013review}.
+segmentation \citep{garcia2013}.
 
 The first measure is the \gls{dsc}
 \citep{dice1945measures} that computes a normalized overlap value between the
@@ -607,14 +609,13 @@ classified as lesion voxels are indeed lesion voxels as defined by the ground
 truth (no false positives).
 
 We also measured the \gls{vd} between the ground truth and the produced
-segmentation by computing their volumes ($\text{\textit{Vol}}$), i.e.,
+segmentation by computing their volumes (Vol), i.e.,
 \begin{equation}
-\text{VD} = \frac{\text{\textit{Vol}}(\text{\textit{Seg}}) -
-                    \text{\textit{ Vol}}(\text{\textit{GT}})}
-                {\text{\textit{ Vol}}(\text{\textit{GT}})},
+\text{VD} = \frac{\text{Vol}(\text{Seg}) - \text{Vol}(\text{GT})}
+                {\text{Vol}(\text{GT})},
 \end{equation}
 where Seg and GT denote the obtained segmentation and ground truth,
-respectively. However, it has been noted \citep{garcia2013review} that wide
+respectively. However, it has been noted \citep{garcia2013} that a wide
 variability exists even between the lesion segmentations of trained experts, and
 thus, the achieved volume differences reported in the literature have ranged
 from \SI{10}{\percent} to \SI{68}{\percent}.
@@ -622,7 +623,7 @@ from \SI{10}{\percent} to \SI{68}{\percent}.
 For more precise evaluation, we have also included the \gls{ltpr} and the
 \gls{lfpr} that are much more sensitive in measuring the segmentation accuracy
 of smaller lesions, which are important to detect when performing early disease
-diagnosis \citep{garcia2013review}. More specifically, the LTPR measures the TPR
+diagnosis \citep{garcia2013}. More specifically, the LTPR measures the TPR
 on a per lesion-basis and is defined as
 \begin{equation}
 \text{LTPR} = \frac{\text{LTP}}{\text{\#RL}},
@@ -643,15 +644,6 @@ reference segmentation, and \#PL denotes the total number of lesions in the
 produced segmentation. An LFPR with a value of \SI{0}{\percent} indicates that
 no lesions were incorrectly identified.
 
-\begin{figure}[tb]
-\centering
-\includegraphics[width=0.7\textwidth]{figures/tmi/ems_progress}
-\caption[Improvement in the mean DSC computed on the training and test sets
-during training]{Improvement in the mean DSC computed on the training and test
-sets during training. Only small improvements can be observed after 400 epochs.}
-\label{fig:epochs}
-\end{figure}
-
 \subsection[Training parameters]{Training Parameters}
 \label{sec:trainparams}
 
@@ -670,13 +662,11 @@ of gradient updates compared to the clinical trial data set.
 
 \begin{figure}[tb]
 \centering
-\includegraphics[width=0.7\textwidth]{figures/tmi/roc2}
-\caption[ROC curves for different sensitivity ratios $r$]{ROC curves for
-different sensitivity ratios $r$. A `$+$' marks the TPR and FPR of the optimal
-threshold. Varying the value of $r$ results in almost identical ROC curves and
-only causes a change of the optimal threshold $t$, which shows the robustness of
-our method with respect to the sensitivity ratio.}
-\label{fig:ratio}
+\includegraphics[width=0.7\textwidth]{figures/tmi/ems_progress}
+\caption[Improvement in the mean DSC computed on the training and test sets
+during training]{Improvement in the mean DSC computed on the training and test
+sets during training. Only small improvements can be observed after 400 epochs.}
+\label{fig:epochs}
 \end{figure}
 
 To determine an effective sensitivity ratio, we measured the performance on the
@@ -688,20 +678,32 @@ thresholds. The plots illustrate our findings that our method is not sensitive
 to the choice of the sensitivity ratio, which mostly affects the optimal
 threshold. We chose a fixed sensitivity ratio of 0.02 for all our experiments.
 
+\begin{figure}[tb]
+\centering
+\includegraphics[width=0.7\textwidth]{figures/tmi/roc2}
+\caption[ROC curves for different sensitivity ratios $r$]{ROC curves for
+different sensitivity ratios $r$. A `$+$' marks the TPR and FPR of the optimal
+threshold. Varying the value of $r$ results in almost identical ROC curves and
+only causes a change of the optimal threshold $t$, which shows the robustness of
+our method with respect to the sensitivity ratio.}
+\label{fig:ratio}
+\end{figure}
+
 
 \subsection[Impact of the training set size on the segmentation
 performance]{Impact of the Training Set Size on the Segmentation Performance}
 
 To evaluate the impact of the training set size on the segmentation performance,
-we trained a CEN with 3 layers on the first in-house data set with a varying
+we trained a CEN with 3 layers on the first in-house data set with varying
 number of training samples and calculated the mean DSC on the training and test
 sets as illustrated in \ref{fig:bioms}. For small training sets, there is a
 large difference between the DSCs on the training and test sets, which indicates
 that the training set is too small to learn a representative set of features. At
 around 100 samples, the model becomes stable in terms of test performance and
-the small difference between training and test DSCs, indicating that overfitting
-of the training data is no longer occurring. With 100 training subjects, our
-method achieves a mean DSC on the test set of \SI{57.38}{\percent}.
+the small differences between training and test DSCs, indicating that
+overfitting of the training data is no longer occurring. With 100 training
+subjects, our method achieves a mean DSC on the test set of
+\SI{57.38}{\percent}.
 
 % , which shows
 % that the segmentation accuracy can be greatly improved compared to the results
@@ -796,21 +798,25 @@ diffuse damage, even for experts.}
 
 \subsubsection{MICCAI 2008 MS Lesion Segmentation Challenge}
 
-\ref{fig:segmentation} shows a comparison of three subjects from the MICCAI
-challenge data set. The first two rows show the FLAIR, T1w, T2w, ground truth
-segmentations, and predicted segmentations of two subjects with a DSC of
-\SI{60.58}{\percent} and \SI{61.37}{\percent}. Despite the large contrast
-differences between the two subjects, our method performed well and
-consistently, which indicates that our model was able to learn features that are
-robust to a large range of intensity variations. The last row shows a subject
-with a DSC of \SI{9.01}{\percent}, one of the lowest DSC scores from the data
-set. Our method segmented lesions that have similar contrast to the other two
-subjects, but these regions were not classified as lesions by the manual rater.
-This highlights the difficulty of manual lesion segmentation, as the difference
-between diffuse white matter pathology and focal lesions is often indistinct. A
-quantitative comparison of our method with other state-of-the-art methods is
-summarized in \ref{tab:state}. Our method outperforms the winning method
-\citep{souplet2008} of the MS lesion segmentation challenge 2008 and the
+In a first experiment, we evaluated the performance of our method using 5-fold
+cross-validation on the training set of the MICCAI challenge.
+\ref{fig:segmentation} shows a comparison of lesion masks produced by our method
+with the ground truth for three subjects. The first two rows show the FLAIR,
+T1w, T2w, ground truth segmentations, and predicted segmentations of two
+subjects with a DSC of \SI{60.58}{\percent} and \SI{61.37}{\percent}. Despite
+the large contrast differences between the two subjects, our method performed
+well and consistently, which indicates that our model was able to learn features
+that are robust to a large range of intensity variations. The last row shows a
+subject with a DSC of \SI{9.01}{\percent}, one of the lowest DSC scores from the
+data set. Our method segmented lesions that have similar contrast to the other
+two subjects, but these regions were not classified as lesions by the manual
+rater. This highlights the difficulty of manual lesion segmentation, as the
+difference between diffuse white matter pathology and focal lesions is often
+indistinct.
+
+A quantitative comparison of our method with other state-of-the-art
+methods is summarized in \ref{tab:state}. Our method outperforms the winning
+method \citep{souplet2008} of the MS lesion segmentation challenge 2008 and the
 currently best unsupervised method reported on that data set \citep{weiss2013}
 in terms of mean TPR and PPV. Our method performs comparably to a current method
 \citep{geremia2010} that uses a carefully designed set of features specifically
@@ -845,7 +851,7 @@ Our method & 39.71 & 41.38 & 35.52 \\
 \end{table}
 
 A comparison of our method with other state-of-the-art methods evaluated on the
-MICCAI challenge test data set is summarized in \ref{tab:miccai}. Our method
+test set of the MICCAI challenge is summarized in \ref{tab:miccai}. Our method
 ranked 6th (2nd if only considering methods with only one submission, i.e.,
 without subsequent parameter-tuning and adjustments) out of 52 entries submitted
 to the challenge, outperforming the recent SLS by \citet{roura2015}, and popular
@@ -1172,6 +1178,21 @@ color.}
 \subsection[Comparison for different lesion sizes]{Comparison for Different
 Lesion Sizes}
 
+To examine the effect of lesion size on segmentation performance, we stratified
+the test set into five groups based on their mean reference lesion size as
+summarized in \ref{tab:groups}. A comparison of segmentation accuracy and lesion
+detection measures of a 7-layer CEN-s trained on different input modalities and
+the best performing competing method LST-LGA for different lesion sizes is
+illustrated in \ref{fig:sizecomp}. The 7-layer CEN-s outperformed LST-LGA for
+all lesions sizes except for very large lesions when trained on T1w and FLAIR
+MRIs. The advantage extended to all lesion sizes when the \mbox{CEN-s} was
+trained on all four modalities, which could not be done for LST-LGA.
+The differences were larger for smaller lesions, which are generally more
+challenging to segment for all methods. The differences between the two
+approaches were due to a higher sensitivity to lesions as measured by the LTPR,
+especially for smaller lesions, while the number of false positives was
+approximately the same for all lesion sizes.
+
 \begin{table}[tb]
 \caption{Lesion size groups as used for the detailed analysis.}
 \label{tab:groups}
@@ -1200,33 +1221,17 @@ Very large & $> 500$ & 9 & \num{35238+-27531} \\
 \includegraphics[width=0.78\textwidth]{figures/tmi/fpr}
 
 \caption[Comparison of segmentation accuracy and lesion detection measures of a
-7-layer CEN-s trained on different input modalities and the best performing
-competing method LST-LGA for different lesion sizes]{Comparison of segmentation accuracy and lesion detection measures of
-a 7-layer CEN-s trained on different input modalities and the best performing
-competing method LST-LGA for different lesion sizes. The 7-layer CEN-s
-outperforms LST-LGA for all lesions sizes except for very large lesions when
-trained on T1w and FLAIR MRIs, and for all lesion sizes when trained on all four
-modalities, due to a higher sensitivity to lesions, while producing
-approximately the same number of false positives. Outliers are denoted by black
-dots.}
+7-layer CEN-s and LST-LGA for different lesion sizes]{Comparison of segmentation
+accuracy and lesion detection measures of a 7-layer CEN-s trained on different
+input modalities and the best performing competing method LST-LGA for different
+lesion sizes. The 7-layer CEN-s outperforms LST-LGA for all lesions sizes except
+for very large lesions when trained on T1w and FLAIR MRIs, and for all lesion
+sizes when trained on all four modalities, due to a higher sensitivity to
+lesions, while producing approximately the same number of false positives.
+Outliers are denoted by black dots.}
 
 \label{fig:sizecomp}
 \end{figure}
-
-To examine the effect of lesion size on segmentation performance, we stratified
-the test set into five groups based on their mean reference lesion size as
-summarized in \ref{tab:groups}. A comparison of segmentation accuracy and lesion
-detection measures of a 7-layer CEN-s trained on different input modalities and
-the best performing competing method LST-LGA for different lesion sizes is
-illustrated in \ref{fig:sizecomp}. The 7-layer CEN-s outperformed LST-LGA for
-all lesions sizes except for very large lesions when trained on T1w and FLAIR
-MRIs. The advantage extended to all lesion sizes when the \mbox{CEN-s} was
-trained on all four modalities, which could not be done for LST-LGA.
-The differences were larger for smaller lesions, which are generally more
-challenging to segment for all methods. The differences between the two
-approaches were due to a higher sensitivity to lesions as measured by the LTPR,
-especially for smaller lesions, while the number of false positives was
-approximately the same for all lesion sizes.
 
 \section{Discussion}
 
@@ -1243,7 +1248,7 @@ positives. On the other hand, supervised methods can learn to discriminate
 between lesion and non-lesion tissue, but are more sensitive to the variability
 in lesion appearance and different contrasts produced by different scanners. To
 overcome those challenges, supervised methods require large data sets that span
-the variability in lesion appearance and careful pre-processing to match the
+the variability in lesion appearance and careful preprocessing to match the
 imaging contrast of new images with those of the training set. Library-based
 approaches have shown great promise for the segmentation of MS lesions, but do
 not scale well to very large data sets due to the large amount of memory
