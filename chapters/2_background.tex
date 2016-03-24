@@ -90,24 +90,23 @@ nonlinear mappings of the following form
 \vect{z}_l &= \vect{W}_l\vect{x}_{l-1} + \vect{b}_l, \\
 \vect{x}_l &= f_l(\vect{z}_l),
 \end{align}
-where $l$ indexes a unit layer, $\vect{x}_0$ denotes a vector containing the
-input of the neural network, $\vect{x}_L$ denotes a vector containing the
-output, $L$ is the number of computational layers, $f_l$ are transfer functions,
-$\vect{W}_l$ are weight matrices, and $\vect{b}_l$ are bias terms.
-Popular choices for the transfer function are the sigmoid function $f(x) =
-\sigm(x)$ and the rectified linear function $f(x) = \max(0, x)$. The same
-transfer function is typically used for all layers except for the output layer.
-The choice of the output transfer function depends on the learning task. For
-classification, a $1$-of-$n$ encoding of the output class is usually used in
-combination with the softmax transfer function defined as
+where $\vect{x}_l$ denotes a vector containing the units of layer $l$,
+$\vect{x}_0$ denotes a vector containing the input of the neural network,
+$\vect{x}_L$ denotes a vector containing the output, $L$ is the number of
+computational layers, $f_l$ are transfer functions, $\vect{W}_l$ are weight
+matrices, and $\vect{b}_l$ are bias terms. Popular choices for the transfer
+function are the sigmoid function $f(x) = \sigm(x)$ and the rectified linear
+function $f(x) = \max(0, x)$. The same transfer function is typically used for
+all layers except for the output layer. The choice of the output transfer
+function depends on the learning task. For classification, a $1$-of-$n$ encoding
+of the output class is usually used in combination with the softmax transfer
+function defined as
 \begin{equation}
 \text{softmax}(\vect{a})_i = \frac{\exp(a_i)}{\sum_{j=1}^n \exp(a_j)},
 \end{equation}
 where $\vect{a}$ denotes an $n$-dimensional output vector.
 
 \begin{figure}
-% \missingfigure{Neural network. Show multiple layers and label them with $x_0$,
-% $x_l$, and $x_L$. Also label input layer, hidden layers and output layer.}
 \centering
 \input{tikzfigures/nn}
 \caption[Schematic depiction for the calculations in a dense neural

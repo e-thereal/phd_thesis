@@ -35,9 +35,9 @@ variability extends well beyond what can be captured by global and local
 volumetric measures. It would be highly desirable to have a method that can
 automatically discover potentially important patterns of variability in brain
 morphology and lesion distribution, which would advance our understanding of the
-complex pathology of MS. In addition, the joint modeling of brain morphology and
+complex pathology of MS. In addition, the joint modelling of brain morphology and
 lesion distribution would further our knowledge of how these two key
-pathological features interact. However, this type of modeling is very
+pathological features interact. However, this type of modelling is very
 challenging due to the high dimensionality of the data.
 
 In recent years, there has been an increased interest in biomarker discovery
@@ -114,7 +114,7 @@ motion patterns of the heart based on the definition of pathology as a deviation
 from normality. After learning the manifold representing normal motion
 patterns, abnormal motion patterns can be detected based on the
 distance of a new data sample from the manifold surface.
-% \citet{aljabar2010,aljabar2011} proposed a method for the joint modeling of
+% \citet{aljabar2010,aljabar2011} proposed a method for the joint modelling of
 % multiple image features of neonatal brains. First, separate manifolds based on
 % features from geometric surface models, non-rigid deformations, and image
 % intensities are learned, then a second dimensionality reduction step is used
@@ -219,7 +219,7 @@ are sconvRBMs followed by one or more dense RBM layers.}
 \subsection[Unit types]{Unit Types}
 
 To apply the model to real-valued data like the intensities of some medical
-images, the visible units are modeled as Gaussian units. As suggested in Hinton
+images, the visible units are modelled as Gaussian units. As suggested in Hinton
 et al.'s RBM training guide \citep{hinton2010a}, we did not learn the variance
 of the Gaussian units and standardized the inputs to having zero mean and unit
 variance instead. There are two typical choices for the hidden units of an RBM,
@@ -509,9 +509,9 @@ $M_2$ &
 \section[Variability of morphology and lesion distribution]{Variability of
 Morphology and Lesion Distribution}
 
-In this section, we present a new method for modeling the variability in brain
+In this section, we present a new method for modelling the variability in brain
 morphology and lesion distribution in a large set of MRIs of MS patients.
-Similar to our previous work on modeling the manifold of brain MRIs of AD and
+Similar to our previous work on modelling the manifold of brain MRIs of AD and
 healthy subjects, our method is built using a DBN \citep{hinton2006b}, a layered
 network whose parameters can be learned from training images. However, a
 difference to the previous approach is that the DBN is trained on deformation
@@ -519,7 +519,7 @@ fields and lesions masks, instead of brain MRIs, in order to focus on the
 learning of the variability in brain morphology and lesion distribution, without
 the confounding influence of intensity variations. An advantage of DBNs over
 other manifold learning methods is that it does not require a prebuilt proximity
-graph, which is particularly beneficial for modeling lesions, because the
+graph, which is particularly beneficial for modelling lesions, because the
 spareness and randomness of MS lesions make defining a suitable distance measure
 challenging and potentially biasing. Instead, the DBN approach assumes that a
 particular lesion configuration is a sample from an unknown distribution of
@@ -527,7 +527,7 @@ lesion configurations that can be parameterized by a relatively small set of
 lesion distribution parameters. We model morphological and lesion variability
 with two individual DBNs, then form a joint model by replacing the individual
 top network layers with a new layer that joins both DBNs, similarly to the work
-on the joint modeling of auditory and visual signals for speech recognition
+on the joint modelling of auditory and visual signals for speech recognition
 \citep{ngiam2011}. Our results show that this model can automatically discover
 the classic patterns of MS pathology, as well as more subtle ones, and that the
 distribution parameters computed are found to have strong relationships to MS
@@ -590,7 +590,7 @@ morphological variability of MS brain images, by sampling the space of
 displacement fields spanned by $(D_1, \dotsc)^T$ by calculating the expectation
 $\E[u \mid D_1, \dotsc]$ for a range of values for $(D_1, \dotsc)^T$.
 
-The probability density function $p(u)$ is modeled by a \gls{dbn}
+The probability density function $p(u)$ is modelled by a \gls{dbn}
 \citep{hinton2006b}. The first RBM layer receives the displacement fields of a
 training set as input and reduces the dimensionality of each field by
 discovering patterns of similarity that are common within groups of displacement
@@ -929,7 +929,7 @@ parameters correlate significantly with 9-HPT, PASAT, and MSFC, with $J_3$ being
 particularly strong. The parameter $J_3$ shows stronger correlations than nBV or
 LL for all clinical scores, including a modest significant correlation to T25W,
 which is not shown by nBV nor LL. The significant correlation between $J_1$ and
-T25W is particularly interesting because the lesion changes modeled by $J_1$
+T25W is particularly interesting because the lesion changes modelled by $J_1$
 occur in the pons, which is known to be of clinical significance for mobility.
 Overall, the learned parameters correlate better than the established imaging
 biomarkers.
@@ -1003,7 +1003,7 @@ in the pons region.
 % prediction of mild cognitive impairment to AD conversion, which is a topic of
 % strong clinical interest.
 
-We have introduced a new method for modeling the variability in brain morphology
+We have introduced a new method for modelling the variability in brain morphology
 and lesion distribution of a large set of MRIs of AD and MS patients. We have
 proposed two models, both of which are based on DBNs. In our first approach,
 variability of brain morphology is modelled as a manifold of brain MRIs. In our

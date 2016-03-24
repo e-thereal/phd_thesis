@@ -29,7 +29,7 @@ Alternatively, clustering methods have been used to segment healthy and lesion
 tissue, where lesions are modelled as a separate tissue class
 \citep{shiee2010,sudre2015}. In many methods, spatial priors of healthy
 tissues are used to reduce false positives. For example, in addition to
-modeling MS lesions as a separate intensity cluster, Lesion-TOADS
+modelling MS lesions as a separate intensity cluster, Lesion-TOADS
 \citep{shiee2010} employs topological and statistical atlases to produce
 a topology-preserving segmentation of all brain tissues.
 
@@ -176,7 +176,7 @@ segmentations and predicted segmentations.
 
 \subsection[Model architecture]{Model Architecture}
 
-The set of possible segmentation functions, $\mathcal{S}$, is modeled by the
+The set of possible segmentation functions, $\mathcal{S}$, is modelled by the
 \gls{cens} illustrated in \ref{fig:network}. A CEN-s is a type of \gls{cnn}
 \citep{lecun1998} that is divided into two interconnected pathways, the convolutional pathway and the deconvolutional \citep{zeiler2011}
 pathway. The convolutional pathway consists of alternating convolutional and
@@ -563,7 +563,7 @@ LST-LPA to binarize the probabilistic segmentations for $t = 0.05, 0.10, \dotsc,
 Similarly, the SLS toolbox, which is the most recently published work
 \citep{roura2015} also only takes T1w and FLAIR MRIs as input. This method uses
 an initial brain tissue segmentation obtained from the T1w images and segments
-lesions by treating lesional pixels as outliers to the normal appearing gray
+lesions by treating lesional pixels as outliers to the normal appearing grey
 matter brain tissue on the FLAIR images. This method has three key parameters:
 $\omega_\text{nb}$, $\omega_\text{ts}$, and $\alpha_\text{sls}$. We tuned these
 parameters on the training set via a grid-search over a range of values as

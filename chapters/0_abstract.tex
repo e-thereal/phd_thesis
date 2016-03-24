@@ -1,6 +1,8 @@
 \chapter*{Abstract}
 \addcontentsline{toc}{chapter}{Abstract}
 
+
+
 % Deep learning has shown great promise in recent years for various non-medical
 % and medical problems. However, the size of images has been a burden and problems
 % had to be mapped to either small 2D or 3D patches, or 2D images. This thesis
@@ -14,6 +16,71 @@
 % multimodal MR images. We evaluated the runtime improvements against other
 % state-of-the-art methods. Furthermore, we showed the clinical value of our
 % approach on medical problems.
+
+Contributions:
+
+\Gls{ms} is an inflammatory and degenerative disease of the central nervous
+system characterized by the formation of lesions and axonal loss leading to
+regional and global atrophy. Imaging biomarkers based on the delineation of
+lesions, such as lesion load and lesion count, have established their importance
+for assessing disease progression and treatment effect. However, lesions vary
+greatly in size, shape, intensity, and location, which makes their automatic and
+accurate segmentation challenging. Furthermore, the current established imaging
+biomarkers largely capture volumetric changes, which are important and
+relatively easy to compute, but do not reflect potentially important structural
+variations, such as shape changes in the brain and spatial dispersion of the
+lesions.
+
+Deep learning has produced break-through results in many research areas such as
+object recognition, speech recognition, natural language understanding, and
+language translation. Due to their ability to automatically extract hierarchical
+feature sets from large data sets, deep learning methods are able to derive data
+representations that are robust to large variability, which motivates their use
+for medical image analysis. However, 3D medical images pose unique challenges
+due to their complex content and high dimensionality relative to the typical
+number of images available, making optimization of deep networks and evaluation
+of extracted features difficult.
+
+In order to facilitate the training on large 3D volumes, we have developed a
+novel training method for deep learning models, which is optimized for speed and
+memory. Our method performs training of convolutional deep belief networks and
+convolutional neural networks in the frequency domain, which replaces the
+time-consuming calculation of convolutions with element-wise multiplications,
+while adding only a small number of Fourier transforms.
+
+
+
+
+Deep learning successful in other domains. Why so successful? Can the success be
+transfered to the medical domain? New challenge: fewer training images, but
+resolution much higher, which can make training difficult.
+
+- First challenge addressed by a novel training method that makes training
+  of deep belief networks and convolutional neural networks feasible on medical
+  images
+  
+- Our training method is optimized for speed and memory
+
+- We have identified two possible applications of deep learning: segmentation
+  and manifold learning.
+  
+- Segmentation alleviates the problem of limited training data, because every
+  voxel can be regarded as a training sample.
+  
+- However, training samples are often unbalanced, therefore, we proposed a novel
+  objective function for neural networks that allows the training on biases
+  data sets.
+  
+- We also propose a novel neural network architecture that allows for the
+  learning and integration of features at different scales, which allows to
+  segment very small and very large regions at the same time, as it is required
+  for segmenting lesions, which also vary greatly in size.
+
+- Identified a second application: manifold learning for discovering patterns of
+  variability in medical images.
+  
+- 
+
 
 % World limit: 350
 

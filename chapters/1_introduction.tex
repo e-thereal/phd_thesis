@@ -212,12 +212,13 @@ The global objective of the thesis is to develop methods that facilitate the
 automatic measurement of disease state and progression. To that end, we aim to
 develop a fully automatic lesion segmentation method that is able to segment
 lesions accurately under a large range of lesion sizes and in the presence of
-varying imaging contrasts and imaging artifacts produced by different scanners.
-A second objective was the development of a method that automatically discovers
-potentially important patterns of variability in brain morphology and lesion
-distribution, with the goal to derive new imaging biomarkers that correlate
-stronger with the clinical presentation of the disease than traditionally used
-volumetric measures.
+varying imaging contrasts and imaging artifacts produced by different scanners,
+which would allow for the accurate measurement of lesion-based imaging
+biomarkers such as lesion load and lesion count. A second objective is the
+development of a method that automatically discovers potentially important
+patterns of variability in brain morphology and lesion distribution, with the
+goal to derive new imaging biomarkers that correlate stronger with the clinical
+presentation of the disease than traditionally used volumetric measures.
 
 \subsection{Overview}
 
@@ -230,13 +231,13 @@ temporal cortex, have proved to be very robust for object recognition.
 Resembling the receptive field of simple cells of the primary visual cortex, 2D
 Gabor filters have been used to describe textures for segmentation
 \citep{grigorescu2002}. In contrast, deep learning algorithms try to mimic the
-learning capabilities of the visual system, instead of copying the feature
+learning capabilities of the visual system instead of copying the feature
 detectors learned during the development of the visual system. Research on the
 visual cortex of cats suggests that the receptive fields of neurons are learned
 from a continuous stream of images early in the development of the visual system
 \citep{wiesel1963}, and fine-tuned later \citep{karni1991}.
-This allows the neurons of the visual cortex to adapt to a wide range of visual
-recognition tasks. While it is difficult, for example, for an average person to
+This allows the neurons of the visual cortex to adapt to the type of images it
+is exposed to. While it is difficult, for example, for an average person to
 recognize the differences between cows, the feature detecting neurons of the
 visual system of cattle farmers are highly tuned to their appearance, allowing
 them to recognize individual cows easily. This suggests that a learning-based
@@ -248,7 +249,7 @@ deep learning methods, which use multiple layers of nonlinear processing units
 to learn a feature hierarchy directly from the input data without a dedicated
 feature extraction step.
 
-Deep learning has successfully been used in many research areas such as image
+Deep learning has successfully been used in many research areas such as object
 recognition \citep{krizhevsky2012}, speech recognition \citep{hinton2012deep},
 natural language understanding \citep{collobert2011natural}, and language
 translation \citep{sutskever2014sequence}. Deep learning methods are
@@ -256,7 +257,7 @@ particularly successful due to their ability to recognize complex and highly
 nonlinear patterns in large amounts of training data, which facilitates the
 learning of models that are robust to large variability. This motivates the use
 of deep learning methods for segmenting MS lesions, because the large
-variability in lesion shape, size, contrast, and location as well as the changes
+variability in lesion shape, size, contrast, and location as well as changes
 in imaging contrasts produced by different \gls{mri} scanners make lesion
 segmentation challenging. Furthermore, deep learning methods can
 be used to model highly nonlinear patterns of variability in groups of images.
@@ -310,7 +311,7 @@ the feature extraction and segmentation pathways, which allows for the learning
 of features at different scales and thereby facilitates the accurate
 segmentation of MS lesions across a wide range of sizes.
 
-\item We have developed a framework for modeling changes in brain morphology
+\item We have developed a framework for modelling changes in brain morphology
 and lesion distribution with only a few parameters, which also show improved
 correlation with clinical scores compared to established volumetric imaging
 biomarkers.
@@ -318,7 +319,7 @@ biomarkers.
 \item In contrast to previous manifold learning approaches, our method does not
 assume the ambient space to be locally linear and also does not require the
 definition of a suitable similarity measure, or building a proximity graph,
-which is particularly advantageous for modeling lesions, because their sparse
+which is particularly advantageous for modelling lesions, because their sparse
 and random nature makes defining a suitable distance measure between lesion
 images challenging.
 \end{itemize}
@@ -386,7 +387,7 @@ across a wide range of lesion sizes.
 \subsection*{\ref{sec:manifold}---\nameref{sec:manifold}}
 
 Manifold learning of medical images plays a potentially important role for
-modeling anatomical variability within a population with applications that
+modelling anatomical variability within a population with applications that
 include segmentation, registration, and prediction of clinical parameters.
 In this chapter, we describe a novel method for learning the manifold of 3D
 brain images and for build a statistical model of brain images that can
@@ -395,7 +396,7 @@ lesion distribution. We propose building such a model using a deep belief
 network, a layered network whose parameters can be learned from training
 images. In contrast to other manifold learning algorithms, this approach does
 not require a prebuilt proximity graph, which is particularly advantageous for
-modeling lesions, because their sparse and random nature makes defining a
+modelling lesions, because their sparse and random nature makes defining a
 suitable distance measure between lesion images challenging. Our results show
 that this model can automatically learn a low-dimensional manifold of brain
 volumes that detects modes of variations that correlate to demographic and
