@@ -17,39 +17,57 @@
 % state-of-the-art methods. Furthermore, we showed the clinical value of our
 % approach on medical problems.
 
-Contributions:
+% Contributions:
+% 
+% \Gls{ms} is an inflammatory and degenerative disease of the central nervous
+% system characterized by the formation of lesions and axonal loss leading to
+% regional and global atrophy. Imaging biomarkers based on the delineation of
+% lesions, such as lesion load and lesion count, have established their importance
+% for assessing disease progression and treatment effect. However, lesions vary
+% greatly in size, shape, intensity, and location, which makes their automatic and
+% accurate segmentation challenging. Furthermore, the current established imaging
+% biomarkers largely capture volumetric changes, which are important and
+% relatively easy to compute, but do not reflect potentially important structural
+% variations, such as shape changes in the brain and spatial dispersion of the
+% lesions.
 
-\Gls{ms} is an inflammatory and degenerative disease of the central nervous
-system characterized by the formation of lesions and axonal loss leading to
-regional and global atrophy. Imaging biomarkers based on the delineation of
-lesions, such as lesion load and lesion count, have established their importance
-for assessing disease progression and treatment effect. However, lesions vary
-greatly in size, shape, intensity, and location, which makes their automatic and
-accurate segmentation challenging. Furthermore, the current established imaging
-biomarkers largely capture volumetric changes, which are important and
-relatively easy to compute, but do not reflect potentially important structural
-variations, such as shape changes in the brain and spatial dispersion of the
+Deep learning methods have shown great success in many research areas such as
+object recognition, speech recognition, and natural language understanding, due
+to their ability to automatically learn a hierarchical set of features that is
+tuned to a given domain and robust to large variability. This motivates the use
+of deep learning for neurological applications, because the large variability in
+brain morphology and varying contrasts produced by different MRI scanners makes
+the automatic analysis of brain images challenging.
+
+However, 3D brain images pose unique challenges due to their complex content
+and high dimensionality relative to the typical number of images available,
+making optimization of deep networks and evaluation of extracted features
+difficult. In order to facilitate the training on large 3D volumes, we have
+developed a novel training method for deep networks that is optimized
+for speed and memory. Our method performs training of convolutional deep belief
+networks and convolutional neural networks in the frequency domain, which
+replaces the time-consuming calculation of convolutions with element-wise
+multiplications, while adding only a small number of Fourier transforms.
+
+We demonstrate the potential of deep learning for medical image analysis using
+two applications. First, we have developed a fully automatic multiple sclerosis
+(MS) lesion segmentation method based on a new type of convolutional neural
+network that consists of two interconnected pathways for feature extraction and
+lesion prediction, which allows for the automatic learning of features at
+different scales that are optimized for accuracy for any given combination of
+image types and segmentation task. Our network also uses a novel objective
+function that works well for segmenting underrepresented classes, such as MS
 lesions.
 
-Deep learning has produced break-through results in many research areas such as
-object recognition, speech recognition, natural language understanding, and
-language translation. Due to their ability to automatically extract hierarchical
-feature sets from large data sets, deep learning methods are able to derive data
-representations that are robust to large variability, which motivates their use
-for medical image analysis. However, 3D medical images pose unique challenges
-due to their complex content and high dimensionality relative to the typical
-number of images available, making optimization of deep networks and evaluation
-of extracted features difficult.
+Furthermore, we have built a statistical model of brain images that can
+automatically discover patterns of variability in brain morphology and lesion
+distribution. We propose building such a model using a deep belief network, a
+layered network whose parameters can be learned from training images. Our
+results show that this model can automatically discover the classic patterns of
+MS pathology, as well as more subtle ones, and that the parameters computed have
+strong relationships to MS clinical scores.
 
-In order to facilitate the training on large 3D volumes, we have developed a
-novel training method for deep learning models, which is optimized for speed and
-memory. Our method performs training of convolutional deep belief networks and
-convolutional neural networks in the frequency domain, which replaces the
-time-consuming calculation of convolutions with element-wise multiplications,
-while adding only a small number of Fourier transforms.
-
-
-
+\begin{comment}
 
 Deep learning successful in other domains. Why so successful? Can the success be
 transfered to the medical domain? New challenge: fewer training images, but
@@ -138,8 +156,6 @@ application to 3D images due to the large number of trainable parameters. In
 this thesis, we propose a much more computationally efficient training method
 for convolutional models that makes training on high-resolution 3D volumes
 practical.
-
-\begin{comment}
 
 % What are the main results
 
