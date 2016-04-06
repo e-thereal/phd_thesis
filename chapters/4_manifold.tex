@@ -438,7 +438,7 @@ each image of the training set plotted against its manifold coordinates.
 Consistent with images sampled from the manifold, an increase in ventricle size,
 which is indicative of brain atrophy (a hallmark of AD), visually correlates
 with an increase of the second manifold coordinate. The AD/normal status is
-indicated by the frame color of each image. The vertical separation between AD
+indicated by the frame colour of each image. The vertical separation between AD
 and normals suggests that the second manifold coordinate is potentially of
 practical use in differentiating between AD and normal.
 
@@ -787,7 +787,7 @@ correlates with an increase of lesions in the entire white matter.
 \begin{tikzpicture}
 \tikzstyle{every node}+=[font=\small]
 \node
-(manifold){\includegraphics[width=\subfigwidth]{figures/MICCAI2014_p442_d0_full_h16-2}};
+(manifold){\includegraphics[width=\subfigwidth]{figures/MICCAI2014_viridis_p442_d0_full_h16-2}};
 
 \draw[->] (manifold.south west)--node[below=5pt,inner sep=0] {$L_1$}
 (manifold.south east);
@@ -804,9 +804,9 @@ correlates with an increase of lesions in the entire white matter.
 \node[align=left,fill=black,inner sep = 0pt] (manifold1) {
   \mbox{}\\[2pt]
   \includegraphics[trim=0 340 0 0,clip,width=\subfigwidth]
-    {figures/MICCAI2014_full_rl1_h4_sag}\\[8.5pt]
+    {figures/MICCAI2014_viridis_full_rl1_h4_sag}\\[8.5pt]
   \includegraphics[trim=0 0 0 150,clip,width=\subfigwidth]
-    {figures/MICCAI2014_full_rl1_h4}
+    {figures/MICCAI2014_viridis_full_rl1_h4}
 };
 \node[fit=(manifold1)] (manifold) { };
 
@@ -952,8 +952,9 @@ biomarkers.
 \begin{tikzpicture}
 \tikzstyle{every node}=[font=\scriptsize] 
 \node[align=left,inner sep=0] (images) {
-\includegraphics[width=0.47\textwidth]{figures/MICCAI2014_full_rl1_h4_MSFC} \\
-\includegraphics[width=0.47\textwidth]{figures/MICCAI2014_full_rl1_h4_MSFC_sag}
+\includegraphics[width=0.47\textwidth]{figures/MICCAI2014_viridis_full_rl1_h4_MSFC}
+\\
+\includegraphics[width=0.47\textwidth]{figures/MICCAI2014_viridis_full_rl1_h4_MSFC_sag}
 };
 \foreach \x/\y in {0.1/1.5, 0.3/0, 0.5/-1.5, 0.7/-3, 0.9/-4.5} {
   \node[above=2pt] at ($(images.north west)!\x!(images.north east)$) {$\y$};

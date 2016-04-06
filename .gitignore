@@ -16,6 +16,7 @@
 # *.eps
 # *.pdf
 thesis.pdf
+.texlipse
 
 ## Bibliography auxiliary files (bibtex/biblatex/biber):
 *.bbl

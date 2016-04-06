@@ -169,7 +169,7 @@ three angles are required to determine a 3D pose. In order to reduce the number
 of filters required to capture structures in 3D, it might therefore be
 necessary to develop neural network architectures that are inherently invariant
 or equivariant to rotations, which would allow for the learning of a diverse set
-of features that capture fine details in 3D with much fewer weights than
+of features that capture fine details in 3D with much fewer filters than
 currently employed convolutional neural networks.
 
 \subsection[Increasing the expressive power of single neurons]{Increasing the
@@ -192,8 +192,8 @@ the sum of logarithmic inputs followed by exponentiation. Similarly,
 \citet{godfrey2016} have proposed a type of neuron for artificial neural
 networks that is able to learn to calculate the logarithm or exponential of its
 inputs, which allows for the learning of networks that can calculate arbitrary
-polynomial with significantly fewer parameters than traditional rectified linear
-or sigmoid neural networks. Alternatively, \citet{livni2013} have proposed a
+polynomials with significantly fewer parameters than traditional rectified
+linear or sigmoid neural networks. Alternatively, \citet{livni2013} have proposed a
 network architecture that can learn arbitrary polynomials using a combination of
 units that calculate weighted sums of its inputs and units that calculate the
 product of two input numbers. However, these network architectures needs to be

@@ -104,7 +104,7 @@ $p(\vect{h}^{(j)} \given \vect{v}_n)$ and $p(\vect{h}^{(j)} \given
 denotes valid convolution, and $\tilde{\vect{h}}^{(j)}_n$ denotes a horizontal
 and vertical flipped version of $\vect{h}^{(j)}_n$. To apply the model to
 real-valued data like certain types of images, the visible units can be modelled
-as Gaussian units. When the visible units are mean--centered and standardized to
+as Gaussian units. When the visible units are mean--centred and standardized to
 unit variance, the expectation of the visible units is given by
 \begin{equation} 
 \E[\vect{v}^{(i)} \given \vect{h}] = \sum_{j=1}^{N_\text{k}}
@@ -332,7 +332,7 @@ side) can be efficiently calculated as the sum of multiple individual
 convolutions with $s = 1$ (right side) after rearranging the pixels of the input
 image and the filter kernels. The bottom row shows the actual values produced by
 the convolutions, which are the features from the image extracted by the filter.
-The figure is best viewed in color.}
+The figure is best viewed in colour.}
 \label{fig:npcDBN}
 \end{figure}
 
@@ -566,15 +566,15 @@ GPU Memory & 2\,GB \\
 \end{tabular}
 \end{table}
 
-For the comparison on 2D images, we used a data set of 256 natural color images
+For the comparison on 2D images, we used a data set of 256 natural colour images
 from the ImageNet data set \citep{deng2009}. All images were resampled to a
-resolution of \num{512x512} pixels per color channel. For the evaluation on 3D
+resolution of \num{512x512} pixels per colour channel. For the evaluation on 3D
 images, we used 100 \gls{mri} scans of the brain from the \gls{oasis}
 data set \citep{marcus2007}. We resampled all volumes to a resolution of
 \num{128x128x128} voxels and a voxel size of \SI{2x2x2}{\milli\metre}.
 
-\subsubsection[Running time analysis on 2D color images (ImageNet)]{Running Time
-Analysis on 2D Color Images (ImageNet)}
+\subsubsection[Running time analysis on 2D colour images (ImageNet)]{Running
+Time Analysis on 2D Colour Images (ImageNet)}
 
 \ref{fig:run_imgnet}\subref{fig:run_imgnet_l1} shows a comparison of running
 times for training the first sconvRBM layer on 256 images with varying filter
@@ -700,24 +700,24 @@ The \gls{cudnn} \citep{chetlur2014} is a GPU-accelerated library of primitives
 that are commonly required to implement deep learning methods such as CNNs and
 convDBNs. It is used internally by state-of-the-art deep learning frameworks
 such as Caffe \citep{jia2014}, Theano \citep{bastien2012}, and Torch
-\citep{collobert2011torch7}. The library provides highly optimized
-implementations for calculating, e.g., batched 2D and 3D convolutions, pooling
-operations, and different transfer functions. In this set of experiments, we
-directly compared the time required to calculate convolutions when training a
-CNN using our frequency domain implementation with cuDNN. We only consider
-convolutions because they are the most time-consuming operations and because all
-other operations are calculated in the same way. For the comparison with our
-frequency domain implementation, the time measurements also include the time
-required to calculate FFTs during the gradient calculation and for transforming
-the accumulated gradient to spatial domain and back in order to trim the padded
-filters to the original filter size. The parameters that we used for evaluating
-the running time of different convolution implementations are summarized in
-\ref{tab:cudnn_parameters}. The parameters represent typical values of the first
-and second layer of a CNN, which are the layers that require the most time to
-train, because the visible units of subsequent layers are commonly of much
-smaller resolution. The key parameters that we varied are the image size, filter
-size, and batch size. The hardware details of our test environment are
-summarized in \ref{tab:cudnn_hardware}.
+\citep{collobert2011torch7}. The library in its 7th version provides highly
+optimized implementations for calculating, e.g., batched 2D and 3D convolutions,
+pooling operations, and different transfer functions. In this set of
+experiments, we directly compared the time required to calculate convolutions
+when training a CNN using our frequency domain implementation with cuDNN. We
+only consider convolutions because they are the most time-consuming operations
+and because all other operations are calculated in the same way. For the
+comparison with our frequency domain implementation, the time measurements also
+include the time required to calculate FFTs during the gradient calculation and
+for transforming the accumulated gradient to spatial domain and back in order to
+trim the padded filters to the original filter size. The parameters that we used
+for evaluating the running time of different convolution implementations are
+summarized in \ref{tab:cudnn_parameters}. The parameters represent typical
+values of the first and second layer of a CNN, which are the layers that require
+the most time to train, because the visible units of subsequent layers are
+commonly of much smaller resolution. The key parameters that we varied are the
+image size, filter size, and batch size. The hardware details of our test
+environment are summarized in \ref{tab:cudnn_hardware}.
 
 % TODO: explain training of CNNs: already have forward pass, but also need
 % backwards pass and gradient calculation

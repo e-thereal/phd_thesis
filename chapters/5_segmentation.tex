@@ -66,7 +66,7 @@ voxel-level MRF with the labels of neighboring nodes of the regional MRF.
 Library-based approaches leverage a library of pre-segmented images to carry out
 the segmentation. For example, \citet{guizard2015} proposed a segmentation
 method based on an extension of the non-local means algorithms
-\citep{coupe2011}. The centers of patches at every voxel location are classified
+\citep{coupe2011}. The centres of patches at every voxel location are classified
 based on matched patches from a library containing pre-segmented images, where
 multiple matches are weighted using a similarity measure based on
 rotation-invariant features.
@@ -76,7 +76,7 @@ Methods}
 
 A recent breakthrough for the automatic segmentation using deep learning comes
 from the domain of cell membrane segmentation, in which \citet{ciresan2012}
-proposed classifying the centers of image patches directly using a \gls{cnn}
+proposed classifying the centres of image patches directly using a \gls{cnn}
 \citep{lecun1998} without a dedicated feature extraction step. Instead, features
 are learned indirectly within the lower layers of the neural network during
 training, while the higher layers can be regarded as performing the
@@ -297,12 +297,12 @@ yields to
 \begin{align}
 \label{eq:deltad}
 % Delta update of deconvolutional layer
-\delta^{(l)}_{\text{d},j} &=
+\delta^{(l)}_{\text{d},j} &= \sum_i^C
 \big(\tilde{w}^{(l)}_{\text{d},ij}*\delta^{(l-1)}_{\text{d},i}\big)\I\big(y^{(l)}_j
 > 0\big),\\
 \label{eq:deltac}
 % Delta update of convolutional layer
-\delta^{(l)}_{\text{c},i} &=
+\delta^{(l)}_{\text{c},i} &= \sum_j^F
 \big(w^{(l+1)}_{\text{c},ij}\circledast\delta^{(l+1)}_{\text{c},j}\big)\I\big(x^{(l)}_i
 > 0\big),
 \end{align}
@@ -450,7 +450,7 @@ longitudinal MS lesion segmentation
 challenge\footnote{\url{http://iacl.ece.jhu.edu/MSChallenge}}), which allows for
 a direct comparison with many state-of-the-art methods. In addition, we have
 used two much larger data sets containing two and four different MRI sequences
-from a multi-center clinical trial in secondary progressive MS and relapsing
+from a multi-centre clinical trial in secondary progressive MS and relapsing
 remitting MS, which tends to have the most heterogeneity among the MS subtypes.
 These data sets are challenging due to the large variability in lesion size,
 shape, location, and intensity as well as varying contrasts produced by
@@ -508,7 +508,7 @@ images were skull-stripped using the brain extraction tool (BET)
 interval $[0,1]$, and a 6 degree-of-freedom intra-subject registration using one
 of the \SI{3}{\milli\meter} scans as the target image to align the different
 modalities. To speed-up the training, all images were cropped to a
-\num{164x206x52} voxel subvolume with the brain roughly centered. The ground
+\num{164x206x52} voxel subvolume with the brain roughly centred. The ground
 truth segmentations for both data sets were produced using an existing
 semiautomatic 2D region-growing technique, which has been used successfully in a
 number of large MS clinical trials (e.g.,
@@ -1109,7 +1109,7 @@ performance of very large lesions. The true positive, false negative, and false
 positive voxels are highlighted in green, yellow, and red, respectively. The
 7-layer CEN, with and without shortcut, is able to segment large lesions much
 better than the 3-layer CEN due to the increased size of the receptive field.
-This figure is best viewed in color.}
+This figure is best viewed in colour.}
 \label{fig:large}
 \end{figure}
 
@@ -1172,7 +1172,7 @@ for small lesions. The white circles indicate lesions that were detected by the
 depth decreases the sensitivity to small lesions, but the addition of a
 shortcut allows the network to regain this ability, while still being able to
 detect large lesions (see \ref{fig:large}). This figure is best viewed in
-color.}
+colour.}
 \label{fig:small}
 \end{figure}
 
@@ -1239,7 +1239,7 @@ Outliers are denoted by black dots.}
 The automatic segmentation of MS lesions is a very challenging task due to the
 large variability in lesion size, shape, intensity, and location, as well as the
 large variability of imaging contrasts produced by different scanners used in
-multi-center studies. Most unsupervised methods model lesions as an outlier
+multi-centre studies. Most unsupervised methods model lesions as an outlier
 class or a separate cluster in a subject-specific model, which makes them
 inherently robust to inter-subject and inter-scanner variability. However,
 outliers are often not specific to lesions and can also be caused by intensity
