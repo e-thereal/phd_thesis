@@ -15,9 +15,8 @@ myelin sheaths that act as insulating covers of the axons of neurons (see
 communicate, and can lead to the manifestation of a large range of different
 signs and symptoms. The brain is a very plastic organ and is often able to
 compensate for the damage by forming new neural pathways. In the later stages of
-the diseases, however, the amount of tissue damage is often to high to be
-compensated in addition to signs of axonal loss and neurodegeneration, which
-leads to the progressive accumulation of disease.
+the diseases, however, the amount of tissue damage is often too high to be
+compensated, which leads to the progressive accumulation of disease.
 
 \begin{figure}[tb]
 \centering
@@ -60,24 +59,24 @@ label=90:Damaged myelin] at (m3) {};
 \end{tikzpicture}
 
 \caption[Demyelination in MS]{Due to the break down of the blood brain barrier,
-the bodies own immune system attacks the myelin sheaths of the axons, which
+the body's own immune system attacks the myelin sheaths of the axons, which
 causes the formation of demyelinating lesions, visible primarily in the white
 matter on conventional \gls{mri} scans. Lesions are highlighted in white.}
 \label{fig:ms}
 \end{figure}
  
 The clinical presentation of MS is very heterogeneous due to the wide range of
-areas of the brain and spinal chord that can be affected. Characteristic but not
+areas of the brain and spinal cord that can be affected. Characteristic but not
 specific physical signs and symptoms include the loss of sensitivity or changes
 in sensation such as tingling or numbness, which typically starts in the fingers
 and toes, as well as muscle weakness, difficulty in moving, difficulties with
 coordination and balance, problems with speech or swallowing, visual problems,
 feeling tired, acute or chronic pain, and bladder and bowel difficulties. In
 addition, MS often leads to cognitive problems such as having difficulties
-thinking, or psychiatric and emotional problems such as depression or frequent
-mood swings.
+learning and remembering information, or psychiatric and emotional problems such
+as depression or frequent mood swings.
 
-The course of the disease is unpredictable. However, most patients (around
+The course of the disease is unpredictable. Most patients (around
 \SI{80}{\percent}) are initially diagnosed as having \gls{rrms}, which is
 characterized by alternating periods of worsening due to inflammatory attacks
 and the formation of new lesions, and periods of remission and recovery. The
@@ -111,7 +110,7 @@ the large variability in lesion size, shape, intensity, and locations, as well
 as the large variability in imaging contrasts produced by scanners used at
 different clinical sites. Despite a growing interest in developing fully
 automatic lesion segmentation methods, semi-automatic methods are still the
-standard in routine clinical practice, although their use is time-consuming,
+standard in clinical research, although their use is time-consuming,
 laborious, and potentially biasing. It is therefore highly desirable to develop
 a fully-automatic lesion segmentation method that is robust to large
 variability, while still being able to segment lesions with high accuracy and
@@ -208,46 +207,49 @@ pathology of MS.
 % Contribution is the development of a method based on neural networks and the
 % contributions in there.
 
-The global objective of the thesis is to develop methods that facilitate the
-automatic measurement of disease state and progression. To that end, we aim to
-develop a fully automatic lesion segmentation method that is able to segment
-lesions accurately under a large range of lesion sizes and in the presence of
-varying imaging contrasts and imaging artifacts produced by different scanners,
-which would allow for the accurate measurement of lesion-based imaging
-biomarkers such as lesion load and lesion count. A second objective is the
-development of a method that automatically discovers potentially important
-patterns of variability in brain morphology and lesion distribution, with the
-goal to derive new imaging biomarkers that correlate stronger with the clinical
-presentation of the disease than traditionally used volumetric measures.
+The clinical motivation of the thesis is to develop methods that facilitate the
+automatic measurement of MS disease state and progression that are visible on
+conventional structural MRIs. To that end, we have identified two key
+applications. One is the development of a fully automatic lesion segmentation
+method that is able to segment lesions over a large range of sizes and in the
+presence of varying imaging contrasts and imaging artifacts produced by
+different scanners, which would allow for the accurate measurement of
+lesion-based imaging biomarkers such as lesion load and lesion count. The other
+key application is the development of a method that automatically discovers
+potentially important patterns of variability in brain morphology and lesion
+distribution, with the goal to derive new imaging biomarkers that correlate
+stronger with the clinical measures of MS disability than traditionally used
+volumetric measures. The global objective of the thesis is to determine the
+capabilities of deep learning for these two clinical applications.
 
 \subsection{Overview}
 
-The two methods developed for segmenting MS lesions and recognizing patterns of
+The two methods developed for segmenting MS lesions and modelling patterns of
 variability are both based on deep learning, a field within machine learning
 that is inspired by the learning capabilities of the brain. The human brain has
-often served as a model for computer vision algorithms.
-For example, SIFT features \citep{lowe1999}, inspired by neurons of the inferior
-temporal cortex, have proved to be very robust for object recognition.
-Resembling the receptive field of simple cells of the primary visual cortex, 2D
-Gabor filters have been used to describe textures for segmentation
-\citep{grigorescu2002}. In contrast, deep learning algorithms try to mimic the
-learning capabilities of the visual system instead of copying the feature
-detectors learned during the development of the visual system. Research on the
-visual cortex of cats suggests that the receptive fields of neurons are learned
+often served as a model for computer vision algorithms. For example, SIFT
+features \citep{lowe1999}, inspired by neurons of the inferior temporal cortex,
+have proved to be very robust for object recognition. Resembling the receptive
+field of simple cells of the primary visual cortex, 2D Gabor filters have been
+used to describe textures for segmentation \citep{grigorescu2002}. In contrast,
+deep learning algorithms try to mimic how the visual system learns instead of
+copying what it has learned. First evidence for the learning capabilities of the
+visual system were found by \citep{wiesel1963}, who investigated the visual
+cortex of cats. They showed that the receptive fields of neurons are learned
 from a continuous stream of images early in the development of the visual system
-\citep{wiesel1963}, and fine-tuned later \citep{karni1991}.
-This allows the neurons of the visual cortex to adapt to the type of images it
-is exposed to. While it is difficult, for example, for an average person to
-recognize the differences between cows, the feature detecting neurons of the
-visual system of cattle farmers are highly tuned to their appearance, allowing
-them to recognize individual cows easily. This suggests that a learning-based
-model for classification should not only learn to perform the requested task
-based on a set of pre-defined features, but also learn the features that are
-most suitable to perform the task. The joint learning of feature extraction and
-prediction, also known as end-to-end learning, is possible through the use of
-deep learning methods, which use multiple layers of nonlinear processing units
-to learn a feature hierarchy directly from the input data without a dedicated
-feature extraction step.
+\citep{wiesel1963}, but they are also fine-tuned later \citep{karni1991}.
+This allows the neurons of the visual cortex to adapt to the type of images to
+which it is exposed. While it is difficult, for example, for an average person
+to recognize the differences between cows of the same breed, the feature
+detecting neurons of the visual system of cattle farmers are highly tuned to
+their appearance, allowing them to recognize individual cows easily. This
+suggests that a learning-based model for classification should not only learn to
+perform the requested task based on a set of pre-defined features, but also
+learn the features that are most suitable to perform the task. The joint
+learning of feature extraction and prediction, also known as end-to-end
+learning, is possible through the use of deep learning methods, which use
+multiple layers of nonlinear processing units to learn a feature hierarchy
+directly from the input data without a dedicated feature extraction step.
 
 Deep learning has successfully been used in many research areas such as object
 recognition \citep{krizhevsky2012}, speech recognition \citep{hinton2012deep},
@@ -257,13 +259,13 @@ particularly successful due to their ability to recognize complex and highly
 nonlinear patterns in large amounts of training data, which facilitates the
 learning of models that are robust to large variability. This motivates the use
 of deep learning methods for segmenting MS lesions, because the large
-variability in lesion shape, size, contrast, and location as well as changes
-in imaging contrasts produced by different \gls{mri} scanners make lesion
-segmentation challenging. Furthermore, deep learning methods can
-be used to model highly nonlinear patterns of variability in groups of images.
-This allows deep learning models such as deep belief networks to be used for
-manifold learning, e.g., of hand written digits \citep{hinton2006b} or, as we
-will show in \ref{sec:manifold}, medical images \citep{brosch2013}. However,
+variability in lesion shape, size, contrast, and location as well as changes in
+imaging contrasts produced by different \gls{mri} scanners make lesion
+segmentation challenging. Beyond voxel classification, deep learning methods can
+also be used to model highly nonlinear patterns of variability in groups of
+images. This allows deep learning models such as deep belief networks to be used
+for manifold learning, e.g., of hand written digits \citep{hinton2006b} or, as
+we will show in \ref{sec:manifold}, brain MRIs \citep{brosch2013}. However,
 deep learning algorithms as implemented by widely used deep learning frameworks
 were originally developed for application to small 2D images and do not scale
 well to large 3D volumes in terms of training time and memory requirements,
@@ -275,8 +277,7 @@ analysis.
 In the course of developing deep learning-based methods for MS lesion
 segmentation and pattern discovery, we have made the following main
 contributions:
-\begin{itemize}
-
+\begin{enumerate}
 \item We have developed a novel training algorithm for convolutional deep belief
 networks and convolutional neural networks that performs training in the
 frequency domain. The speed-ups gained by our method compared to state-of-the
@@ -284,49 +285,61 @@ art spatial domain implementations and the reduced memory requirements compared
 to other frequency domain methods enable the application of deep learning to
 high-resolution 3D medical images.
   
-\item We have developed a neural network architecture that jointly learns the
-features required to segment MS lesions and to perform the segmentation based on
-the automatically learned features. The joint learning of feature extractor and
-classifier facilitates the learning of features that are robust to the large
-variability of MS lesions and varying contrasts produced by different scanners.
+\item We have developed a neural network architecture that jointly learns
+features at different scales that are tuned to segmenting MS lesions and
+performs the segmentation based on the automatically learned features. The joint
+learning of feature extractor and classifier facilitates the learning of
+features that are robust to the large variability of MS lesions and varying
+contrasts produced by different scanners.
 
-\item In contrast to previous patch-based deep learning segmentation approaches,
-our network feeds through entire volumes, which removes the need to select
-representative patches, eliminates redundant calculations where patches overlap,
-and therefore scales up more efficiently with image resolution.
+% \item In contrast to previous patch-based deep learning segmentation approaches,
+% our network feeds through entire volumes, which removes the need to select
+% representative patches, eliminates redundant calculations where patches overlap,
+% and therefore scales up more efficiently with image resolution.
 
-\item In contrast to previous fully convolutional deep learning segmentation
-approaches, our method produces segmentations of the same resolution and scale
-as the input images, independent of the parameters of the network architecture,
-which enables the use of deeper networks without requiring special handling
-of the border regions.
+% There are many more contributions for segmentation than manifold
+% learning; this should be more balanced. I suggest removing some the
+% segmentation contributions so that you will have about 5 total contributions.
+% As discussed, a main contribution in manifold learning is that you showed that
+% deep learning can be applied to manifold learning of brain MRIs. Another is
+% that joint learning can be performed to model key pathology features together,
+% such as lesions and morphology.
+
+% \item In contrast to previous fully convolutional deep learning segmentation
+% approaches, our method produces segmentations of the same resolution and scale
+% as the input images, independent of the parameters of the network architecture,
+% which enables the use of deeper networks without requiring special handling
+% of the border regions.
 
 \item We have developed a novel objective function for training neural networks
 that is suitable for the classification of vastly unbalanced classes, such as
 the segmentation of MS lesions, which typically comprise less than one percent
 of the image.
 
-\item Our proposed network architecture contains shortcut connections between
-the feature extraction and segmentation pathways, which allows for the learning
-of features at different scales and thereby facilitates the accurate
-segmentation of MS lesions across a wide range of sizes.
+% \item Our proposed network architecture contains shortcut connections between
+% the feature extraction and segmentation pathways, which allows for the learning
+% of features at different scales and thereby facilitates the accurate
+% segmentation of MS lesions across a wide range of sizes.
+
+\item This is the first work to demonstrate that deep learning can be applied to
+manifold learning of brain MRIs.
 
 \item We have developed a framework for modelling changes in brain morphology
 and lesion distribution with only a few parameters, which also show improved
 correlation with clinical scores compared to established volumetric imaging
 biomarkers.
 
-\item In contrast to previous manifold learning approaches, our method does not
-assume the ambient space to be locally linear and also does not require the
-definition of a suitable similarity measure, or building a proximity graph,
-which is particularly advantageous for modelling lesions, because their sparse
-and random nature makes defining a suitable distance measure between lesion
-images challenging.
-\end{itemize}
+% \item In contrast to previous manifold learning approaches, our method does not
+% assume the ambient space to be locally linear and also does not require the
+% definition of a suitable similarity measure, or building a proximity graph,
+% which is particularly advantageous for modelling lesions, because their sparse
+% and random nature makes defining a suitable distance measure between lesion
+% images challenging.
+\end{enumerate}
 
 \section[Thesis outline]{Thesis Outline}
 
-The rest of this thesis is subdivided into five chapters as outlined below:
+The rest of this thesis is organized into five chapters as outlined below:
 
 \subsection*{\ref{sec:background}---\nameref{sec:background}}
 
@@ -357,7 +370,7 @@ with the \gls{cudnn}, the current state-of-the-art library for calculating 2D
 and 3D convolutions, with the results showing that our method can calculate
 convolutions up to 20 times faster than cuDNN. Our training algorithm makes
 training of convolutional deep belief networks and convolutional neural networks
-on 3D medical images with a resolution of up to \num{128x128x128} voxels
+on 3D volumes with a resolution of up to \num{128x128x128} voxels
 practical, which opens new directions for using deep learning for medical image
 analysis.
 
@@ -390,7 +403,7 @@ Manifold learning of medical images plays a potentially important role for
 modelling anatomical variability within a population with applications that
 include segmentation, registration, and prediction of clinical parameters.
 In this chapter, we describe a novel method for learning the manifold of 3D
-brain images and for build a statistical model of brain images that can
+brain images and for building a statistical model of brain images that can
 automatically discover spatial patterns of variability in brain morphology and
 lesion distribution. We propose building such a model using a deep belief
 network, a layered network whose parameters can be learned from training
@@ -406,14 +419,13 @@ computed parameters have strong relationships to MS clinical scores.
 
 \subsection*{\ref{sec:conclusions}---\nameref{sec:conclusions}}
 
-This chapter concludes the thesis with a brief summary of the addressed problems
-and presented results. In the second part, some directions for future work are
-given in the broader context of deep learning for medical imaging. In
-particular, we will give suggestions for new medical image analysis applications
-of deep learning and how to deal with relatively small data sets using data
-augmentation. In addition, we will discuss two potential advancements of neural
-networks that we believe will be particularly important for medical
-applications.
+This chapter concludes the thesis with a brief summary of the problems addressed
+and key results. In addition, some directions for future work are given in the
+broader context of deep learning for medical imaging. In particular, we will
+give suggestions for new medical image analysis applications of deep learning
+and how to deal with relatively small data sets using data augmentation. In
+addition, we will discuss two potential advancements of neural networks that we
+believe will be particularly important for medical applications.
 
 %   - Use more data, handle variability better, age of large data is perfect for deep learning
 %   - No assumptions other than test data should be similarly distributed than training data -> robust and fast

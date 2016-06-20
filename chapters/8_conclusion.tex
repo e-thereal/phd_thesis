@@ -13,19 +13,20 @@ feature hierarchy from a set of images. A major challenge of deep learning
 methods is the time and memory required to process large 3D volumes. To address
 this challenge, we have developed a novel training algorithm for convolutional
 deep learning methods that facilitates the training of full resolution 3D
-medical images and presented our algorithm with a comprehensive comparison with
-alternative training methods in \ref{sec:training}. Although the developed
-methods were developed and evaluated in the context of MS, the methods are very
-general and can potentially be applied to various segmentation and manifold
-learning problems.
+volumes and presented our algorithm with a comprehensive comparison with
+alternative training methods in \ref{sec:training}. Improving the training speed
+is a rapidly advancing topic, but there are still very few publications that use
+images of such high dimensionality, which suggests that computational speed is
+still a bottleneck in general. Although the developed methods were developed and
+evaluated in the context of MS, the methods are very general and can potentially
+be applied to various segmentation and manifold learning problems.
 
 \section{Contributions}
 
 In the course of developing deep learning-based methods for MS lesion
 segmentation and pattern discovery, we have made the following main
 contributions:
-\begin{itemize}
-
+\begin{enumerate}
 \item We have developed a novel training algorithm for convolutional deep belief
 networks and convolutional neural networks that performs training in the
 frequency domain. The speed-ups gained by our method compared to state-of-the
@@ -33,45 +34,57 @@ art spatial domain implementations and the reduced memory requirements compared
 to other frequency domain methods enable the application of deep learning to
 high-resolution 3D medical images.
   
-\item We have developed a neural network architecture that jointly learns the
-features required to segment MS lesions and to perform the segmentation based on
-the automatically learned features. The joint learning of feature extractor and
-classifier facilitates the learning of features that are robust to the large
-variability of MS lesions and varying contrasts produced by different scanners.
+\item We have developed a neural network architecture that jointly learns
+features at different scales that are tuned to segmenting MS lesions and
+performs the segmentation based on the automatically learned features. The joint
+learning of feature extractor and classifier facilitates the learning of
+features that are robust to the large variability of MS lesions and varying
+contrasts produced by different scanners.
 
-\item In contrast to previous patch-based deep learning segmentation approaches,
-our network feeds through entire volumes, which removes the need to select
-representative patches, eliminates redundant calculations where patches overlap,
-and therefore scales up more efficiently with image resolution.
+% \item In contrast to previous patch-based deep learning segmentation approaches,
+% our network feeds through entire volumes, which removes the need to select
+% representative patches, eliminates redundant calculations where patches overlap,
+% and therefore scales up more efficiently with image resolution.
 
-\item In contrast to previous fully convolutional deep learning segmentation
-approaches, our method produces segmentations of the same resolution and scale
-as the input images, independent of the parameters of the network architecture,
-which enables the use of deeper networks without requiring special handling
-of the border regions.
+% There are many more contributions for segmentation than manifold
+% learning; this should be more balanced. I suggest removing some the
+% segmentation contributions so that you will have about 5 total contributions.
+% As discussed, a main contribution in manifold learning is that you showed that
+% deep learning can be applied to manifold learning of brain MRIs. Another is
+% that joint learning can be performed to model key pathology features together,
+% such as lesions and morphology.
+
+% \item In contrast to previous fully convolutional deep learning segmentation
+% approaches, our method produces segmentations of the same resolution and scale
+% as the input images, independent of the parameters of the network architecture,
+% which enables the use of deeper networks without requiring special handling
+% of the border regions.
 
 \item We have developed a novel objective function for training neural networks
 that is suitable for the classification of vastly unbalanced classes, such as
 the segmentation of MS lesions, which typically comprise less than one percent
 of the image.
 
-\item Our proposed network architecture contains shortcut connections between
-the feature extraction and segmentation pathways, which allows for the learning
-of features at different scales and thereby facilitates the accurate
-segmentation of MS lesions across a wide range of sizes.
+% \item Our proposed network architecture contains shortcut connections between
+% the feature extraction and segmentation pathways, which allows for the learning
+% of features at different scales and thereby facilitates the accurate
+% segmentation of MS lesions across a wide range of sizes.
+
+\item This is the first work to demonstrate that deep learning can be applied to
+manifold learning of brain MRIs.
 
 \item We have developed a framework for modelling changes in brain morphology
 and lesion distribution with only a few parameters, which also show improved
 correlation with clinical scores compared to established volumetric imaging
 biomarkers.
 
-\item In contrast to previous manifold learning approaches, our method does not
-assume the ambient space to be locally linear and also does not require the
-definition of a suitable similarity measure, or building a proximity graph,
-which is particularly advantageous for modelling lesions, because their sparse
-and random nature makes defining a suitable distance measure between lesion
-images challenging.
-\end{itemize}
+% \item In contrast to previous manifold learning approaches, our method does not
+% assume the ambient space to be locally linear and also does not require the
+% definition of a suitable similarity measure, or building a proximity graph,
+% which is particularly advantageous for modelling lesions, because their sparse
+% and random nature makes defining a suitable distance measure between lesion
+% images challenging.
+\end{enumerate}
 
 \section[Future work]{Future Work}
 

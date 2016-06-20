@@ -41,7 +41,7 @@ the ILSVRC-2010 and ILSVRC-2012 natural image classification competitions
 proposed by \citet{mathieu2013} who sped up the training of CNNs by calculating
 convolutions between batches of images and filters using \glspl{fft}, albeit at
 the cost of additional memory required for storing the filters. Recently, NVIDIA
-have released a library called cuDNN \citep{chetlur2014} that provides
+has released a library called cuDNN \citep{chetlur2014} that provides
 GPU-optimized implementations of 2D and 3D convolutions among other operations
 that are frequently used to implement deep learning methods, which further
 reduces training times compared to the previous state-of-the-art.
@@ -52,7 +52,7 @@ In this chapter, we detail our training algorithm and GPU implementation in
 full, with a thorough analysis of the running time on high-resolution 2D images
 (\num{512x512}) and 3D volumes (\num{128x128x128}), showing speed-ups of up to
 8-fold and 200-fold, respectively for training \glspl{crbm} and a 7-fold speed
-up for computing key operations for the training CNNs compared to cuDNN. The
+up for computing key operations for the training of CNNs compared to cuDNN. The
 proposed method performs training in the frequency domain, which replaces the
 calculation of time-consuming convolutions with simple element-wise
 multiplications, while adding only a small number of FFTs. In contrast to
@@ -233,16 +233,24 @@ N_\text{c} \times N_\text{k}$ times per iteration. To speed up the calculation
 of convolutions, we perform training in the frequency domain, which maps the
 convolutions to simple element-wise multiplications. This is especially
 important for the training on 3D images due to the relatively large number of
-weights of a 3D kernel compared to 2D. To minimize the number of Fourier
+weights of a 3D kernel compared to 2D. Calculating Fourier transforms is the
+most time-consuming operation and a potential performance bottleneck, when the
+number of Fourier transforms is high. To minimize the number of Fourier
 transforms, we map all operations needed for training to the frequency domain
 whenever possible, which allows the training algorithm to stay almost entirely
-in the frequency domain. All of the scalar operations needed for training
-(multiplications and additions) can be readily mapped to the frequency domain,
-because the Fourier transform is a linear operation. Another necessary operation
-is the flipping of a convolutional kernel, $\tilde{w}(u,v) =
-w(N_\text{w}-u+1,N_\text{w}-v+1)$. To calculate flipping efficiently, we reindex
-the weights of a convolutional kernel $w^{(ij)}_{uv}$ from $u,v \in [1,
-N_\text{w}]$ to $u,v \in [-\lfloor
+in the frequency domain. This is in contrast to the FFT-based training method
+developed by \citet{mathieu2013}, which only maps the calculation of
+convolutions to the frequency domain and minimizes the number of FFT
+calculations by processing batches of images. Unlike their method, our method
+performs training primarily in the frequency domain, which reduces the number of
+FFT calculations even when each image is processed sequentially, and therefore
+significantly reduces the memory required for training. All of the scalar
+operations needed for training (multiplications and additions) can be readily
+mapped to the frequency domain, because the Fourier transform is a linear
+operation. Another necessary operation is the flipping of a convolutional
+kernel, $\tilde{w}(u,v) = w(N_\text{w}-u+1,N_\text{w}-v+1)$. To calculate
+flipping efficiently, we reindex the weights of a convolutional kernel
+$w^{(ij)}_{uv}$ from $u,v \in [1, N_\text{w}]$ to $u,v \in [-\lfloor
 N_\text{w}/2\rfloor,\lfloor(N_\text{w}-1)/2\rfloor$, which simplifies the
 calculation of a flipped kernel to $\tilde{w}(u,v) = w(-u,-v)$.
 This allows flipping of a kernel in the spatial domain to be expressed by the
@@ -309,14 +317,14 @@ Strided Convolutions to Stride-1 Convolutions}
 % \sum_{j=0}^{N_\text{k}-1}c_j\!\sum_{x,y = 0}^{N_\text{h}-1}\!h_{xy}^j
 % \end{equation}
 
-Convolutions with a stride $s > 1$ can be expressed equivalently as convolutions
-with stride $s = 1$ by reorganizing the values of $\vect{v}^{(i)}$ and
-$\vect{w}^{(ij)}$ to $\vect{V}^{(i')}$ and $\vect{W}^{(i'j)}$ as illustrated in
-\ref{fig:npcDBN}. This reindexing scheme allows the energy function to be
-expressed in terms of conventional (stride-1) convolutions, which facilitates
-training in the frequency domain. The new indices of $V^{(i')}_{x'y'}$ and
-$W^{(i'j)}_{u'v'}$ can be calculated from the old indices of $v^i_{(xy)}$ and
-$w^{(ij)}_{uv}$ as follows:
+We have developed a method that allows convolutions with a stride $s > 1$ to be
+expressed equivalently as convolutions with stride $s = 1$ by reorganizing the
+values of $\vect{v}^{(i)}$ and $\vect{w}^{(ij)}$ to $\vect{V}^{(i')}$ and
+$\vect{W}^{(i'j)}$ as illustrated in \ref{fig:npcDBN}. This reindexing scheme
+allows the energy function to be expressed in terms of conventional (stride-1)
+convolutions, which facilitates training in the frequency domain. The new
+indices of $V^{(i')}_{x'y'}$ and $W^{(i'j)}_{u'v'}$ can be calculated from the
+old indices of $v^i_{(xy)}$ and $w^{(ij)}_{uv}$ as follows:
 \begin{align}
 x' &= \lfloor (x-1) / s \rfloor + 1 & u' &= \lfloor (u-1) / s \rfloor + 1 \\
 y' &= \lfloor (y-1) / s \rfloor + 1 & v' &= \lfloor (v-1) / s \rfloor + 1\\
@@ -370,12 +378,13 @@ distribute the processing of a single 2D image over $N_\text{v}(\lfloor
 N_\text{v}/2 \rfloor + 1) \times N_\text{c}$ independent threads, with one
 thread per element in the frequency domain. The large number of parallel threads
 results in a high utilization of the GPU, even when each image of a mini-batch
-is processed sequentially, which we do in our method because this greatly
+is processed sequentially, which we do in our method, because this greatly
 reduces the amount of GPU memory required to store the visible and hidden units
 compared to processing batches of images in parallel.
 
-Due to the relatively small amount of GPU memory compared to CPU memory, memory
-requirements are an important consideration when designing a GPU algorithm.
+Due to the relatively small amount of GPU memory available compared to CPU
+memory, memory requirements are an important consideration when designing a GPU
+algorithm.
 However, the total amount of required memory is highly implementation-dependent
 (e.g. the use of temporary variables for storing intermediate results) and a
 comparison can only be done with common elements at the algorithmic level.
@@ -434,7 +443,7 @@ strided convolutions, which would significantly reduce the memory required for
 storing the hidden units. In all layers, the proposed approach compensates for
 the increased memory requirements for the filters by considering one image at a
 time rather than a batch, and still outperforms batched learning in the spatial
-domain in terms of speed (see \ref{sec:training:eval}), despite not using
+domain in terms of speed (see \ref{sec:training:eval}), despite of not using
 batches.
 
 % In all layers, the additional memory required for
@@ -583,10 +592,14 @@ implementation, it cannot be applied to images with a resolution of
 \num{512x512} pixels when using a stride size smaller than four, and those
 comparisons could not be made. Our frequency domain implementation is between 2
 to 24 times faster than our convolution implementation, where the speed gains
-are larger for larger filter and stride sizes. For a stride of one, the impact
-of the convolution implementation on the total running time is relatively low,
-because the computational bottleneck is the inference and sampling of the hidden
-units.
+are larger for larger filter and stride sizes. The running time of the methods
+that calculate convolutions in the frequency domain (fft and freq) are
+independent of the filter size, because the filters need to be padded to the
+size of the input images before calculating the FFT and therefore the same
+number of operations are required for training for all filter sizes. For a
+stride of one, the impact of the convolution implementation on the total running
+time is relatively low, because the computational bottleneck is the inference
+and sampling of the hidden units.
 % For a stride of one, the proportion of the time spend to calculate
 % convolutions is small compared to calculating the expectation of the hidden
 % units and to sample the hidden units, which reduces the impact of the choice

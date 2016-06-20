@@ -473,34 +473,42 @@ status.
 \caption[Pearson correlation of demographic and clinical parameters with
 manifold coordinates]{Pearson correlation $r$ of demographic and
 clinical parameters with manifold coordinates ($M_1$, $M_2$). The stronger
-correlation in each column is highlighted in bold.}
+correlation in each column is highlighted in bold. The level of statistical
+significance is indicated by the number of asterisks (* $p < 0.05$, ** $p <
+0.01$, *** $p < 0.001$)}
+
+% \sisetup{
+%   round-mode = places,
+%   round-precision = 2,
+%   exponent-product = \cdot,
+%   detect-weight=true,detect-inline-weight=math,
+%   tight-spacing = true
+% }%
+
 \sisetup{
   round-mode = places,
-  round-precision = 2,
+  round-precision = 3,
   exponent-product = \cdot,
-  detect-weight=true,detect-inline-weight=math,
-  tight-spacing = true
-}%
+  detect-weight=true,
+  detect-inline-weight=math,
+  tight-spacing = false,
+  table-align-text-post = false
+}
 
-\begin{tabular}{l*{4}{@{\hspace{15pt}}cc}}
+\begin{tabular}{l*{4}{@{\hspace{15pt}}c}}
 \toprule
-& \multicolumn{2}{c}{Age} & \multicolumn{2}{c}{Gender} &
-\multicolumn{2}{c}{MMSE} & \multicolumn{2}{c}{AD/Normal Status} \\
-& $r$ & $p$-value & $r$ & $p$-value & $r$ & $p$-value
-& $r$ & $p$-value \\
+%& \multicolumn{2}{c}{Age} & \multicolumn{2}{c}{Gender} &
+%\multicolumn{2}{c}{MMSE} & \multicolumn{2}{c}{AD/Normal Status} \\
+%& $r$ & $p$-value & $r$ & $p$-value & $r$ & $p$-value
+%& $r$ & $p$-value \\
+& Age & Gender & MMSE & AD/Normal Status \\
 \midrule
 % V1
-$M_1$ &
-\num{-0.1734} & \num{0.03378} &
-\textbf{\num{0.4490381}} & \textbf{\num{8.239e-09}} &
-\num{0.0116499} & \num{0.8875} &
-\num{-0.03231144} & \num{0.6947} \\
+$M_1$ & \num{-0.1734}* & \textbf{\num{0.4490381}}*** & \num{0.0116499} &
+\num{-0.03231144} \\
 % V2
-$M_2$ &
-\textbf{\num{0.4469}} & \textbf{\num{9.848e-09}} &
-\num{0.1860143} & \num{0.02266} &
-\textbf{\num{-0.4015518}} & \textbf{\num{3.527e-07}} &
-\textbf{\num{0.4127084}} & \textbf{\num{1.536e-07}} \\
+$M_2$ & \textbf{\num{0.4469}}*** & \num{0.1860143}* &
+\textbf{\num{-0.4015518}}*** & \textbf{\num{0.4127084}}*** \\
 \bottomrule
 \end{tabular}
 \label{tab:corr}
@@ -549,7 +557,13 @@ normalization, and background cropping.
 \begin{figure}[tb]
 \centering
 \input{tikzfigures/jointmodel}
-\caption{DBN models used for discovering patterns.}
+\caption[Proposed model for discovering patterns of variability in MS
+brain]{Proposed model for discovering patterns of variability in MS brain.
+Our model consists of three main components (a) a model that aims to find
+patterns of morphological changes in deformation fields (top pathway), (b) a
+model that aims to find patterns in the spatial distribution of lesions (bottom
+pathway), and (c) a joint model that aims to find concurring deformation and
+lesion distribution patterns (combined pathways)}
 \label{fig:msdbnmodel}
 \end{figure}
 
@@ -799,7 +813,7 @@ correlates with an increase of lesions in the entire white matter.
 \subfloat[Joint manifold] {
 \label{fig:joint}
 \begin{tikzpicture}
-\tikzstyle{every node}+=[font=\small]
+\tikzstyle{every node}+=[font=\small\sffamily]
 
 \node[align=left,fill=black,inner sep = 0pt] (manifold1) {
   \mbox{}\\[2pt]
@@ -816,6 +830,12 @@ correlates with an increase of lesions in the entire white matter.
 
 \draw[->] (manifold.south west)--node[below=5pt,inner sep=0] {$J_x$}
 (manifold.south east);
+
+% \node[inner sep=0, draw, rotate=90] at ([xshift=14pt]manifold.east) (colormap)
+% {\includegraphics[width=\subfigwidth,height=0.25cm]{figures/viridis_scale}};
+% 
+% \node[below] at (colormap.west) {low};
+% \node[above] at (colormap.east) {high};
 
 \end{tikzpicture}
 } \caption[Slices from generated volumes from the morphology, lesion,
@@ -931,8 +951,13 @@ LL for all clinical scores, including a modest significant correlation to T25W,
 which is not shown by nBV nor LL. The significant correlation between $J_1$ and
 T25W is particularly interesting because the lesion changes modelled by $J_1$
 occur in the pons, which is known to be of clinical significance for mobility.
-Overall, the learned parameters correlate better than the established imaging
-biomarkers.
+Our model captures the largest variability in the data set and inter-subject
+variability is a possible confound. However, the stronger correlations compared
+to nBV and LL suggest that disease variability is more dominant.
+
+
+% Overall, the learned parameters correlate better than the established imaging
+% biomarkers.
 
 \begin{figure}[tb]
 \centering

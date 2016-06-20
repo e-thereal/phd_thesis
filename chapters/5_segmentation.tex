@@ -74,13 +74,13 @@ rotation-invariant features.
 \subsection[Patch-based deep learning methods]{Patch-based Deep Learning
 Methods}
 
-A recent breakthrough for the automatic segmentation using deep learning comes
-from the domain of cell membrane segmentation, in which \citet{ciresan2012}
-proposed classifying the centres of image patches directly using a \gls{cnn}
-\citep{lecun1998} without a dedicated feature extraction step. Instead, features
-are learned indirectly within the lower layers of the neural network during
-training, while the higher layers can be regarded as performing the
-classification, which allows the learning of features that are specifically
+A recent breakthrough for the automatic image segmentation using deep learning
+comes from the domain of cell membrane segmentation, in which
+\citet{ciresan2012} proposed classifying the centres of image patches directly
+using a \gls{cnn} \citep{lecun1998} without a dedicated feature extraction step.
+Instead, features are learned indirectly within the lower layers of the neural
+network during training, while the higher layers can be regarded as performing
+the classification, which allows the learning of features that are specifically
 tuned to the segmentation task. However, the time required to train patch-based
 methods can make the approach infeasible when the size and number of patches are
 large.
@@ -88,7 +88,7 @@ large.
 \subsection[Fully convolutional methods]{Fully Convolutional Methods}
 
 Recently, different CNN architectures
-\citep{long2015,ronneberger2015,brosch2015,kang2014} have been proposed
+\citep{li2014,long2015,ronneberger2015,brosch2015,kang2014} have been proposed
 that are able to feed through entire images, which removes the need to select
 representative patches, eliminates redundant calculations where patches overlap,
 and therefore these models scale up more efficiently with image resolution.
@@ -145,34 +145,39 @@ networks without requiring special handling of the border regions.
 \centering
 \input{tikzfigures/encoder_L2}
 
-\caption[Pre-training and fine-tuning of the 7-layer convolutional encoder
-network with shortcut that we used for our experiments]{Pre-training and
-fine-tuning of the 7-layer convolutional encoder network with shortcut that we
-used for our experiments. Pre-training is performed on the input images using a
-stack of convolutional RBMs. The pre-trained weights and bias terms are used to
-initialize a convolutional encoder network, which is fine-tuned on pairs of
-input images, $x^{(0)}$, and segmentations, $y^{(0)}$.}
+\caption[Pre-training and fine-tuning a 7-layer convolutional encoder network
+with shortcut]{Pre-training and fine-tuning a 7-layer convolutional encoder
+network with shortcut. The activations calculated by deconvolution through a
+shortcut are added to the corresponding layer activations before applying the
+transfer function. For deeper network architectures, there is a shortcut
+between all convolutional and deconvolutional layers except for the top-most
+layer. Pre-training is performed on the input images using a stack of
+convolutional RBMs. The pre-trained weights and bias terms are used to
+initialize a CEN, which is fine-tuned on pairs of input images, $x^{(0)}$, and
+segmentations, $y^{(0)}$.}
 
 \label{fig:network}
 \end{figure*}
 
-\subsection[Segmentation as an optimization problem]{Segmentation as an
-Optimization Problem}
+% \subsection[Segmentation as an optimization problem]{Segmentation as an
+% Optimization Problem}
 
-In this paper, the task of segmenting MS lesions is defined as finding a
-function $s$ that maps multi-modal images $I$, e.g., $I = (I_\text{FLAIR},
-I_\text{T1})$, to corresponding binary lesion masks $S$, where $1$ denotes a
-lesion voxel and $0$ denotes a non-lesion voxel. Given a set of training images
-$I_n$, $n \in \N$, and corresponding segmentations $S_n$, we model finding an
-appropriate function for segmenting MS lesions as an optimization problem of the
-following form
+The task of segmenting MS lesions is defined as finding a function $s$ that maps
+multi-modal images $I$, e.g., $I = (I_\text{FLAIR}, I_\text{T1})$, to
+corresponding binary lesion masks $S$, where $1$ denotes a lesion voxel and $0$
+denotes a non-lesion voxel. Given a set of training images $I_n$, $n \in \N$,
+and corresponding segmentations $S_n$, we model finding an appropriate function
+for segmenting MS lesions as an optimization problem of the following form
 \begin{equation}
 \hat{s} = \arg \min_{s \in \mathcal{S}} \sum_n E(S_n, s(I_n)),
 \label{eq:segprob}
 \end{equation}
 where $\mathcal{S}$ is the set of possible segmentation functions, and $E$ is an
 error measure that calculates the dissimilarity between ground truth
-segmentations and predicted segmentations.
+segmentations and predicted segmentations. The set of possible segmentation
+functions $\mathcal{S}$ is defined by the network architecture, where a
+particular function $s$ is defined by the combination of network architecture
+and learned parameters of the network.
 
 \subsection[Model architecture]{Model Architecture}
 
@@ -367,7 +372,8 @@ E=& \frac{1}{2}\sum_{\vect{p}}\left(S(\vect{p}) - y^{(0)}(\vect{p})\right)^2
 \beta(1-S(\vect{p}))\big)\Big(S(\vect{p})-y^{(0)}_1(\vect{p})\Big)^2.
 \end{align}
 Our objective function is similar to the SSD, with an additional multiplicative
-term applied to the squared differences. The additional factor is constant with
+term applied to the squared differences. The additional factor only depends on
+the target segmentation $S$ and is therefore constant with
 respect to the model parameters. Consequently, $\delta^{(0)}_{\text{d},1}$ can
 be derived analogously to the SSD case, and the new factor is simply carried
 over:
@@ -421,8 +427,6 @@ performed comparably well, but AdaDelta was the most robust to the choice of
 hyperparameters, so we used AdaDelta for all results reported.
 
 \subsection{Implementation}
-
-% TODO: Implementation outlined in a previous section
 
 Pre-training and fine-tuning were performed using the highly optimized
 GPU-accelerated implementation of 3D convRBMs and CNNs
@@ -629,7 +633,7 @@ on a per lesion-basis and is defined as
 \begin{equation}
 \text{LTPR} = \frac{\text{LTP}}{\text{\#RL}},
 \end{equation}
-where LTP denotes the number of lesion true positive, i.e., the number
+where LTP denotes the number of lesion true positives, i.e., the number
 lesions in the reference segmentation that overlap with a lesion in the produced
 segmentation, and \#RL denotes the total number of lesions in the reference
 segmentation. An LTPR with a value of \SI{100}{\percent} indicates that all
@@ -648,18 +652,19 @@ no lesions were incorrectly identified.
 \subsection[Training parameters]{Training Parameters}
 \label{sec:trainparams}
 
-The most influential parameters of the training method are the number of epochs
-and the sensitivity ratio. \ref{fig:epochs} shows the mean DSC evaluated on
-the training and validation sets of the second clinical data set as computed
-during training of a \mbox{7-layer} CEN-s up to 500 epochs.
-The mean DSC scores increase monotonically, but the improvements are minor after
-400 epochs. The optimal number of epochs is a trade-off between accuracy and
-time required for training. Due to the relatively small improvements after 400
-epochs, we decided to stop the training procedure at 500 epochs. For the
-challenge data sets, due to their small sizes, we did not employ a subset of the
-data for a dedicated validation set to choose the number of epochs. Instead, we
-set the number of epochs to 2500, which corresponds to roughly the same number
-of gradient updates compared to the clinical trial data set.
+In this set of experiments, we evaluated the impact of the number of epochs and
+the sensitivity ratio on the trained networks. \ref{fig:epochs} shows the mean
+DSC evaluated on the training and validation sets of the second clinical data
+set as computed during training of a \mbox{7-layer} CEN-s up to 500 epochs. The
+mean DSC scores increase monotonically, but the improvements are minor after 400
+epochs. The optimal number of epochs is a trade-off between accuracy and time
+required for training.
+Due to the relatively small improvements after 400 epochs, we decided to stop
+the training procedure at 500 epochs. For the challenge data sets, due to their
+small sizes, we did not employ a subset of the data for a dedicated validation
+set to choose the number of epochs. Instead, we set the number of epochs to
+2500, which corresponds to roughly the same number of gradient updates compared
+to the clinical trial data set.
 
 \begin{figure}[tb]
 \centering
@@ -744,7 +749,7 @@ the ISBI challenge.}
 \centering
 \begin{tabular}{lccr}
 \toprule
-Layer type & Kernel Size & \#Filters & \multicolumn{1}{c}{Image Size} \\
+Layer type & Kernel Size & \#Filters & \multicolumn{1}{c}{Number of Units} \\
 \midrule
 Input & --- & --- & $164\times 206\times 156\times c$\phantom{0} \\
 Convolutional & $9\times 9\times 9\times c$\phantom{0} & 32 &
@@ -949,7 +954,7 @@ Input Modalities, and Publicly Available Methods on Clinical Trial Data}
 \centering
 \begin{tabular}{lccr}
 \toprule
-Layer type & Kernel Size & \#Filters & \multicolumn{1}{c}{Image Size} \\
+Layer type & Kernel Size & \#Filters & \multicolumn{1}{c}{Number of Units} \\
 \midrule
 Input & --- & --- & \num{164x206x52x2}\phantom{0} \\
 Convolutional & \num{9x9x5x2} & 32 & \num{156x198x48x32} \\
@@ -981,7 +986,7 @@ summarized in \ref{tab:results1}.
 \centering
 \begin{tabular}{lccr}
 \toprule
-Layer type & Kernel Size & \#Filters & \multicolumn{1}{c}{Image Size} \\
+Layer type & Kernel Size & \#Filters & \multicolumn{1}{c}{Number of Units} \\
 \midrule
 Input & --- & --- & \num{164x206x52x2}\phantom{0} \\
 Convolutional & \num{9x9x5x2} & 32 & \num{156x198x48x32} \\

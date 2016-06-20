@@ -1,4 +1,4 @@
-\chapter{Background: Deep Learning}
+\chapter{Background on Deep Learning}
 \label{sec:background}
 
 Deep learning is a field within machine learning that has been studied since the
@@ -7,7 +7,7 @@ in popularity until the late 2000s with the advent of fast general purpose
 graphics processors \citep{raina2009}, layerwise pre-training methods
 \citep{hinton2006b,hinton2006c}, and large data sets
 \citep{deng2009,krizhevsky2012}. Since then, deep learning methods have become
-the state-of-the-art in many non-medical \citep{krizhevsky2012,sainath2013} and
+the state of the art in many non-medical \citep{krizhevsky2012,sainath2013} and
 medical \citep{ciresan2012,kamnitsas2015} applications. There are many different
 algorithms and models that are commonly referred to as deep learning methods,
 all of which have two properties in common: 1) the use of multiple layers of
@@ -367,7 +367,7 @@ networks]{Variants of Restricted Boltzmann Machines and Deep Belief
 Networks}
 
 Many variants of RBMs and DBNs have been proposed to adapt them for different
-domains. In this section, we will first introduce the \gls{cdbn}, which allows
+domains. In this section, we will first introduce the \glspl{cdbn}, which allow
 DBNs to be applied to high-resolution images, followed by a discussion of
 different unit types, which allow DBNs to be applied to real-valued data like
 the intensities of some medical images.
@@ -404,7 +404,7 @@ h_{xy}^{(j)}w_{uv}^{(ij)}v_{x+u-1, y+v-1}^{(i)} -
 \sum_{i=1}^{N_\text{c}}b_i\sum_{x,y = 1}^{N_\text{v}}\!v_{xy}^{(i)} -
 \sum_{j=1}^{N_\text{k}}c_j\sum_{x,y = 1}^{N_\text{h}}\!h_{xy}^{(j)}.
 \end{align}
-The key terms and notation are defined in \ref{tab:notation}. At the first
+The key terms and notations are defined in \ref{tab:notation}. At the first
 layer, the number of channels $N_\text{c}$ is
 one when trained on unimodal images, or equal to the number of input
 modalities when trained on multimodal images. For subsequent layers,
@@ -493,7 +493,7 @@ because dimensionality reduction is already performed within the sconvRBM
 layers. Consequently, inference in an sconvDBN is invertible, which allows for
 the visualization of detected patterns similar to DBNs. Rules for inference,
 sampling, and training of an sconvRBM can be derived analogous to convRBMs.
-Furthermore, in \ref{sec:training:strided}, I will show how to convert an
+Furthermore, in \ref{sec:training:strided}, we will show how to convert an
 sconvRBM into an equivalent convRBM by reorganizing the hidden units, which
 enables efficient training and inference of sconvRBMs in the frequency domain.
 
