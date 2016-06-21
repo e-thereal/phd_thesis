@@ -158,16 +158,16 @@ previously used Euclidean distances in the image space.
 \section[Manifold learning using deep belief networks]{Manifold Learning using
 Deep Belief Networks}
 
-Deep generative models such as \glspl{dbn} are a promising alternative to
-previously used brain manifold learning methods due to their ability to discover
-patterns of similarity in groups of images. In contrast to most commonly used
-manifold learning algorithms (e.g., LLE, LEM, Isomap), DBNs do not assume the
-manifold space to be locally linear and do not require a previously defined
-similarity measure or the construction of a proximity graph, which makes them
-more generally applicable to a wide range of manifold learning tasks. This is
-particularly important for the application to brain manifold learning, because
-the high-dimensionality of brain MRIs make defining a neighborhood criterion
-challenging.
+Deep generative models such as \glspl{dbn} \citep{hinton2006b} are a promising
+alternative to previously used brain manifold learning methods due to their
+ability to discover patterns of similarity in groups of images. In contrast to
+most commonly used manifold learning algorithms (e.g., LLE, LEM, Isomap), DBNs
+do not assume the manifold space to be locally linear and do not require a
+previously defined similarity measure or the construction of a proximity graph,
+which makes them more generally applicable to a wide range of manifold learning
+tasks. This is particularly important for the application to brain manifold
+learning, because the high-dimensionality of brain MRIs make defining a
+neighborhood criterion challenging.
 
 % DBNs have been used for many
 % different tasks where the choice of an appropriate architecture is crucial for
@@ -179,28 +179,30 @@ challenging.
 \label{sec:general_arch}
 
 The general architecture of the DBN used for manifold learning of brain MRIs is
-illustrated in \ref{fig:manidbn}. The first \gls{rbm} receives the intensity
-values of a group of images in ambient space as input and reduces the
-dimensionality of each image by discovering patterns of similarity that are
-common within groups of images. Subsequent RBMs receive the hidden unit
-activations of the previous RBM as input, thus learning successively more
-complex and abstract patterns from a training set, where the hidden units of the
-last layer represent the coordinates of an image in manifold space. The number
-of trainable weights increases significantly with the resolution of the training
-images. In order to scale the model to high-resolution images, the first several
-layers of our DBN are \glspl{scrbm}, a type of RBM that uses weight sharing and
-local connectivity between units of adjacent layers to reduce the number of
-trainable weights. Due to the much smaller number of trainable parameters
-compared to dense RBMs, sconvRBMs are best suited for learning low- to mid-level
-features from very high-dimensional data such as brain MRIs. Compared to other
-more commonly used convolution-based RBMs \citep{lee2009}, an advantage of
-sconvRBMs is that inference is invertible, which allows the reconstruction of
-the visible units from the hidden unit activations. In our application, this
-allows for the mapping of parameters from the manifold space back to the ambient
-space. Due to the local connectivity of the weights, sconvRBMs can only learn
-local patterns in the data. In order to learn patterns that describe images as a
-whole, sconvRBM layers are followed by dense RBMs, which integrate the extracted
-feature from all image locations in order to model global patterns.
+illustrated in \ref{fig:manidbn}. The first \gls{rbm}
+\citep{freund1992,hinton2010a} receives the intensity values of a group of
+images in ambient space as input and reduces the dimensionality of each image by
+discovering patterns of similarity that are common within groups of images.
+Subsequent RBMs receive the hidden unit activations of the previous RBM as
+input, thus learning successively more complex and abstract patterns from a
+training set, where the hidden units of the last layer represent the coordinates
+of an image in manifold space. The number of trainable weights increases
+significantly with the resolution of the training images. In order to scale the
+model to high-resolution images, the first several layers of our DBN are
+\glspl{scrbm} \citep{brosch2015efficient}, a type of RBM that uses weight
+sharing and local connectivity between units of adjacent layers to reduce the
+number of trainable weights. Due to the much smaller number of trainable
+parameters compared to dense RBMs, sconvRBMs are best suited for learning low-
+to mid-level features from very high-dimensional data such as brain MRIs.
+Compared to other more commonly used convolution-based RBMs \citep{lee2009}, an
+advantage of sconvRBMs is that inference is invertible, which allows the
+reconstruction of the visible units from the hidden unit activations. In our
+application, this allows for the mapping of parameters from the manifold space
+back to the ambient space. Due to the local connectivity of the weights,
+sconvRBMs can only learn local patterns in the data. In order to learn patterns
+that describe images as a whole, sconvRBM layers are followed by dense RBMs,
+which integrate the extracted feature from all image locations in order to model
+global patterns.
 
 \begin{figure}
 \centering
@@ -258,8 +260,6 @@ element-wise multiplication. Because sconvRBMs can be mapped to equivalent
 convRBMs, we can use the same modification to restrict the learning of filters
 of sconvRBMs.
 
-% TODO: (Optional) add modified equations for inference
-
 % A major constraint for designing a DBN for manifold learning is the amount of
 % memory required for storing the hidden units. Although the application of
 % strided convolutions as part of the sconvRBM decreases the size of a single
@@ -271,9 +271,6 @@ of sconvRBMs.
 % each dimension of a channel. We choose a smaller stride size in the
 % $z$-dimension to roughly compensate of the anisotropic voxel size of the images
 % used in our experiments.
-
-% TODO: shorten it a bit and give more intuition behind it, why do we model it
-% like this?
 
 \section[Manifold of MRIs of Alzheimer's disease patients]{Manifold of MRIs of
 Alzheimer's Disease Patients}

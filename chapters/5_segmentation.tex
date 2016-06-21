@@ -134,12 +134,13 @@ We propose a new convolutional network architecture that combines the advantages
 of a CEN \citep{brosch2015} and a u-net \citep{ronneberger2015}. Our network is
 divided into two pathways, a traditional convolutional pathway, which consists
 of alternating convolutional and pooling layers, and a deconvolutional pathway,
-which consists of alternating deconvolutional and unpooling layers and predicts
-the final segmentation. Similar to the u-net, we introduce shortcut connections
-between layers of the two pathways. In contrast to the u-net, our method
-produces segmentations of the same resolution as the input images, independent
-of the number of layers and filter sizes used, which enables the use of deeper
-networks without requiring special handling of the border regions.
+which consists of alternating deconvolutional and unpooling layers
+\citep{zeiler2011} and predicts the final segmentation. Similar to the u-net, we
+introduce shortcut connections between layers of the two pathways. In contrast
+to the u-net, our method produces segmentations of the same resolution as the
+input images, independent of the number of layers and filter sizes used, which
+enables the use of deeper networks without requiring special handling of the
+border regions.
 
 \begin{figure*}[tb]
 \centering
@@ -183,14 +184,15 @@ and learned parameters of the network.
 
 The set of possible segmentation functions, $\mathcal{S}$, is modelled by the
 \gls{cens} illustrated in \ref{fig:network}. A CEN-s is a type of \gls{cnn}
-\citep{lecun1998} that is divided into two interconnected pathways, the convolutional pathway and the deconvolutional \citep{zeiler2011}
-pathway. The convolutional pathway consists of alternating convolutional and
-pooling layers. The input layer of the convolutional pathway is composed of the
-image voxels $x^{(0)}_i(\vect{p})$, $i \in [1, C]$, where $i$ indexes the
-modality or input channel, $C$ is the number of modalities or channels, and
-$\vect{p} \in \N^3$ are the coordinates of a particular voxel. The convolutional
-layers automatically learn a feature hierarchy from the input images. A
-convolutional layer is a deterministic function of the following form
+\citep{lecun1998} that is divided into two interconnected pathways, the
+convolutional pathway and the deconvolutional \citep{zeiler2011} pathway. The
+convolutional pathway consists of alternating convolutional and pooling layers.
+The input layer of the convolutional pathway is composed of the image voxels
+$x^{(0)}_i(\vect{p})$, $i \in [1, C]$, where $i$ indexes the modality or input
+channel, $C$ is the number of modalities or channels, and $\vect{p} \in \N^3$
+are the coordinates of a particular voxel. The convolutional layers
+automatically learn a feature hierarchy from the input images. A convolutional
+layer is a deterministic function of the following form
 \begin{equation}
 x^{(l)}_j = \max \Bigg(0, \sum_{i=1}^C\tilde{w}^{(l)}_{\text{c},ij}*x^{(l-1)}_i
 + b^{(l)}_j\Bigg),
@@ -259,8 +261,11 @@ on the test set.
 The parameters of the model can be efficiently learned by minimizing the error
 $E$ for each sample of the training set, which requires the calculation of the
 gradient of $E$ with respect to the model parameters \citep{lecun1998}.
-Typically, neural networks are trained by minimizing the \gls{ssd}, which
-can be calculated for a single image as follows
+Typically, neural networks are trained by minimizing either the \gls{ssd} or the
+cross-entropy. Here, we will derive the gradient on the example of the
+\gls{ssd}, due to the similarity of the \gls{ssd} with the later proposed
+objective function. The \gls{ssd} can be calculated for a single image as
+follows
 \begin{equation}
 % Error function
 E = \frac{1}{2}\sum_{\vect{p}}\left(S(\vect{p}) -
@@ -486,6 +491,10 @@ second place method by \citet{jesson2015} and third place method by
 method does not have sufficient details to replicate their evaluation.
 
 \subsubsection{Clinical Trial Data Sets}
+
+%TODO: Please add more details about the source of the
+% two datasets and the characteristics of the data (population characteristics,
+% disease prevalence, scanners, etc).
 
 We used two different clinical trial data sets to evaluate our method. The first
 data set contains images of 500 subjects split equally into training and test
@@ -728,6 +737,12 @@ training data no longer occurs.}
 \end{figure}
 
 \subsection[Comparison on public data sets]{Comparison on Public Data Sets}
+
+% TODO: Can you add some comments on the challenges for human
+% observers in the ground truth segmentation? If you have information about
+% intra- and inter-rater variability please add these here and discuss these.
+% I might be able to do this. I need to see if I have ground truth information
+% from both raters or only of one.
 
 To allow for a direct comparison with a large number of state-of-the-art
 methods, we evaluated our method on the MICCAI 2008 MS lesion segmentation

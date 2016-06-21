@@ -1,6 +1,3 @@
-% TODO: add tiling strategy to cope with memory contrains. Mention that it does
-% not impact run time.
-
 % \chapter[Accelerating the Training of 3D Convolutional Models by Training in the
 % Frequency Domain]{Accelerating the Training of\\ 3D Convolutional Models by\\
 % Training in the Frequency Domain}
@@ -9,42 +6,45 @@
 
 \section[Related work]{Related Work}
 
-Deep learning has traditionally been computationally expensive and advances in
-training methods have been the prerequisite for expanding its application to a
-variety of image classification problems. The development of layer-wise training
-methods \citep{hinton2006b} greatly improved the efficiency of the training of
-deep belief networks (DBNs), which has made feasible the use of large sets of
-small images (e.g. \num{28x28}), such as those used for hand-written digit
-recognition. Subsequently, new directions for speeding up the training of deep
-models were opened with the advance of \glslink{gpu}{programmable graphics cards
-(GPUs)}, which can perform thousands of operations in parallel.
+Deep learning \citep{lecun2015} has traditionally been computationally expensive
+and advances in training methods have been the prerequisite for expanding its
+application to a variety of image classification problems. The development of
+layer-wise training methods \citep{hinton2006b} greatly improved the efficiency
+of the training of deep belief networks (DBNs) \citep{hinton2006b}, which has
+made feasible the use of large sets of small images (e.g. \num{28x28}), such as
+those used for hand-written digit recognition. Subsequently, new directions for
+speeding up the training of deep models were opened with the advance of
+\glslink{gpu}{programmable graphics cards (GPUs)}, which can perform thousands
+of operations in parallel.
 \citet{raina2009} demonstrated that by using graphics cards, training of
-\glspl{rbm} on small image patches (e.g. \num{24x24}) can be performed up to
-\num{70} times faster than on the CPU, facilitating the application to larger
-training sets. However, the number of trainable weights of a \gls{dbn} increases
-greatly with the resolution of the training images, which can make training on
-large images impracticable. In order to scale DBNs to high-resolution images,
-\citet{lee2009,lee2011} introduced the \gls{cdbn}, a deep generative model that
-uses weight sharing and local connectivity to reduce the number of trainable
-weights. They showed that a convDBN can be used to classify images with a
-resolution up to \num{200x200} pixels. To speed up the training of \glspl{cnn}
-on high-resolution images, \citet{krizhevsky2012} replaced traditional
-convolutions of the first layer of their CNN with strided convolutions, a type
-of convolution that shifts the filter kernel as a sliding window with a fixed
-step size or stride greater than one. Through the use of strided convolutions,
-the number of hidden units in each convolutional layer is greatly reduced, which
-reduces both training time and required memory. Using a highly optimized GPU
-implementation of convolutions, they were able to train a CNN on images with a
-resolution of \num{256x256} pixels, achieving state-of-the-art performance on
-the ILSVRC-2010 and ILSVRC-2012 natural image classification competitions
-\citep{krizhevsky2012}. An alternative approach for calculating convolutions was
-proposed by \citet{mathieu2013} who sped up the training of CNNs by calculating
-convolutions between batches of images and filters using \glspl{fft}, albeit at
-the cost of additional memory required for storing the filters. Recently, NVIDIA
-has released a library called cuDNN \citep{chetlur2014} that provides
-GPU-optimized implementations of 2D and 3D convolutions among other operations
-that are frequently used to implement deep learning methods, which further
-reduces training times compared to the previous state-of-the-art.
+\glspl{rbm} \citep{freund1992,hinton2010a} on small image patches (e.g.
+\num{24x24}) can be performed up to \num{70} times faster than on the CPU,
+facilitating the application to larger training sets. However, the number of
+trainable weights of a \gls{dbn} increases greatly with the resolution of the
+training images, which can make training on large images impracticable. In order
+to scale DBNs to high-resolution images, \citet{lee2009,lee2011} introduced the
+\gls{cdbn}, a deep generative model that uses weight sharing and local
+connectivity to reduce the number of trainable weights. They showed that a
+convDBN can be used to classify images with a resolution up to \num{200x200}
+pixels. To speed up the training of \glspl{cnn}
+\citep{fukushima1980,lecun1989,lecun1998} on high-resolution images,
+\citet{krizhevsky2012} replaced traditional convolutions of the first layer of
+their CNN with strided convolutions, a type of convolution that shifts the
+filter kernel as a sliding window with a fixed step size or stride greater than
+one. Through the use of strided convolutions, the number of hidden units in each
+convolutional layer is greatly reduced, which reduces both training time and
+required memory. Using a highly optimized GPU implementation of convolutions,
+they were able to train a CNN on images with a resolution of \num{256x256}
+pixels, achieving state-of-the-art performance on the ILSVRC-2010 and
+ILSVRC-2012 natural image classification competitions \citep{krizhevsky2012}. An
+alternative approach for calculating convolutions was proposed by
+\citet{mathieu2013} who sped up the training of CNNs by calculating convolutions
+between batches of images and filters using \glspl{fft}, albeit at the cost of
+additional memory required for storing the filters. Recently, NVIDIA has
+released a library called cuDNN \citep{chetlur2014} that provides GPU-optimized
+implementations of 2D and 3D convolutions among other operations that are
+frequently used to implement deep learning methods, which further reduces
+training times compared to the previous state-of-the-art.
 
 \section{Overview}
 
@@ -68,7 +68,6 @@ that uses strided convolutions to speed up training and reduce memory
 requirements, in terms of stride-1 convolutions, which enables the efficient
 training of sconvDBNs in the frequency domain.
 
-% TODO: Follow up with how to train them in the medical domain.
 % Introduction and motivation. Talks about special challenges. Training in the
 % frequency domain is important and a main contribution of this thesis. This will
 % be about my algorithm, how it works for convRBMs and CNNs. Especially the tricks
@@ -732,9 +731,6 @@ commonly of much smaller resolution. The key parameters that we varied are the
 image size, filter size, and batch size. The hardware details of our test
 environment are summarized in \ref{tab:cudnn_hardware}.
 
-% TODO: explain training of CNNs: already have forward pass, but also need
-% backwards pass and gradient calculation
-
 % Experiments: - varying image size, batch size, filter size
 %              - models used in this thesis (7-layer CEN, sconvDBN)
 % Make this two subsubsections, one for detailed experiments and one for real
@@ -980,7 +976,6 @@ state-of-the-art library for calculating 2D and 3D convolutions, with the
 results showing that our method can calculate convolutions up to 20 times faster
 than cuDNN.
 
-% TODO: emphasize the key features compared to other FD implementations
 % Only efficient when flipping can be expressed in the frequency domain
 % otherwise either store flipped and non-flipped versions, which increases
 % the amount of required memory, or requires flipped in spatial domain, which

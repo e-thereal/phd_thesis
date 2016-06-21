@@ -1,11 +1,11 @@
 \chapter{Background on Deep Learning}
 \label{sec:background}
 
-Deep learning is a field within machine learning that has been studied since the
-early 1980s \citep{fukushima1980}. However, deep learning methods did not gain
-in popularity until the late 2000s with the advent of fast general purpose
-graphics processors \citep{raina2009}, layerwise pre-training methods
-\citep{hinton2006b,hinton2006c}, and large data sets
+Deep learning \citep{lecun2015} is a field within machine learning that has been
+studied since the early 1980s \citep{fukushima1980}. However, deep learning
+methods did not gain in popularity until the late 2000s with the advent of fast
+general purpose graphics processors \citep{raina2009}, layerwise pre-training
+methods \citep{hinton2006b,hinton2006c}, and large data sets
 \citep{deng2009,krizhevsky2012}. Since then, deep learning methods have become
 the state of the art in many non-medical \citep{krizhevsky2012,sainath2013} and
 medical \citep{ciresan2012,kamnitsas2015} applications. There are many different
@@ -350,11 +350,6 @@ speed up the training of an RBM can be found in Hinton's RBM training guide
 algorithms is given in \ref{sec:training}.
 
 \subsubsection[Deep belief networks]{Deep Belief Networks}
-
-% TODO: Perhaps more explicitly define DBN here and cite (Hinton et al. 2006)?
-%
-% - A probabilistic generative model 
-% - directed edges (vs. DBM)
 
 A single RBM can be regarded as a nonlinear feature extractor. To learn a
 hierarchical set of features, multiple RBMs are stacked and trained layer by
