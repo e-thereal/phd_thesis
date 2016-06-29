@@ -496,35 +496,63 @@ method does not have sufficient details to replicate their evaluation.
 % two datasets and the characteristics of the data (population characteristics,
 % disease prevalence, scanners, etc).
 
-We used two different clinical trial data sets to evaluate our method. The first
-data set contains images of 500 subjects split equally into training and test
-sets. The images were acquired from 45 different scanning sites. For each
-subject, the data set contains T2- and PD-weighted MRIs with a voxel size of
+% Population charateristics male/female, age
+% Disease prevalence, MSFC, EDSS scores
+% Scanners 1.5T, 3T, manufacturer
+
+\begin{table}
+\caption{Population, disease and scanner characteristics of the two clinical
+trial data sets.}
+\label{tab:datasets}
+\centering
+\begin{tabular}{llcc}
+\toprule
+& & Data set 1 & Data set 2 \\
+\midrule
+MS subtype & & Secondary progressive MS & Relapsing remitting MS \\[0.5em]
+EDSS & & \num{5.5(10)} & \num{3.3(14)} \\[0.5em]
+Age & & \num{49.58(800)} & \num{37.37(881)} \\[0.5em]
+Gender & male & 175 & 125 \\
+       & female & 311 & 68 \\
+       & unknown & 14 & 2 \\[0.5em]
+Field strength & \SI{1}{\tesla} & 26 & ---\\
+               & \SI{1.5}{\tesla} & 383 & 322 \\
+               & \SI{3}{\tesla} & 77 & 24 \\
+               & unknown & 14 & 31 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+We used two different clinical trial data sets to evaluate our method
+(see~\ref{tab:datasets}). The first data set contains images of 500 secondary
+progressive MS patients split equally into training and test sets. The images
+were acquired from 45 different scanning sites. For each subject, the data set
+contains T2- and PD-weighted MRIs with a voxel size of
 \SI{0.937x0.937x3.000}{\milli\metre}. The main preprocessing steps included
 rigid intra-subject registration, brain extraction, intensity normalization, and
 background cropping. This data set was used to evaluate how many images are
-required to train a simple 3-layer CEN without overfitting. Training on a
-single GeForce GTX 780 graphics card took between 6 and 32 hours per model
-depending on the training set size. However, once the network is trained,
-segmentation of new images can be performed in less than one second.
+required to train a simple 3-layer CEN without overfitting. Training on a single
+GeForce GTX 780 graphics card took between 6 and 32 hours per model depending on
+the training set size. However, once the network is trained, segmentation of new
+images can be performed in less than one second.
 
 The second data set was collected from 67 different scanning sites using
 different 1.5\,T and 3\,T scanners, and consists of T1w, T2w, PDw, and FLAIR
-MRIs from 195 subjects, most with two time points (377 visit sets in total). In
-contrast to the previous data set, this data set also contains T1w and FLAIR
-MRIs, which allows for a direct comparison with other competing methods, which
-require these modalities. The image dimensions and voxel sizes vary by site, but
-most of the T1w images have close to \SI{1}{\milli\meter} isotropic voxels,
-while the other images have voxel sizes close to \SI{1x1x3}{\milli\meter}. All
-images were skull-stripped using the brain extraction tool (BET)
-\citep{jenkinson2005}, followed by an intensity normalization to the
-interval $[0,1]$, and a 6 degree-of-freedom intra-subject registration using one
-of the \SI{3}{\milli\meter} scans as the target image to align the different
-modalities. To speed-up the training, all images were cropped to a
-\num{164x206x52} voxel subvolume with the brain roughly centred. The ground
-truth segmentations for both data sets were produced using an existing
-semiautomatic 2D region-growing technique, which has been used successfully in a
-number of large MS clinical trials (e.g.,
+MRIs from 195 relapsing remitting MS patients, most with two time points (377
+visit sets in total). In contrast to the previous data set, this data set also
+contains T1w and FLAIR MRIs, which allows for a direct comparison with other
+competing methods, which require these modalities. The image dimensions and
+voxel sizes vary by site, but most of the T1w images have close to
+\SI{1}{\milli\meter} isotropic voxels, while the other images have voxel sizes
+close to \SI{1x1x3}{\milli\meter}. All images were skull-stripped using the
+brain extraction tool (BET) \citep{jenkinson2005}, followed by an intensity
+normalization to the interval $[0,1]$, and a 6 degree-of-freedom intra-subject
+registration using one of the \SI{3}{\milli\meter} scans as the target image to
+align the different modalities. To speed-up the training, all images were
+cropped to a \num{164x206x52} voxel subvolume with the brain roughly centred.
+The ground truth segmentations for both data sets were produced using an
+existing semiautomatic 2D region-growing technique, which has been used
+successfully in a number of large MS clinical trials (e.g.,
 \citealp{kappos2006,traboulsee2008}).
 Each lesion was manually identified by an experienced radiologist and then
 interactively grown from the seed point by a trained technician.
@@ -642,7 +670,7 @@ on a per lesion-basis and is defined as
 \begin{equation}
 \text{LTPR} = \frac{\text{LTP}}{\text{\#RL}},
 \end{equation}
-where LTP denotes the number of lesion true positives, i.e., the number
+where LTP denotes the number of lesion true positives, i.e., the number of
 lesions in the reference segmentation that overlap with a lesion in the produced
 segmentation, and \#RL denotes the total number of lesions in the reference
 segmentation. An LTPR with a value of \SI{100}{\percent} indicates that all
@@ -764,7 +792,7 @@ the ISBI challenge.}
 \centering
 \begin{tabular}{lccr}
 \toprule
-Layer type & Kernel Size & \#Filters & \multicolumn{1}{c}{Number of Units} \\
+Layer type & Kernel Size & \#Filters & \multicolumn{1}{c}{Number of units} \\
 \midrule
 Input & --- & --- & $164\times 206\times 156\times c$\phantom{0} \\
 Convolutional & $9\times 9\times 9\times c$\phantom{0} & 32 &
@@ -969,7 +997,7 @@ Input Modalities, and Publicly Available Methods on Clinical Trial Data}
 \centering
 \begin{tabular}{lccr}
 \toprule
-Layer type & Kernel Size & \#Filters & \multicolumn{1}{c}{Number of Units} \\
+Layer type & Kernel Size & \#Filters & \multicolumn{1}{c}{Number of units} \\
 \midrule
 Input & --- & --- & \num{164x206x52x2}\phantom{0} \\
 Convolutional & \num{9x9x5x2} & 32 & \num{156x198x48x32} \\
@@ -1001,7 +1029,7 @@ summarized in \ref{tab:results1}.
 \centering
 \begin{tabular}{lccr}
 \toprule
-Layer type & Kernel Size & \#Filters & \multicolumn{1}{c}{Number of Units} \\
+Layer type & Kernel Size & \#Filters & \multicolumn{1}{c}{Number of units} \\
 \midrule
 Input & --- & --- & \num{164x206x52x2}\phantom{0} \\
 Convolutional & \num{9x9x5x2} & 32 & \num{156x198x48x32} \\
